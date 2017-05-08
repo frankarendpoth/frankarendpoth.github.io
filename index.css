@@ -1,0 +1,19 @@
+/* Frank Poth 05/07/2017 */
+
+#content #videos {
+
+  grid-column-start:1;
+  grid-column-end:3;
+
+}
+
+
+@media screen and (max-width: 720px) {
+
+  #content #videos {
+
+    grid-column-end:2;
+
+  }
+
+}

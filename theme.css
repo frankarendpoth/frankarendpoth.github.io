@@ -1,0 +1,173 @@
+/* Frank Poth 04/19/2017 */
+
+* {
+
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+
+  writing-mode:initial; /* Used to fix flex-box column wrap bug. */
+
+}
+
+html {
+
+  height:100%;
+  width:100%;
+
+}
+
+body {
+
+  background-color:#abd4dd;
+  color:#ffffff;
+  font-family: "Courier New", Courier, monospace;
+
+  display:grid;
+  grid-template-columns:auto;
+  grid-template-rows:auto auto auto;
+
+  align-content:space-between;
+
+  min-height:100%;
+  width:100%;
+
+}
+
+#header {
+
+  background-image:url("header.png");
+  background-position: calc(100%) calc(100% + 1px); /* + 1px fixes slight offset problem. */
+  background-size:cover;
+  image-rendering:pixelated;
+
+  grid-row-start:1;
+  grid-row-end:2;
+
+  display:grid;
+  grid:subgrid;
+  grid-template-columns:auto auto;
+  grid-template-rows:auto;
+  align-items:center;
+  justify-items:center;
+
+  height:128px;
+  width:100%;
+
+}
+
+#header div:nth-child(1) {
+
+  color:#78a1aa;
+  text-shadow:-1px -1px #ffffff;
+
+  grid-column-start:1;
+  grid-column-end:2;
+
+  margin:8px;
+
+}
+
+#header div:nth-child(2) {
+
+  grid-column-start:2;
+  grid-column-end:3;
+
+  display:grid;
+  grid:subgrid;
+
+  grid-template-columns:auto auto;
+  grid-template-rows:auto;
+
+}
+
+#header div:nth-child(2) a {
+
+  color:#78a1aa;
+  font-weight:bold;
+  text-decoration:none;
+  text-shadow:-1px -1px #ffffff;
+
+  margin:8px;
+
+}
+
+#content {
+
+  grid-row-start:2;
+  grid-row-end:3;
+  display:grid;
+  grid:subgrid;
+  grid-template-columns:50% 50%;
+  grid-template-rows:auto auto auto auto;
+
+}
+
+#content div {
+
+  background-color:rgba(0, 0, 0, 0.2);
+  border-radius:16px;
+
+  margin:0 8px 8px 8px;
+  padding:8px;
+
+}
+
+#content h1 {
+
+  color:#457077;
+  text-align:center;
+  text-shadow:1px 1px #000000;
+
+}
+
+#content a {
+
+  color:#f0f000;
+  font-weight:bolder;
+  font-style:italic;
+  text-decoration:none;
+
+}
+
+#footer {
+
+  background-image:url("footer.png");
+  background-size:cover;
+  image-rendering:pixelated;
+
+  grid-row-start: 3;
+  grid-row-end: 4;
+
+  height:128px;
+
+}
+
+@media screen and (max-width: 720px) {
+
+  #header {
+
+    grid-template-columns:auto;
+
+  }
+
+  #header div:nth-child(1) {
+
+    margin:8px 8px 0 8px;
+
+  }
+
+  #header div:nth-child(2) {
+
+    grid-column-start:1;
+    grid-column-end:2;
+
+  }
+
+  #content {
+
+    grid-template-columns:auto;
+
+  }
+
+}
