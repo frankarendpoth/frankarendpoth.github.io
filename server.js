@@ -28,12 +28,6 @@
 
         request.url = "index.html";
 
-      } else if (request.url.charAt(0) == "~") {
-
-        console.log(request.url);
-        __dirname = request.url.slice(1);
-        console.log(__dirname);
-
       }
 
       extension = request.url.split(".");
