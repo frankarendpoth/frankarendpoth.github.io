@@ -6,8 +6,6 @@
   margin:0;
   padding:0;
 
-  writing-mode:initial; /* Used to fix flex-box column wrap bug. */
-
 }
 
 html {
@@ -34,6 +32,29 @@ body {
 
 }
 
+.iframe-container {
+
+  position:relative;
+
+  width:auto;
+  height:288px;
+  margin:4px;
+
+}
+
+.iframe-container > iframe {
+
+  border-width:0;
+
+  position:absolute;
+  left:0;
+  top:0;
+
+  height:100%;
+  width:100%;
+
+}
+
 #header {
 
   background-image:url("header.png");
@@ -43,7 +64,6 @@ body {
 
   grid-row-start:1;
   grid-row-end:2;
-
   display:grid;
   grid:subgrid;
   grid-template-columns:auto auto;
@@ -56,7 +76,7 @@ body {
 
 }
 
-#header div:nth-child(1) {
+#header > div:nth-child(1) {
 
   color:#78a1aa;
   text-shadow:-1px -1px #ffffff;
@@ -68,20 +88,18 @@ body {
 
 }
 
-#header div:nth-child(2) {
+#header > div:nth-child(2) {
 
   grid-column-start:2;
   grid-column-end:3;
-
   display:grid;
   grid:subgrid;
-
   grid-template-columns:auto auto;
   grid-template-rows:auto;
 
 }
 
-#header div:nth-child(2) a {
+#header > div:nth-child(2) a {
 
   color:#78a1aa;
   font-weight:bold;
@@ -101,14 +119,17 @@ body {
   grid-template-columns:50% 50%;
   grid-template-rows:auto auto auto auto;
 
+  width:100%;
+  height:100%;
+
 }
 
-#content div {
+#content > div {
 
   background-color:rgba(0, 0, 0, 0.2);
   border-radius:16px;
 
-  margin:0 8px 8px 8px;
+  margin: 0 8px 8px 8px;
   padding:8px;
 
 }
@@ -121,7 +142,7 @@ body {
 
 }
 
-#content a {
+#content > a {
 
   color:#f0f000;
   font-weight:bolder;
@@ -145,19 +166,25 @@ body {
 
 @media screen and (max-width: 720px) {
 
+  .iframe-container {
+
+    margin:4px 0;
+
+  }
+
   #header {
 
     grid-template-columns:auto;
 
   }
 
-  #header div:nth-child(1) {
+  #header > div:nth-child(1) {
 
     margin:8px 8px 0 8px;
 
   }
 
-  #header div:nth-child(2) {
+  #header > div:nth-child(2) {
 
     grid-column-start:1;
     grid-column-end:2;
@@ -167,6 +194,19 @@ body {
   #content {
 
     grid-template-columns:auto;
+
+  }
+
+  #content > div {
+
+    margin:8px 0;
+    padding:8px 0;
+
+  }
+
+  #content p {
+
+    padding:0 8px;
 
   }
 
