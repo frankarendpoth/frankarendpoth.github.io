@@ -126,8 +126,8 @@ body {
 
 #content > div {
 
-  background-color:rgba(0, 0, 0, 0.2);
-  border-radius:16px;
+  /*background-color:rgba(0, 0, 0, 0.2);
+  border-radius:16px;*/
 
   margin: 0 8px 8px 8px;
   padding:8px;
