@@ -17,216 +17,224 @@ html {
 
 body {
 
-  background-color:#abd4dd;
-  color:#ffffff;
-  font-family: "Courier New", Courier, monospace;
-
-  display:grid;
-  grid-template-columns:auto;
-  grid-template-rows:auto auto auto;
-
-  align-content:space-between;
-
   min-height:100%;
   width:100%;
 
-}
+  display:grid;
+  grid-template-areas: "header" "content" "footer";
+  grid-template-columns:1fr;
+  grid-template-rows:auto auto auto;
 
-.iframe-container {
-
-  position:relative;
-
-  width:auto;
-  height:288px;
-  margin:4px;
-
-}
-
-.iframe-container > iframe {
-
-  border-width:0;
-
-  position:absolute;
-  left:0;
-  top:0;
-
-  height:100%;
-  width:100%;
+  align-content:space-between;
 
 }
 
 #header {
 
-  background-image:url("header.png");
-  background-position: calc(100%) calc(100% + 1px); /* + 1px fixes slight offset problem. */
-  background-size:cover;
-  image-rendering:pixelated;
+  grid-area:header;
 
-  grid-row-start:1;
-  grid-row-end:2;
+  height:128px;
+
   display:grid;
-  grid:subgrid;
-  grid-template-columns:auto auto;
+  grid-template-areas:"header-title header-links";
+  grid-template-columns:1fr 1fr;
   grid-template-rows:auto;
+
   align-items:center;
   justify-items:center;
 
-  height:128px;
-  width:100%;
+}
+
+#header > #header-title {
+
+  grid-area:header-title;
 
 }
 
-#header h1 {
+#header > #header-links {
 
-  color:#78a3aa;
-  font-weight:400;
-  font-size:32px;
-  text-shadow:1px 1px #eff3fb;
+  grid-area:header-links;
 
-  grid-column-start:1;
-  grid-column-end:2;
-
-  margin:8px;
-
-}
-
-#header > div:nth-child(2) {
-
-  grid-column-start:2;
-  grid-column-end:3;
   display:grid;
-  grid:subgrid;
   grid-template-columns:auto auto;
-  grid-template-rows:auto;
+  grid-template-rows:auto auto auto;
 
 }
 
-#header a {
+#header > #header-links > .header-link {
 
-  background-color:rgba(255, 255, 255, 0.2);
-  color:#457077;
-  text-align:center;
-
-  border-color:124044;
-  border-radius:8px;
-  /*border-style:dashed;
-  border-width:2px;*/
+  padding:0 8px;
 
   font-weight:bold;
   text-decoration:none;
   text-shadow:1px 1px #eff3fb;
-
-  margin:8px;
-  padding:8px;
 
 }
 
 #content {
 
-  grid-row-start:2;
-  grid-row-end:3;
+  grid-area:content;
   display:grid;
-  grid:subgrid;
-  grid-template-columns:50% 50%;
+  grid-template-columns:1fr;
   grid-template-rows:auto auto auto auto;
+
+}
+
+#content > .topic-panel {
+
+  display:grid;
+  grid-template-areas: "topic-title topic-more" "topic-content topic-links" "topic-content topic-about" "topic-content topic-description";
+  grid-template-columns:65% 35%;
+  grid-template-rows: max-content min-content max-content min-content;
+
+}
+
+#content > .topic-panel > .topic-title {
+
+  grid-area:topic-title;
+  margin:0 8px;
+  display:grid;
+
+}
+
+#content > .topic-panel > .topic-content {
+
+  grid-area:topic-content;
+  margin:0 0 0 8px;
+  display:grid;
+
+}
+
+#content > .topic-panel > .topic-content > .aspect-ratio-container {
+
+  position:relative;
+
+}
+
+#content > .topic-panel > .topic-content > .aspect-ratio-container > iframe {
+
+  border-width:0;
 
   width:100%;
   height:100%;
 
-}
-
-#content > div {
-
-  background-color:rgba(255, 255, 255, 0.1);
-
-  margin: 0 8px 8px 8px;
-  padding:8px;
+  position:absolute;
+  left:0;
+  top:0;
 
 }
 
-#content h2 {
+#content > .topic-panel > .topic-more {
 
-  color:#457077;
-  text-align:center;
-  text-shadow:1px 1px #eff3fb;
-
-}
-
-#content a {
-
-  color:#26ba18;
-  font-weight:bold;
-  text-decoration:none;
-  text-shadow:1px 1px #eff3fb;
+  grid-area:topic-more;
+  padding:0 8px;
+  display:grid;
 
 }
 
-#content p {
+#content > .topic-panel > .topic-links {
 
-  color:#124044;
+  grid-area:topic-links;
+  padding:0 8px;
+  display:grid;
+  text-align:justify;
+
+}
+
+#content > .topic-panel > .topic-about {
+
+  grid-area:topic-about;
+  padding:0 8px;
+  display:grid;
+
+}
+
+#content > .topic-panel > .topic-description {
+
+  grid-area:topic-description;
+  padding:0 8px;
+  display:grid;
   text-align:justify;
 
 }
 
 #footer {
 
-  background-image:url("footer.png");
-  background-size:cover;
-  image-rendering:pixelated;
-
-  grid-row-start: 3;
-  grid-row-end: 4;
-
+  grid-area:footer;
   height:128px;
+  display:grid;
+
+  align-items:center;
+  justify-items:center;
 
 }
 
 @media screen and (max-width: 720px) {
 
-  .iframe-container {
-
-    margin:4px 0;
-
-  }
-
   #header {
 
+    grid-template-areas:"header-title" "header-links";
     grid-template-columns:auto;
-
-    height:auto;
-    min-height:128px;
+    grid-template-rows:auto auto;
 
   }
 
-  #header h1 {
+  #header > #header-links {
 
-    margin:8px 8px 0 8px;
-
-  }
-
-  #header > div:nth-child(2) {
-
-    grid-column-start:1;
-    grid-column-end:2;
+    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-rows: auto;
 
   }
 
-  #content {
+  #content > .topic-panel {
 
-    grid-template-columns:auto;
-
-  }
-
-  #content > div {
-
-    margin:8px 0;
-    padding:8px 0;
+    grid-template-areas: "topic-title topic-more topic-about" "topic-content topic-content topic-content";
+    grid-template-columns:auto min-content min-content;
+    grid-template-rows: auto auto;
 
   }
 
-  #content p {
+  #content > .topic-panel > .topic-title, #content > .topic-panel > .topic-more, #content > .topic-panel > .topic-about {
 
-    padding:0 8px;
+    cursor:pointer;
+    align-self:flex-end;
+
+  }
+
+  #content > .topic-panel > .topic-content {
+
+    margin:0;
+    position:relative;
+    z-index:0;
+    pointer-events:none;
+
+  }
+
+  #content > .topic-panel > .topic-links, #content > .topic-panel > .topic-description {
+
+    grid-area:topic-content;
+    max-height:320px;
+    margin:0 0 8px 8px;
+    padding:8px;
+    visibility:hidden;
+
+    position:relative;
+    z-index:-1;
+
+    align-self:flex-start;
+    justify-self:right;
+    align-items:flex-start;
+    justify-items:center;
+    pointer-events:none;
+
+  }
+
+  #content > .topic-panel > .topic-highlight {
+
+    background-color:rgba(255, 255, 255, 0.9);
+    visibility:visible !important;
+    z-index:1 !important;
+    pointer-events:auto;
 
   }
 
