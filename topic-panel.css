@@ -7,7 +7,7 @@
 
 }
 
-.topic-panel > .topic-title {
+.topic-title {
 
   grid-area:topic-title;
   margin:0 8px;
@@ -15,7 +15,7 @@
 
 }
 
-.topic-panel > .topic-content {
+.topic-content {
 
   grid-area:topic-content;
   margin:0 0 0 8px;
@@ -23,7 +23,7 @@
 
 }
 
-.topic-panel > .topic-content > div {
+.topic-content > div {
 
   background-color:#ffffff;
   display:grid;
@@ -32,7 +32,7 @@
 
 }
 
-.topic-panel > .topic-more {
+.topic-more {
 
   grid-area:topic-more;
   padding:0 8px;
@@ -40,17 +40,22 @@
 
 }
 
-.topic-panel > .topic-links {
+.topic-links, .topic-description {
 
   align-content:flex-start;
-  grid-area:topic-links;
   padding:0 8px;
   display:grid;
   text-align:justify;
 
 }
 
-.topic-panel > .topic-about {
+.topic-links {
+
+  grid-area:topic-links;
+
+}
+
+.topic-about {
 
   grid-area:topic-about;
   padding:0 8px;
@@ -58,13 +63,9 @@
 
 }
 
-.topic-panel > .topic-description {
+.topic-description {
 
-  align-content:flex-start;
   grid-area:topic-description;
-  padding:0 8px;
-  display:grid;
-  text-align:justify;
 
 }
 
@@ -78,7 +79,7 @@
 
   }
 
-  .topic-panel > .topic-title, .topic-panel > .topic-more, .topic-panel > .topic-about {
+  .topic-title, .topic-more, .topic-about {
 
     cursor:pointer;
     align-self:flex-end;
@@ -90,33 +91,21 @@
     margin:0;
     position:relative;
     z-index:0;
-    pointer-events:none;
 
   }
 
-  .topic-panel > .topic-links, .topic-panel > .topic-description {
+  .topic-links, .topic-description {
 
     grid-area:topic-content;
-    /*margin:0 0 8px 8px;*/
     padding:8px;
     visibility:hidden;
 
     position:relative;
     z-index:-1;
 
-    /*
-    align-self:flex-start;
-    justify-self:right;
-    align-items:flex-start;
-    justify-items:center;*/
-
-    align-self:stretch;
-
-    pointer-events:none;
-
   }
 
-  .topic-panel > .topic-highlight {
+  .topic-highlight {
 
     background-color:rgba(238, 246, 251, 0.9);
     visibility:visible !important;
