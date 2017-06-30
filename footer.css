@@ -1,0 +1,22 @@
+/* Frank Poth 06/27/2017 */
+
+#footer {
+
+  background-color:#193342;
+  background-image:url("header-texture.png");
+  border-top: 4px solid #11222c;
+  grid-area:footer;
+  height:128px;
+  display:grid;
+  padding:8px;
+
+  align-content:center;
+  justify-content:center;
+
+}
+
+#footer > p {
+
+  color:#eef6fb;
+  text-align:justify;
+}

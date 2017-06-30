@@ -1,0 +1,27 @@
+{
+
+  "directory":"content/projects",
+
+  "featured_project":{
+
+    "language":"javascript",
+    "year":"2017",
+    "index":"0"
+
+  },
+
+  "javascript":{
+
+    "year_2017":[
+
+      {
+        "about":"This is a simple hello world program written in a single HTML file. It will display a prompt, and print to the console in addition to displaying \"Hello, world!\" in the window.",
+        "directory":"hello-world",
+        "main":"hello-world.html"
+      }
+
+    ]
+
+  }
+
+}

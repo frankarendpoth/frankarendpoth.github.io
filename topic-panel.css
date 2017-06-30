@@ -1,0 +1,128 @@
+.topic-panel {
+
+  display:grid;
+  grid-template-areas: "topic-title topic-more" "topic-content topic-links" "topic-content topic-about" "topic-content topic-description";
+  grid-template-columns:65% 35%;
+  grid-template-rows: max-content min-content max-content min-content;
+
+}
+
+.topic-panel > .topic-title {
+
+  grid-area:topic-title;
+  margin:0 8px;
+  display:grid;
+
+}
+
+.topic-panel > .topic-content {
+
+  grid-area:topic-content;
+  margin:0 0 0 8px;
+  display:grid;
+
+}
+
+.topic-panel > .topic-content > div {
+
+  background-color:#ffffff;
+  display:grid;
+  height:100%;
+  width:100%;
+
+}
+
+.topic-panel > .topic-more {
+
+  grid-area:topic-more;
+  padding:0 8px;
+  display:grid;
+
+}
+
+.topic-panel > .topic-links {
+
+  align-content:flex-start;
+  grid-area:topic-links;
+  padding:0 8px;
+  display:grid;
+  text-align:justify;
+
+}
+
+.topic-panel > .topic-about {
+
+  grid-area:topic-about;
+  padding:0 8px;
+  display:grid;
+
+}
+
+.topic-panel > .topic-description {
+
+  align-content:flex-start;
+  grid-area:topic-description;
+  padding:0 8px;
+  display:grid;
+  text-align:justify;
+
+}
+
+@media screen and (max-width: 720px) {
+
+  .topic-panel {
+
+    grid-template-areas: "topic-title topic-more topic-about" "topic-content topic-content topic-content";
+    grid-template-columns:auto min-content min-content;
+    grid-template-rows: auto auto;
+
+  }
+
+  .topic-panel > .topic-title, .topic-panel > .topic-more, .topic-panel > .topic-about {
+
+    cursor:pointer;
+    align-self:flex-end;
+
+  }
+
+  .topic-panel > .topic-content {
+
+    margin:0;
+    position:relative;
+    z-index:0;
+    pointer-events:none;
+
+  }
+
+  .topic-panel > .topic-links, .topic-panel > .topic-description {
+
+    grid-area:topic-content;
+    /*margin:0 0 8px 8px;*/
+    padding:8px;
+    visibility:hidden;
+
+    position:relative;
+    z-index:-1;
+
+    /*
+    align-self:flex-start;
+    justify-self:right;
+    align-items:flex-start;
+    justify-items:center;*/
+
+    align-self:stretch;
+
+    pointer-events:none;
+
+  }
+
+  .topic-panel > .topic-highlight {
+
+    background-color:rgba(238, 246, 251, 0.9);
+    visibility:visible !important;
+    z-index:1 !important;
+    pointer-events:auto;
+
+  }
+
+}

@@ -8,10 +8,12 @@
     <meta name = "viewport" content = "width=device-width">
 
     <link href = "theme.css" rel = "stylesheet" type = "text/css">
+    <link href = "index.css" rel = "stylesheet" type = "text/css">
+    <link href = "topic-panel.css" rel = "stylesheet" type = "text/css">
 
     <title>Frank Poth</title>
 
-    <script src = "library/html-importer.js" type = "text/javascript"></script>
+    <script src = "library/importer.js" type = "text/javascript"></script>
 
   </head>
 
@@ -19,95 +21,61 @@
 
     <script type = "text/javascript">alert("Please note that this site is a work in progress and is currently undergoing construction. Some things may not be working correctly, but soon these issues will be resolved. Thanks for visiting!");</script>
 
-    <script type = "text/javascript">HTMLImporter.import("header.html");</script>
+    <script type = "text/javascript">Importer.importHTML("header.html");</script>
 
     <div id = "content">
 
       <div class = "topic-panel">
 
-        <h2 class = "topic-title">Featured Video</h2>
+        <h2 class = "topic-title">PoG Vlog Videos</h2>
         <div class = "topic-content">
           <div class = "aspect-ratio-container" data-aspect-ratio = "16:9">
-            <iframe src="https://www.youtube.com/embed/videoseries?list=UUB8OUG89o0QWqmJ2lfzdyIg" seamless allowfullscreen></iframe>
+            <iframe id = "featured-video" src = "https://www.youtube.com/embed/videoseries?list=UUB8OUG89o0QWqmJ2lfzdyIg" seamless allowfullscreen></iframe>
           </div>
         </div>
 
         <h3 class = "topic-more">more</h3>
         <div class = "topic-links">
-          <div>
-            <p>To visit the PoG Vlog on Youtube, click here.</p>
-            <p>To see more videos by Frank check out the videos page here.</p>
-            <p>Check out Frank's personal Youtube channel here.</p>
-          </div>
+          <p>Put links to dedicated videos page here.</p>
         </div>
 
         <h3 class = "topic-about">about</h3>
         <div class = "topic-description">
-          <div>
-            <p>This is my most recent Pog Vlog video.</p>
-            <br>
-            <p>PoG Vlog stands for Poth on Gaming Video log and it's all about the indie games I like to play and how to write your own indie games using primarily HTML5 and Javascript. If you want to learn more about PoG Vlog or see more videos, click the more tab!</p>
-          </div>
+          <p>The Poth on Gaming Vlog is a compilation of videos reviewing games that I really enjoyed playing.</p>
         </div>
 
       </div>
 
       <div class = "topic-panel">
 
-        <h2 class = "topic-title">Featured Project</h2>
+        <h2 class = "topic-title">Latest Project</h2>
         <div class = "topic-content">
-          <div>
-            <p>content here</p>
+          <div class = "aspect-ratio-container" data-aspect-ratio = "16:9">
+            <iframe id = "featured-project" seamless allowfullscreen></iframe>
           </div>
         </div>
 
-        <h3 class = "topic-more">more</h3>
+        <h3 class = "topic-more">menu</h3>
         <div class = "topic-links">
-          <div>
-            <p>To see more projects by Frank, go to the projects page by clicking here.</p>
-            <p>To see the sourcecode for these projects, visit the Github repository here.</p>
-          </div>
+          <a id = "featured-project-button">Click here to run the program!</a>
+          <p>Put links to dedicated projects page here.</p>
         </div>
 
         <h3 class = "topic-about">about</h3>
-        <div class = "topic-description">
-          <p>This is my most recent code project. Many of these projects are interactive and you can play them right in your browser. If you see nothing in the content pane, it's because my most recent project doesn't run on your browser. But you can still check out the sourcecode on Github or look at other projects right here. Just check out the more tab!</p>
+        <div class = "topic-description" id = "featured-project-about">
+          <p>This is my most recent project. If it's not responding, you may have to switch to a desktop computer to run it.</p>
         </div>
 
       </div>
-
-      <div class = "topic-panel">
-
-        <h2 class = "topic-title">Featured Game</h2>
-        <div class = "topic-content">
-          <div>
-            <p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p><p>content here</p>
-          </div>
-        </div>
-
-        <h3 class = "topic-more">more</h3>
-        <div class = "topic-links">
-          <div>
-            <p>To see more games by Frank, click here.</p>
-          </div>
-        </div>
-
-        <h3 class = "topic-about">about</h3>
-        <div class = "topic-description">
-          <p>This game doesn't exist yet!</p>
-        </div>
-
-      </div>
-
-      <!--<div class = "topic-panel">
-      </div>-->
 
     </div>
 
-    <script type = "text/javascript">HTMLImporter.import("footer.html");</script>
+    <script type = "text/javascript">Importer.importHTML("footer.html");</script>
 
     <script src = "topic-panel.js" type = "text/javascript"></script>
     <script src = "aspect-ratio-container.js" type = "text/javascript"></script>
+
+    <script src = "index.js" type = "text/javascript"></script>
 
   </body>
 
