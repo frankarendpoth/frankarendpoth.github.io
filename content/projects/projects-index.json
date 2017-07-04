@@ -6,7 +6,7 @@
 
     "language":"javascript",
     "year":"2017",
-    "index":"0"
+    "index":"1"
 
   },
 
@@ -18,6 +18,12 @@
         "about":"This is a simple hello world program written in a single HTML file. It will display a prompt, and print to the console in addition to displaying \"Hello, world!\" in the window.",
         "directory":"hello-world",
         "main":"hello-world.html"
+      },
+
+      {
+        "about":"This is a fixed time step game loop that implements Request Animation Frame to generate super smooth animations in the browser.",
+        "directory":"000-game-loop",
+        "main":"game-loop.html"
       }
 
     ]

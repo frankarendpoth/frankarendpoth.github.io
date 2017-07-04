@@ -8,7 +8,8 @@
 
     about:document.getElementById("featured-project-about"),
     button:document.getElementById("featured-project-button"),
-    iframe:document.getElementById("featured-project")
+    iframe:document.getElementById("featured-project"),
+    message:document.getElementById("featured-project-message")
 
   };
 
@@ -23,10 +24,12 @@
         if (featured_project.iframe.style.display == "block") {
           featured_project.iframe.src = "";
           featured_project.iframe.style.display = "none";
+          featured_project.message.style.display = "block";
           this.innerHTML = "Click here to Run Program!";
         } else {
           featured_project.iframe.src = json.directory + "/" + json.featured_project.language + "/" + json.featured_project.year + "/" + project.directory + "/" + project.main;
           featured_project.iframe.style.display = "block";
+          featured_project.message.style.display = "none";
           this.innerHTML = "Click here to Stop Program!";
         }
 

@@ -25,9 +25,12 @@
 
 .topic-content > div {
 
+  align-items:center;
   background-color:#ffffff;
   display:grid;
   height:100%;
+  justify-items:center;
+  text-align:center;
   width:100%;
 
 }
