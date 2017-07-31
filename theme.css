@@ -18,6 +18,25 @@ html {
 body {
 
   background-color:#eef6fb;
+  min-height:100%;
+  width:100%;
+
+  display:grid;
+  grid-template-areas: "header" "content" "footer";
+  grid-template-columns:1fr;
+  grid-template-rows:auto auto auto;
+
+  align-content:space-between;
+
+}
+
+#content {
+
+  grid-area:content;
+  display:grid;
+  grid-template-columns:1fr;
+  grid-template-rows:auto auto auto auto;
+  padding:8px 0;
 
 }
 
