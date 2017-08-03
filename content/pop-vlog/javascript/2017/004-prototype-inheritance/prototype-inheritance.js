@@ -39,7 +39,3 @@ var human = new Human("Tim");
 var worker = new Worker("John", "desk jockey");
 
 worker.talk();
-
-
-let x = 100;
-console.log(x);
