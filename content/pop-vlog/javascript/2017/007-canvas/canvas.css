@@ -1,0 +1,34 @@
+/* Frank Poth 08/04/2017 */
+
+* {
+
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+
+}
+
+body, html {
+
+  width:100%;
+  height:100%;
+
+}
+
+body {
+
+  align-content:space-around;
+  background-color:#202430;
+  color:#ffffff;
+  display:grid;
+  font-family:monospace;
+  justify-items:center;
+  padding:8px;
+
+}
+
+canvas {
+
+  background-color:#ffffff;
+
+}
