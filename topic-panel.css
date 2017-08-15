@@ -1,119 +1,103 @@
+/* Frank Poth 08/08/2017 */
+
 .topic-panel {
 
   display:grid;
-  grid-template-areas: "topic-title topic-more" "topic-content topic-links" "topic-content topic-about" "topic-content topic-description";
-  grid-template-columns:65% 35%;
-  grid-template-rows: max-content min-content max-content min-content;
+
+  grid-template-columns:50% 10% auto 10%;
+  grid-template-rows:min-content max-content;
+  grid-template-areas:"title refresh nothing nothing" "content content details details";
 
 }
 
-.topic-title {
+.topic-panel-title {
 
-  grid-area:topic-title;
-  margin:0 8px;
+  align-self:flex-end;
   display:grid;
+  grid-area:title;
+  vertical-align:bottom;
 
 }
 
-.topic-content {
+.topic-panel-refresh, .topic-panel-tab {
 
-  grid-area:topic-content;
-  margin:0 0 0 8px;
+  align-self:flex-end;
+  border-radius:8px;
+  cursor:pointer;
   display:grid;
-
-}
-
-.topic-content > div {
-
-  align-items:center;
-  background-color:#ffffff;
-  display:grid;
-  height:100%;
-  justify-items:center;
+  font-family: Lucida Sans Unicode;
+  font-size:2.0em;
+  font-weight:800;
+  grid-area:refresh;
+  justify-self:center;
   text-align:center;
+  vertical-align:middle;
   width:100%;
 
 }
 
-.topic-more {
+.topic-panel-tab {
 
-  grid-area:topic-more;
-  padding:0 8px;
-  display:grid;
+  display:none;
+  grid-area:tab;
 
 }
 
-.topic-links, .topic-description {
+.topic-panel-content {
 
-  align-content:flex-start;
-  padding:0 8px;
+  border:none;
   display:grid;
+  grid-area:content;
+  width:100%;
+
+}
+
+.topic-panel-details {
+
+  align-content:space-around;
+  background-color:rgba(0, 0, 0, 0.05);
+  display:grid;
+  grid-area:details;
+  height:100%;
+  padding:0 8px 8px 8px;
   text-align:justify;
 
 }
 
-.topic-links {
-
-  grid-area:topic-links;
-
-}
-
-.topic-about {
-
-  grid-area:topic-about;
-  padding:0 8px;
-  display:grid;
-
-}
-
-.topic-description {
-
-  grid-area:topic-description;
-
-}
-
-@media screen and (max-width: 720px) {
+@media screen and (max-width:640px) {
 
   .topic-panel {
 
-    grid-template-areas: "topic-title topic-more topic-about" "topic-content topic-content topic-content";
-    grid-template-columns:auto min-content min-content;
-    grid-template-rows: auto auto;
+    grid-template-columns:60% 20% 10% 10%;
+    grid-template-areas:"title title refresh tab" "content content content content";
 
   }
 
-  .topic-title, .topic-more, .topic-about {
+  .topic-panel-tab {
 
-    cursor:pointer;
-    align-self:flex-end;
-
-  }
-
-  .topic-panel > .topic-content {
-
-    margin:0;
-    position:relative;
-    z-index:0;
+    display:grid;
 
   }
 
-  .topic-links, .topic-description {
+  .topic-panel-content {
 
-    grid-area:topic-content;
+    grid-area:content;
+
+  }
+
+  .topic-panel-details {
+
+    display:none;
+
+  }
+
+  .topic-panel-details-highlight {
+
+    background-color:rgba(255, 255, 255, 0.95);
+    display:grid;
+    grid-area:content;
     padding:8px;
-    visibility:hidden;
-
-    position:relative;
-    z-index:-1;
-
-  }
-
-  .topic-highlight {
-
-    background-color:rgba(238, 246, 251, 0.9);
-    visibility:visible !important;
-    z-index:1 !important;
-    pointer-events:auto;
+    z-index:100;
 
   }
 

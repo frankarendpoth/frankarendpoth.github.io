@@ -1,24 +1,37 @@
-// Frank Poth 05/14/2017
+// Frank Poth 08/08/2017
 
 (function() {
 
-  var click, current_tab, current_panel, topic_panels;
+  var clickRefresh, clickTab, resize, topic_panels;
 
-  click = function(event) {
+  clickRefresh = function(event) {
 
-    if (window.innerWidth <= 720) {
+    var iframe = this.parentElement.querySelector("iframe");
 
-      if (current_tab == this) {
+    if (iframe) {
 
-        current_panel.classList.toggle("topic-highlight");
+      iframe.src = iframe.src;
 
-      } else {
+    }
 
-        current_tab = this;
+  };
 
-        current_panel.classList.remove("topic-highlight");
-        current_panel = this.nextElementSibling;
-        current_panel.classList.add("topic-highlight");
+  clickTab = function(event) {
+
+    this.innerHTML = (this.innerHTML == "+")?"-":"+";
+    this.details.classList.toggle("topic-panel-details-highlight");
+
+  };
+
+  resize = function(event) {
+
+    for (let index = topic_panels.length - 1; index > -1; -- index) {
+
+      let topic_panel = topic_panels[index];
+
+      if (topic_panel.height_ratio) {
+
+        topic_panel.content.style.height = Math.floor(topic_panel.content.clientWidth * topic_panel.height_ratio) + "px";
 
       }
 
@@ -27,20 +40,33 @@
   };
 
   topic_panels = document.getElementsByClassName("topic-panel");
-  current_panel = topic_panels[0];
 
-  (function() {
+  for (let index = topic_panels.length - 1; index > -1; -- index) {
 
-    var index;
+    let topic_panel = topic_panels[index];
 
-    for (index = topic_panels.length - 1; index > -1; --index) {
+    topic_panel.content = topic_panel.querySelector(".topic-panel-content");
+    topic_panel.height_ratio = topic_panel.content.dataset.heightRatio;
+    topic_panel.refresh = topic_panel.querySelector(".topic-panel-refresh");
+    topic_panel.tab = topic_panel.querySelector(".topic-panel-tab");
 
-      topic_panels[index].getElementsByClassName("topic-title")[0].addEventListener("click", click, false);
-      topic_panels[index].getElementsByClassName("topic-more")[0].addEventListener("click", click, false);
-      topic_panels[index].getElementsByClassName("topic-about")[0].addEventListener("click", click, false);
+    if (topic_panel.refresh) {
+
+      topic_panel.refresh.addEventListener("click", clickRefresh);
 
     }
 
-  })();
+    if (topic_panel.tab) {
+
+      topic_panel.tab.details = topic_panel.querySelector(".topic-panel-details");
+      topic_panel.tab.addEventListener("click", clickTab);
+
+    }
+
+  }
+
+  window.addEventListener("resize", resize);
+
+  resize();
 
 })();
