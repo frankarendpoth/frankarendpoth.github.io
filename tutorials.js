@@ -1,4 +1,4 @@
-// Frank Poth 08/17/2017
+// Frank Poth 08/16/2017
 
 (function() {
 
@@ -6,7 +6,7 @@
 
   content = document.getElementById("content");
 
-  AJAXKit.request("index.json", "GET", function(request) {
+  AJAXKit.request("tutorials.json", "GET", function(request) {
 
     var json, template, topic_panel;
 

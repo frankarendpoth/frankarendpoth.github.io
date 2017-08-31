@@ -1,0 +1,32 @@
+{
+
+  "projects":[
+
+    {
+
+      "description":"A simple hello world application that will run in a web browser.",
+      "files":["hello.html"],
+      "folder":"001-hello-world"
+
+    },
+
+    {
+
+      "description":"A small program that uses Javascript objects and variables.",
+      "files":["objects.html", "objects.js"],
+      "folder":"002-objects-and-vars"
+
+    },
+
+    {
+
+
+      "description":"A Javascript program that uses class inheritance, demonstrating how a subclass can inherit a value from its superclass.",
+      "files":["inheritance.html", "inheritance.js"],
+      "folder":"003-inheritance"
+
+    }
+
+  ]
+
+}

@@ -18,25 +18,23 @@ html {
 
 body {
 
+  align-content:space-between;
   background-color:#eef6fb;
-  min-height:100%;
-  width:100%;
-
   display:grid;
   grid-template-areas: "header" "content" "footer";
-  grid-template-columns:1fr;
-  grid-template-rows:auto auto auto;
-
-  align-content:space-between;
+  grid-template-rows:min-content auto min-content;
+  min-height:100%;
+  width:100%;
 
 }
 
 #content {
 
-  grid-area:content;
+  background-color:#ffffff;
   display:grid;
+  grid-area:content;
   grid-template-columns:1fr;
-  grid-template-rows:auto auto auto auto;
+  grid-template-rows:auto;
   padding:8px 0;
 
 }

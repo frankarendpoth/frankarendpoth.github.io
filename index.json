@@ -1,0 +1,49 @@
+{
+
+  "topic_panels":[
+
+    {
+
+      "title":"PoG Vlog",
+      "content":{
+
+        "type":"iframe",
+        "attributes":["allowfullscreen=true", "class=topic-panel-content", "data-height-ratio=0.5625", "data-source=https://www.youtube.com/embed/videoseries?list=UUB8OUG89o0QWqmJ2lfzdyIg", "src=iframe-default.html"],
+        "inner_html":""
+
+      },
+      "details":"<p>The Poth on Gaming Video log is a compilation of videos in which I review video games that I enjoyed playing and want other people to be able to find and enjoy for themselves.</p><p>Check PoG Vlog on Youtube! Just click <a href = 'https://www.youtube.com/channel/UCB8OUG89o0QWqmJ2lfzdyIg'>here</a>!</p>"
+
+    },
+
+    {
+
+      "title":"PoP Vlog",
+      "content": {
+
+        "type":"iframe",
+        "attributes":["allowfullscreen=true", "class=topic-panel-content", "data-height-ratio=0.5625", "data-source=https://www.youtube.com/embed/videoseries?list=UUdS3ojA8RL8t1r18Gj1cl6w", "src=iframe-default.html"],
+        "inner_html":""
+
+      },
+      "details":"<p>View these tutorials with their source code on the <a href = 'tutorials.html'>tutorials page</a>!</p><p>The Poth on Programming Video log is a compilation of programming tutorials in video format. I am still building this channel, so who knows what I will be covering. So far I have a few videos on how to program Javascript with a focus on game development.</p><p>To see these videos in their natural habitat, click <a href = 'https://www.youtube.com/channel/UCdS3ojA8RL8t1r18Gj1cl6w'>here</a>!</p>"
+
+    },
+
+    {
+
+      "title":"Just Some Info!",
+      "content": {
+
+        "type":"div",
+        "attributes":["class=topic-panel-content"],
+        "inner_html":"<p>This website was created by Frank Poth to act as a hub for accessing all of his stuff. It's also a portfolio site of sorts, and more is coming soon. Until then, please stick around and watch some videos or visit some of the links!</p>"
+
+      },
+      "details":"<h1>Have a nice day!</h1>"
+
+    }
+
+  ]
+
+}

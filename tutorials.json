@@ -1,0 +1,23 @@
+{
+
+  "pop_vlog": {
+
+    "javascript": {
+
+      "_2017": [
+
+        {
+
+          "path":"content/pop-vlog/javascript/2017/001-hello-world/",
+          "main":"hello.html",
+          "iframe_source":""
+
+        }
+
+      ]
+
+    }
+
+  }
+
+}

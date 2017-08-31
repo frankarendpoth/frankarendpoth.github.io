@@ -1,13 +1,16 @@
-// Frank Poth 04/19/2017
+// Frank Poth 08/16/2017
 
 (function() {
 
-  var file_system, http, server;
+  var fs, http, path, server;
+
+  fs = require("fs");
+  http = require("http");
+  path = require("path");
 
   server = {
 
     ip:process.env.MY_IP || "localhost",
-    port:process.env.MY_PORT || "3000",
 
     mimetypes: {
 
@@ -20,9 +23,9 @@
 
     },
 
-    serve:function(request, response) {
+    port:process.env.MY_PORT || "3000",
 
-      var extension, processFile;
+    serve:function(request, response) {
 
       if (request.url == "" || request.url == "/") {
 
@@ -30,10 +33,7 @@
 
       }
 
-      extension = request.url.split(".");
-      extension = extension[extension.length - 1];
-
-      processFile = function(error, content) {
+      fs.readFile(__dirname + "/" + request.url, function(error, content) {
 
         if (error) {
 
@@ -41,30 +41,21 @@
 
         } else {
 
-          response.writeHead(200, {'Content-Type':server.mimetypes[extension]});
+          response.writeHead(200, {'Content-Type':server.mimetypes[path.extname(request.url).split(".")[1]]});
           response.write(content);
 
         }
 
         response.end();
 
-      }
-
-      file_system.readFile(__dirname + "/" + request.url, processFile);
+      });
 
     }
 
   };
 
-  (function() {
+  http.createServer(server.serve).listen(server.port, server.ip);
 
-    file_system = require("fs");
-    http = require("http");
-
-    http.createServer(server.serve).listen(server.port, server.ip);
-
-    console.log("Server listening at: " + server.ip + ":" + server.port);
-
-  })();
+  console.log("Server listening at: " + server.ip + ":" + server.port);
 
 })();

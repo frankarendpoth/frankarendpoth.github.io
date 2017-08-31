@@ -2,15 +2,16 @@
 
 #footer {
 
+  align-content:center;
   background-color:#303840;
   background-image:url("header-texture.png");
   border-top: 4px solid #11222c;
   grid-area:footer;
   height:128px;
   display:grid;
+  grid-template-columns:auto;
+  grid-template-rows:auto;
   padding:8px;
-
-  align-content:center;
   justify-content:center;
 
 }
@@ -19,6 +20,7 @@
 
   color:#eef6fb;
   text-align:justify;
+
 }
 
 #footer a {
