@@ -1,0 +1,21 @@
+{
+
+  "files":[],
+  "folders":[
+
+    "001-hello-world",
+    "002-objects-and-vars",
+    "003-inheritance",
+    "004-prototype-inheritance",
+    "005-multiple-inheritance",
+    "006-elements",
+    "007-canvas",
+    "008-animation",
+    "009-control",
+    "010-collision",
+    "011-square-collision-response",
+    "012-tile-world"
+
+  ]
+
+}

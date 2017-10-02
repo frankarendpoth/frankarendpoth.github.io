@@ -1,0 +1,64 @@
+/* Frank Poth 09/02/2017 */
+
+.tutorial-panel {
+
+  display:grid;
+  justify-items:space-around;
+  width:100%;
+
+}
+
+.tutorial-panel-title {
+
+  text-align:center;
+  word-wrap:break-word;
+
+}
+
+.tutorial-panel-description {
+
+  word-wrap:break-word;
+
+}
+
+.tutorial-panel-video {
+
+  width:100%;
+
+}
+
+.tutorial-panel-files {
+
+  align-items:center;
+  display:grid;
+  grid-template-columns:auto auto;
+  justify-content:space-around;
+  padding:4px 8px;
+
+}
+
+.tutorial-panel-file {
+
+  background-color:#505860;
+  border-radius:8px;
+  color:#ffffff;
+  display:inline;
+  padding:8px;
+
+}
+
+.tutorial-panel-source {
+
+  background-color:#202830;
+  border-radius:8px;
+  color:#ffffff;
+  padding:8px;
+  white-space:pre-wrap;
+
+}
+
+.tutorial-panel-example {
+
+  background-color:#ffffff;
+
+}

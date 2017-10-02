@@ -8,8 +8,11 @@ DOMKit.createElement = function(tag_name, attributes, content) {
 
   element = document.createElement(tag_name);
 
-  DOMKit.setAttributes(element, attributes);
+  if (attributes) {
 
+    DOMKit.setAttributes(element, attributes);
+  }
+  
   if (content) {
 
     element.innerHTML = content;

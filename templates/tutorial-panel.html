@@ -1,0 +1,24 @@
+<template id = "tutorial-panel-template">
+
+  <div class = "tutorial-panel">
+
+    <h1 class = "tutorial-panel-title"></h1>
+    <p class = "tutorial-panel-description"></p>
+    <iframe class = "tutorial-panel-video"></iframe>
+    <div class = "tutorial-panel-files">
+    </div>
+    <pre class = "tutorial-panel-source"></pre>
+    <iframe class = "tutorial-panel-example"></iframe>
+
+  </div>
+
+</template>
+
+<script type = "text/javascript">
+
+  document.head.appendChild(DOMKit.createElement("link", ["type=text/css", "rel=stylesheet", "href=templates/tutorial-panel.css"]));
+  document.currentScript.parentNode.removeChild(document.currentScript);
+
+</script>
+
+<script src = "tutorial-panel.js" type = "text/javascript"></script>

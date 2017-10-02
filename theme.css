@@ -28,17 +28,6 @@ body {
 
 }
 
-#content {
-
-  background-color:#ffffff;
-  display:grid;
-  grid-area:content;
-  grid-template-columns:1fr;
-  grid-template-rows:auto;
-  padding:8px 0;
-
-}
-
 a {
 
   color:#336684;

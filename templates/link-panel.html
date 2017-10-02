@@ -1,0 +1,22 @@
+<template id = "link-panel-template">
+
+  <div class = "link-panel">
+
+    <p class = "link-panel-tags"></p>
+
+    <a class = "link-panel-title"></a>
+
+    <p class = "link-panel-description"></p>
+
+  </div>
+
+</template>
+
+<script type = "text/javascript">
+
+  document.head.appendChild(DOMKit.createElement("link", ["type=text/css", "rel=stylesheet", "href=templates/link-panel.css"]));
+  document.currentScript.parentNode.removeChild(document.currentScript);
+
+</script>
+
+<script src = "templates/link-panel.js" type = "text/javascript"></script>

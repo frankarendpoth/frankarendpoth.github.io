@@ -1,0 +1,37 @@
+/* Frank Poth 09/01/2017 */
+
+#content {
+
+  display:grid;
+  grid-area:content;
+  grid-template-areas:"tutorial" "link-panels";
+  grid-template-columns:100%;
+  grid-template-rows:auto auto;
+  padding:8px 0;
+
+}
+
+.tutorial-panel {
+
+  display:grid;
+  grid-area:tutorial;
+
+}
+
+#link-panels {
+
+  display:grid;
+  grid-area:link-panels;
+  grid-template-columns:1fr 1fr;
+
+}
+
+@media screen and (max-width:720px) {
+
+  #link-panels {
+
+    grid-template-columns: auto;
+
+  }
+
+}
