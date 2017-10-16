@@ -1,4 +1,4 @@
-/* Frank Poth 10/03/2017 */
+/* Frank Poth 10/16/2017 */
 
 * {
 
@@ -17,20 +17,13 @@ html {
 
 body {
 
-  align-content:space-around;
+  align-content:center;
   background-color:#202830;
   color:#ffffff;
   display:grid;
-  justify-content:center;
-  min-height:100%;
+  height:100%;
+  justify-content:space-around;
   text-align:center;
   width:100%;
-
-}
-
-canvas {
-
-  background-color:#ffffff;
-  justify-self:center;
 
 }
