@@ -1,0 +1,24 @@
+{
+
+  "author": "PoP Vlog",
+  "background_color": "#ffffff",
+  "description": "Progressive Web App Example",
+  "display": "fullscreen",
+  "icons": [
+
+    {
+      "src": "https://192.168.0.101:2468/web-app.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+
+  ],
+  "manifest_version": 2,
+  "name": "Web App",
+  "orientation": "portrait",
+  "short_name": "Web App",
+  "start_url": "https://192.168.0.101:2468/web-app.html",
+  "theme_color": "#ffffff",
+  "version": "0.1"
+
+}
