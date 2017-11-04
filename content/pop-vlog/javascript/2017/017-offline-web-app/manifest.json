@@ -16,9 +16,9 @@
   ],
 
   "name": "Web App",
-  "scope": "/",
+  "scope": "./",
   "short_name": "Web App",
-  "start_url": "/",
+  "start_url": "./web-app.html",
   "theme_color": "#d17c78",
   "version": "0.2"
 
