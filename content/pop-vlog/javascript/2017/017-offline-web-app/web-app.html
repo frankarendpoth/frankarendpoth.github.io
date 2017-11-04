@@ -42,7 +42,7 @@
 
       if ("serviceWorker" in navigator) {
 
-        navigator.serviceWorker.register("web-app-service.js", { scope: "/" }).then(function(registration) {
+        navigator.serviceWorker.register("web-app-service.js", { scope: "./" }).then(function(registration) {
 
         }).catch(function(error) {
 
