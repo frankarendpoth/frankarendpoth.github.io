@@ -1,26 +1,25 @@
 {
 
-  "author": "PoP Vlog",
-  "background_color": "#ffffff",
-  "description": "Progressive Web App Example with Offline Mode",
-  "display": "fullscreen",
+  "background_color": "#121738",
+  "display": "standalone",
 
-  "icons": [{
+  "icons": [
+
+    {
 
       "src": "web-app.png",
       "sizes": "192x192",
       "type": "image/png"
 
-  }],
+    }
 
-  "lang":"en",
-  "manifest_version": 2,
+  ],
+
   "name": "Web App",
-  "orientation": "portrait",
-  "scope":"https://192.168.0.101:2468/",
+  "scope": "https://192.168.0.101:2468/",
   "short_name": "Web App",
   "start_url": "https://192.168.0.101:2468/",
-  "theme_color": "#ffffff",
+  "theme_color": "#d17c78",
   "version": "0.2"
 
 }

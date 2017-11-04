@@ -4,13 +4,29 @@
 
   <head>
 
+    <meta charset = "utf-8">
     <title>Web App</title>
+    <meta http-equiv = "X-UA-Compatible" content = "IE=edge">
+    <meta name = "description" content = "A simple web app.">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1">
+    <link rel = "manifest" href = "manifest.json">
+    <meta name = "mobile-web-app-capable" content = "yes">
+    <meta name = "apple-mobile-web-app-capable" content = "yes">
+    <meta name = "application-name" content = "Web App">
+    <meta name = "apple-mobile-web-app-status-bar-style" content = "black">
+    <meta name = "apple-mobile-web-app-title" content = "Web App">
+    <link rel = "icon sizes=192x192" href = "web-app.png">
+    <link rel = "apple-touch-icon" href = "web-app.png">
+    <meta name = "msapplication-TileImage" content = "web-app.png">
+    <meta name = "msapplication-TileColor" content = "#2196F3">
+    <meta name = "theme-color" content = "#000000">
+    <meta property = "og:title" content = "Web App">
+    <meta property = "og:type" content = "website">
+    <meta property = "og:image" content = "https://192.168.0.101:2468/web-app.png">
+    <meta property = "og:url" content = "https://192.168.0.101:2468/">
+    <meta property = "og:description" content = "A simple web app.">
 
-    <meta name = "viewport" content = "user-scalable=no, width=device-width">
-
-    <link href = "https://192.168.0.101:2468/manifest.json" rel = "manifest">
-    <link href = "https://192.168.0.101:2468/web-app.css" rel = "stylesheet" type = "text/css">
-    <link href = "https://192.168.0.101:2468/web-app.png" rel = "icon" type = "image/png">
+    <link href = "web-app.css" rel = "stylesheet" type = "text/css">
 
   </head>
 
@@ -18,13 +34,23 @@
 
     <h1>Android Web App!</h1>
 
-    <img src = "https://192.168.0.101:2468/web-app.png">
+    <img src = "web-app.png">
 
     <p>This page can be viewed in any browser, but it can also work in a web app! If you are viewing this page in a full screened webview on your mobile device, you are looking at a fully functional web app! You can use this technology to better connect with your users or create a full screen mobile experience for your HTML5 games!</p>
 
     <script type = "text/javascript">
 
-      navigator.serviceWorker.register("web-app-service.js", { scope: "https://192.168.0.101:2468/"});
+      if ("serviceWorker" in navigator) {
+
+        navigator.serviceWorker.register("/web-app-service.js", { scope: "/" }).then(function(registration) {
+
+        }).catch(function(error) {
+
+          alert("Could not register service worker! This application will not be able to run in offline mode.");
+
+        });
+
+      }
 
     </script>
 
