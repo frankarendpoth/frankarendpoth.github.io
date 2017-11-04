@@ -22,8 +22,8 @@
     <meta name = "theme-color" content = "#000000">
     <meta property = "og:title" content = "Web App">
     <meta property = "og:type" content = "website">
-    <meta property = "og:image" content = "https://192.168.0.101:2468/web-app.png">
-    <meta property = "og:url" content = "https://192.168.0.101:2468/">
+    <meta property = "og:image" content = "web-app.png">
+    <meta property = "og:url" content = "/">
     <meta property = "og:description" content = "A simple web app.">
 
     <link href = "web-app.css" rel = "stylesheet" type = "text/css">
@@ -42,7 +42,7 @@
 
       if ("serviceWorker" in navigator) {
 
-        navigator.serviceWorker.register("/web-app-service.js", { scope: "/" }).then(function(registration) {
+        navigator.serviceWorker.register("web-app-service.js", { scope: "/" }).then(function(registration) {
 
         }).catch(function(error) {
 
