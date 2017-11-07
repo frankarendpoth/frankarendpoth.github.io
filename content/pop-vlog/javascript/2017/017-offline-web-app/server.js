@@ -33,6 +33,8 @@
   // Start a secure server that uses the credentials in ssl/crt.pfx
   server = https.createServer(options, function(request, response) {
 
+    console.log(request.url);
+
     /* When requesting the homepage of a website, we usually only type
     www.mysite.com, but the server returns www.mysite.com/index.html. To make
     it easier for users to access our site, we add "/index.html" to their url

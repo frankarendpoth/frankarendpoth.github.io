@@ -30,7 +30,7 @@ self.addEventListener("install", function(event) {
 
   event.waitUntil(caches.open("web-app").then(function(cache) {
 
-    return cache.addAll([ "/", "web-app.css", "web-app.html", "web-app.png"]).then(function() {
+    return cache.addAll([ "/", "manifest.json", "web-app.css", "web-app.html", "web-app.png"]).then(function() {
 
       self.skipWaiting();
 

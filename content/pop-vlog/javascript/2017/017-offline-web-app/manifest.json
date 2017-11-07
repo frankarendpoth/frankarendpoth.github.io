@@ -1,4 +1,5 @@
 {
+
   "author": "PoP Vlog",
   "background_color": "#000000",
   "description": "A simple Progressive Web Application",
@@ -16,6 +17,7 @@
 
   ],
 
+  "lang": "en-US",
   "name": "Offline Web App",
   "orientation": "portrait",
   "scope": "./",
