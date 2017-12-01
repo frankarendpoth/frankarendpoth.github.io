@@ -1,0 +1,10 @@
+{
+
+  "author": "Frank Arend Poth",
+  "description": "It's Snake, but with a worm, but you can't tell so use your imagination.",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "scope": "./",
+  "start_url": "worm.html"
+
+}

@@ -19,6 +19,7 @@
       "ico":"image/ico",
       "jpg":"image/jpeg",
       "js":"text/javascript",
+      "json":"application/json",
       "png":"image/png"
 
     },
