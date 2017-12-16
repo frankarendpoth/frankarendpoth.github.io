@@ -1,10 +1,24 @@
 {
 
   "author": "Frank Arend Poth",
+  "background_color": "#ffffff",
   "description": "It's Snake, but with a worm, but you can't tell so use your imagination.",
   "display": "fullscreen",
-  "orientation": "landscape",
+  "icons": [
+
+    {
+
+      "sizes": "192x192",
+      "src": "worm-192x192.png",
+      "type": "image/png"
+
+    }
+
+  ],
+  "name": "Worm",
   "scope": "./",
-  "start_url": "worm.html"
+  "short_name": "Worm",
+  "start_url": "worm.html",
+  "theme_color": "#202830"
 
 }

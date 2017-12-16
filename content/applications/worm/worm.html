@@ -4,7 +4,8 @@
 
   <head>
 
-    <meta href = "worm-manifest.json" rel = "manifest">
+    <link href = "worm-192x192.png" rel = "icon" type = "image/png">
+    <link href = "worm-manifest.json" rel = "manifest" type = "application/json">
     <meta name = "description" content = "A snake type game in which you must consume apples to grow in size.">
     <meta name = "viewport" content = "width=device-width">
     <title>Worm</title>
@@ -46,6 +47,21 @@
     <canvas></canvas>
 
     <script src = "worm.js" type = "text/javascript"></script>
+
+    <script type = "text/javascript">
+
+      // causes canvas to be sized improperly on startup
+      /*if ("serviceWorker" in navigator) {
+
+        navigator.serviceWorker.register("./worm-sekrvice.js", { scope: "./" }).then(function(registration) {}).catch(function(error) {
+
+          alert("Could not register service worker due to error: " + error + "\n\nYou will not be able to play Worm in offline mode.");
+
+        });
+
+      }*/
+
+    </script>
 
   </body>
 

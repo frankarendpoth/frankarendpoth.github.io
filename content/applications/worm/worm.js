@@ -616,7 +616,7 @@ display = {
   color_scheme:0,
   color_schemes: [
 
-    ["#202830", "#283038", "hole1", "hole2", "wall1", "wall2", "apple1", "apple2", "#993300", "#ff9900"]
+    ["#202830", "#283038", "hole1", "hole2", "wall1", "wall2", "#339900", "#99ff00", "#993300", "#ff9900"]
 
   ],
 
@@ -675,6 +675,17 @@ display = {
       canvas:document.createElement("canvas"),
       render:function(tile_size) {
 
+        let context = this.canvas.getContext("2d");
+        let colors = display.color_schemes[display.color_scheme];
+
+        this.canvas.height = tile_size;
+        this.canvas.width = tile_size;
+
+        context.fillStyle = colors[6];
+        context.fillRect(0, 0, tile_size, tile_size);
+        context.fillStyle = colors[7];
+        context.fillRect(1, 1, tile_size - 2, tile_size - 2);
+
       }
 
     },
@@ -701,6 +712,34 @@ display = {
 
   ],
 
+  images: undefined,
+
+  loadImages:function(urls, callback) {
+
+    display.images = new Array();
+
+    for (let index = urls.length - 1; index > -1; -- index) {
+
+      let load = function(event) {
+
+        display.images[index] = this;
+
+        if (display.images.length == urls.length) {
+
+          callback();
+
+        }
+
+      };
+
+      let image = new Image();
+      image.addEventListener("load", load);
+      image.src = urls[index];
+
+    }
+
+  },
+
   renderArea:function(area) {
 
     for (let index = area.map.length - 1; index > -1; -- index) {
@@ -710,6 +749,12 @@ display = {
       this.buffer.drawImage(graphic, 0, 0, graphic.width, graphic.height, MATH.getXFromIndex(index, area.columns, area.tile_size), MATH.getYFromIndex(index, area.columns, area.tile_size), area.tile_size, area.tile_size);
 
     }
+
+  },
+
+  renderDisplay:function() {
+
+    this.context.drawImage(this.buffer.canvas, 0, 0, this.buffer.canvas.width, this.buffer.canvas.height, this.buffer_offset.x, this.buffer_offset.y, this.buffer.canvas.width * this.buffer_scale, this.buffer.canvas.height * this.buffer_scale);
 
   },
 
@@ -723,9 +768,9 @@ display = {
 
   },
 
-  renderDisplay:function() {
+  renderImage:function(image, x, y, width, height) {
 
-    this.context.drawImage(this.buffer.canvas, 0, 0, this.buffer.canvas.width, this.buffer.canvas.height, this.buffer_offset.x, this.buffer_offset.y, this.width * this.buffer_scale, this.height * this.buffer_scale);
+    this.buffer.drawImage(image, 0, 0, image.width, image.height, x, y, width, height);
 
   },
 
@@ -739,8 +784,8 @@ display = {
     let difference_height = buffer_height - display_height;
     let difference_width = buffer_width - display_width;
 
-    let ratio_height = buffer_height / display_height;
-    let ratio_width = buffer_width / display_width;
+    let ratio_height = display_height / buffer_height;
+    let ratio_width = display_width / buffer_width;
 
     display.height = display.context.canvas.height = display_height;
     display.width = display.context.canvas.width = display_width;
@@ -748,42 +793,20 @@ display = {
     if (ratio_height * difference_height < ratio_width * difference_width) {
 
       display.buffer_offset.x = 0;
-      //display.buffer_offset.y = 100;
-      display.buffer_scale = 1 / ratio_height;
+      display.buffer_offset.y = 0//(display_height - buffer_height * ratio_width) * 0.5;
+      display.buffer_scale = ratio_width;
 
     } else {
 
-      //display.buffer_offset.x = 100;
+      display.buffer_offset.x = (display_width - buffer_width * ratio_height) * 0.5;
       display.buffer_offset.y = 0;
-      display.buffer_scale = 1 / ratio_width;
+      display.buffer_scale = ratio_height;
 
     }
-
-    /*
-
-    display.height = document.documentElement.clientHeight;
-    display.width  = document.documentElement.clientWidth;
-
-    display.context.canvas.height = display.height;
-    display.context.canvas.width  = display.width;
-
-    if (display.height < display.width) {
-
-      display.buffer_offset.x = Math.floor((display.width - display.buffer.canvas.width) * 0.5);
-      display.buffer_offset.y = 0;
-      display.orientation = "landscape";
-
-    } else {
-
-      display.buffer_offset.x = 0;
-      display.buffer_offset.y = Math.floor((display.height - display.buffer.canvas.height) * 0.5);
-      display.orientation = "portrait";
-
-    }
-
-    */
 
     game.mode.resize();
+
+    display.renderDisplay();
 
   }
 
@@ -799,28 +822,7 @@ game = {
       area: {
 
         columns:20,
-        map:[
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,4,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,4,0,0,0,4,0,0,4,0,0,4,4,0,0,4,0,4,0,0,
-          0,4,0,4,0,4,0,4,0,4,0,4,0,0,4,0,4,0,4,0,
-          0,0,4,0,4,0,0,0,4,0,0,4,0,0,4,0,4,0,4,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-        ],
+        map:new Array(400).fill(0),
         tile_size:16,
         height:320,
         width:320
@@ -834,6 +836,7 @@ game = {
           game.engine.accumulated_time = time_stamp;
 
           display.renderArea(game.mode.area);
+          display.renderImage(display.images[0], 5.5, 20, 309, 53);
           display.renderDisplay();
 
         }
@@ -854,7 +857,11 @@ game = {
 
         this.resize();
 
-        game.engine.start(200, this.loop);
+        display.loadImages(["graphic-title.png"], function() {
+
+          game.engine.start(200, game.mode.loop);
+
+        });
 
       }
 
