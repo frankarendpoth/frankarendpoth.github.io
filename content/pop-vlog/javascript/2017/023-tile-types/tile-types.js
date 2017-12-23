@@ -345,6 +345,7 @@
 
       },
 
+      /* This function handles collision with slope tiles on the y axis. */
       collideSlopeTop:function(object, column, row, slope, y_offset) {
 
         let origin_x = column * TILE_SIZE;
