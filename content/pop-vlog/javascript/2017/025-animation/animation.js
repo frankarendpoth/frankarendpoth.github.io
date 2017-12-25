@@ -57,7 +57,7 @@ frame sets. */
         If the frame index is not on the last value, just add 1 to it. */
         this.frame_index = (this.frame_index == this.frame_set.length - 1) ? 0 : this.frame_index + 1;
         this.frame = this.frame_set[this.frame_index];// Change the current frame value.
-
+        
       }
 
     }
