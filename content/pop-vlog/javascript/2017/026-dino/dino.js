@@ -42,7 +42,7 @@
 
       this.count ++;// Keep track of how many cycles have passed since the last frame change.
 
-      if (this.count == this.delay) {// If enough cycles have passed, we change the frame.
+      if (this.count >= this.delay) {// If enough cycles have passed, we change the frame.
 
         this.count = 0;// Reset the count.
         /* If the frame index is on the last value in the frame set, reset to 0.
@@ -67,6 +67,257 @@
 
   Frame.prototype = {};
 
+  var Pool = function(object) {
+
+    this.object = object;
+    this.objects = [];
+    this.pool = [];
+
+  };
+
+  Pool.prototype = {
+
+    get:function(parameters) {
+
+      if (this.pool.length != 0) {
+
+        let object = this.pool.pop();
+        object.reset(parameters);
+        this.objects.push(object);
+
+      } else {
+
+        this.objects.push(new this.object(parameters.x, parameters.y));
+
+      }
+
+    },
+
+    store:function(object) {
+
+      let index = this.objects.indexOf(object);
+
+      if (index != -1) {
+
+        this.pool.push(this.objects.splice(index, 1)[0]);
+
+      }
+
+    },
+
+    storeAll:function() {
+
+      for (let index = this.objects.length - 1; index > -1; -- index) {
+
+        this.pool.push(this.objects.pop());
+
+      }
+
+    }
+
+  };
+
+  var Meteor = function(x, y) {
+
+    this.alive = true;
+    this.animation = new Animation(display.tile_sheet.frame_sets[1], 8);
+    this.grounded = false;
+    this.smoke = false;
+    this.smoke_count = 0;
+    this.smoke_delay = Math.floor(Math.random() * 10 + 5);
+    this.height = Math.floor(Math.random() * 16 + 24); this.width = this.height;
+    this.x = x; this.y = y - this.height * 0.5;
+    let direction = Math.PI * 1.75 + Math.random() * Math.PI * 0.1;
+    this.x_velocity = Math.cos(direction) * 3; this.y_velocity = -Math.sin(direction) * 3;
+
+  };
+
+  Meteor.prototype = {
+
+    constructor:Meteor,
+
+    collideObject:function(player) {
+
+      let vector_x = player.x + player.width * 0.5 - this.x - this.width * 0.5;
+      let vector_y = player.y + player.height * 0.5 - this.y - this.height * 0.5;
+      let combined_radius = player.height * 0.5 + this.width * 0.5;
+
+      if (vector_x * vector_x + vector_y * vector_y < combined_radius * combined_radius) {
+
+        player.alive = false;
+        player.animation.change(display.tile_sheet.frame_sets[5], 10);
+
+      }
+
+    },
+
+    collideWorld:function() {
+
+      if (this.x + this.width < 0) {
+
+        this.alive = false;
+        return;
+
+      }
+
+      if (this.y + this.height > WORLD_HEIGHT - 6) {
+
+        this.x_velocity = -game.speed;
+        this.grounded = true;
+        this.y = WORLD_HEIGHT - this.height - 6;
+
+      }
+
+    },
+
+    reset:function(parameters) {
+
+      this.alive = true;
+      this.animation.change(display.tile_sheet.frame_sets[1], 8);
+      this.grounded = false;
+      this.x = parameters.x;
+      let direction = Math.PI * 1.75 + Math.random() * Math.PI * 0.1;
+      this.x_velocity = Math.cos(direction) * 3;
+      this.y = parameters.y;
+      this.y_velocity = -Math.sin(direction) * 3;
+
+    },
+
+    update:function() {
+
+      if (!this.grounded) {
+
+        this.animation.update();
+        this.y += this.y_velocity;
+
+      } else {
+
+        this.x_velocity = -game.speed;
+
+      }
+
+      this.x += this.x_velocity;
+
+      this.smoke_count ++;
+      if (this.smoke_count == this.smoke_delay) {
+
+        this.smoke_count = 0;
+        this.smoke = true;
+
+      }
+
+    }
+
+  };
+
+  var Smoke = function(x, y, x_velocity, y_velocity) {
+
+    this.alive = true;
+    this.animation = new Animation(display.tile_sheet.frame_sets[2], 8);
+    this.life_count = 0;
+    this.life_time = Math.random() * 20 + 30;
+    this.height = 8 + Math.floor(Math.random() * 8); this.width = this.height;
+    this.x = x; this.y = y;
+    this.x_velocity = x_velocity; this.y_velocity = y_velocity;
+
+  };
+
+  Smoke.prototype = {
+
+    constructor:Smoke,
+
+    collideWorld:function() {
+
+      if (this.x > WORLD_WIDTH || this.y > WORLD_HEIGHT - 20) {
+
+        this.alive = false;
+
+      }
+
+    },
+
+    reset:function(parameters) {
+
+      this.alive = true;
+      this.life_count = 0;
+      this.life_time = Math.random() * 20 + 30;
+      this.x          = parameters.x;
+      this.x_velocity = parameters.x_velocity;
+      this.y          = parameters.y;
+      this.y_velocity = parameters.y_velocity;
+
+    },
+
+    update:function() {
+
+      this.animation.update();
+      this.x += this.x_velocity;
+      this.y += this.y_velocity;
+
+      this.life_count ++;
+
+      if (this.life_count > this.life_time) {
+
+        this.alive = false;
+
+      }
+
+    }
+
+  };
+
+  var TarPit = function(x, y) {
+
+    this.alive = true;
+    this.animation = new Animation(display.tile_sheet.frame_sets[0], 8);
+    this.height = 30; this.width = Math.floor(Math.random() * 64 + 48);
+    this.x = x; this.y = y;
+
+  };
+
+  TarPit.prototype = {
+
+    constructor:TarPit,
+
+    collideObject:function(player) {
+
+    },
+
+    collideObject:function(object) {
+
+      if (!object.jumping && object.x + object.width * 0.5 > this.x + this.width * 0.2 && object.x + object.width * 0.5 < this.x + this.width * 0.8) {
+
+        object.alive = false;
+        object.animation.change(display.tile_sheet.frame_sets[4], 10);
+
+      }
+
+    },
+
+    collideWorld:function() {
+
+      if (this.x + this.width < 0) this.alive = false;
+
+    },
+
+    reset:function(parameters) {
+
+      this.alive = true;
+      this.width = Math.floor(Math.random() * 64 + 48);
+      this.x = parameters.x;
+      this.y = parameters.y;
+
+    },
+
+    update:function(){
+
+      this.animation.update();
+      this.x -= game.speed;
+
+    }
+
+  };
+
   var controller, display, game;
 
   controller = {
@@ -86,35 +337,33 @@
 
   };
 
-  var TarPit = function(x, y) {
-
-    this.animation = new Animation(display.tile_sheet.frame_sets[3], 8);
-    this.height = 30; this.width = Math.floor(Math.random() * 64 + 48);
-    this.x = x; this.y = y;
-
-  };
-
-  TarPit.prototype = {
-
-    constructor:TarPit,
-
-    update:function(){}
-
-  };
-
   display = {
 
     buffer:document.createElement("canvas").getContext("2d"),
     context:document.querySelector("canvas").getContext("2d"),
 
+    tint:0,
+    tint_count:0,
+
     tile_sheet: {
 
       columns:undefined,// Set up in INITIALIZE section.
-      frames: [new Frame(0, 32, 32, 16), new Frame(32, 32, 32, 16), new Frame(64, 32, 32, 16), new Frame(96, 32, 32, 16), new Frame(0, 48, 32, 16), new Frame(32, 48, 32, 16), new Frame(64, 48, 32, 16), new Frame(96, 48, 32, 16),
-      new Frame(48, 16, 24, 16), new Frame(72, 16, 24, 16),// tar pit
-      new Frame(0, 64, 32, 16), new Frame(32, 64, 32, 16), new Frame(64, 64, 32, 16), new Frame(96, 64, 32, 16), new Frame(0, 80, 32, 16), new Frame(32, 80, 32, 16)],
-      frame_sets:[[0, 1, 2, 3, 4, 5, 6, 7], [2], [10, 11, 12, 13, 14, 15],
-                  [8, 9]],// tar pit
+      frames: [new Frame( 0, 32, 24, 16), new Frame(24, 32, 24, 16),// tar pit
+               new Frame(64, 32, 16, 16), new Frame(80, 32, 16, 16),// Meteor
+               new Frame(96, 32,  8,  8), new Frame(104,32,  8,  8), new Frame(96, 40,  8,  8), new Frame(104,40,  8, 8),// smoke
+               new Frame( 0, 48, 28, 16), new Frame(28, 48, 28, 16), new Frame(56, 48, 28, 16), new Frame(84, 48, 28, 16), new Frame( 0, 64, 28, 16), new Frame(28, 64, 28, 16), new Frame(56, 64, 28, 16), new Frame(84, 64, 28, 16),//dino run
+               new Frame( 0, 80, 28, 16), new Frame(28, 80, 28, 16), new Frame(56, 80, 28, 16), new Frame(84, 80, 28, 16), new Frame( 0, 96, 28, 16), new Frame(28, 96, 28, 16),//dino sink
+               new Frame(56, 96, 28, 16), new Frame(84, 96, 28, 16), new Frame( 0,112, 28, 16), new Frame(28,112, 28, 16), new Frame(56,112, 28, 16), new Frame(84,112, 28, 16)//dino crisp
+              ],
+
+      frame_sets:[[ 0, 1],//tar pit
+                  [ 2, 3],//Meteor
+                  [ 4, 5, 6, 7],//smoke
+                  [ 8, 9,10,11,12,13,14,15],//dino run
+                  [16,17,18,19,20,21],//dino sink
+                  [22,23,24,25,26,27]//dino crisp
+
+      ],
       image:new Image()
 
     },
@@ -129,19 +378,60 @@
 
       }
 
+      for (let index = game.object_manager.tarpit_pool.objects.length - 1; index > -1; -- index) {
+
+        let tarpit = game.object_manager.tarpit_pool.objects[index];
+
+        let frame = this.tile_sheet.frames[tarpit.animation.frame_value];
+
+        this.buffer.drawImage(this.tile_sheet.image, frame.x, frame.y, frame.width, frame.height, tarpit.x, tarpit.y, tarpit.width, tarpit.height);
+
+      }
+
       let frame = this.tile_sheet.frames[game.player.animation.frame_value];
 
       this.buffer.drawImage(this.tile_sheet.image, frame.x, frame.y, frame.width, frame.height, game.player.x, game.player.y, game.player.width, game.player.height);
 
-      for (let index = game.object_manager.objects.length - 1; index > -1; -- index) {
+      for (let index = game.object_manager.meteor_pool.objects.length - 1; index > -1; -- index) {
 
-        let object = game.object_manager.objects[index];
+        let meteor = game.object_manager.meteor_pool.objects[index];
 
-        frame = this.tile_sheet.frames[object.animation.frame_value];
+        let frame = this.tile_sheet.frames[meteor.animation.frame_value];
 
-        this.buffer.drawImage(this.tile_sheet.image, frame.x, frame.y, frame.width, frame.height, object.x, object.y, object.width, object.height);
+        this.buffer.drawImage(this.tile_sheet.image, frame.x, frame.y, frame.width, frame.height, meteor.x, meteor.y, meteor.width, meteor.height);
 
       }
+
+      for (let index = game.object_manager.smoke_pool.objects.length - 1; index > -1; -- index) {
+
+        let smoke = game.object_manager.smoke_pool.objects[index];
+
+        let frame = this.tile_sheet.frames[smoke.animation.frame_value];
+
+        this.buffer.drawImage(this.tile_sheet.image, frame.x, frame.y, frame.width, frame.height, smoke.x, smoke.y, smoke.width, smoke.height);
+
+      }
+
+      if (game.object_manager.meteor_pool.objects.length != 0) {
+
+        this.tint = (this.tint < 80) ? this.tint + 1 : 80;
+
+      } else {
+
+        this.tint = (this.tint > 0) ? this.tint - 2 : 0;
+
+      }
+
+      let image_data = this.buffer.getImageData(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+      let data = image_data.data
+
+      for (let index = data.length - 4; index > -1; index -= 4) {
+
+        data[index] += this.tint;
+
+      }
+
+      this.buffer.putImageData(image_data, 0, 0);
 
       this.context.drawImage(this.buffer.canvas, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, this.context.canvas.width, this.context.canvas.height);
 
@@ -170,7 +460,7 @@
 
   game = {
 
-    speed:2,
+    speed:3,
 
     area: {
 
@@ -227,11 +517,48 @@
     engine: {
 
       afrequest:undefined,
+      accumulated_time:window.performance.now(),
+      time_step:1000/60,
 
       loop:function(time_stamp) {
 
-        game.speed += 0.001;
-        game.area.scroll();
+        if (time_stamp >= game.engine.accumulated_time + game.engine.time_step) {
+
+          if (time_stamp - game.engine.accumulated_time >= game.engine.time_step * 4) {
+
+            game.engine.accumulated_time = time_stamp;
+
+          }
+
+          while(game.engine.accumulated_time < time_stamp) {
+
+            game.engine.accumulated_time += game.engine.time_step;
+
+            game.engine.update();
+
+          }
+
+          display.render();
+
+        }
+
+        window.requestAnimationFrame(game.engine.loop);
+
+      },
+
+      start:function() {
+
+        this.afrequest = window.requestAnimationFrame(this.loop);
+
+      },
+
+      update:function() {
+
+        /* Slowly increase speed and cap it when it gets too high. */
+        game.speed = (game.speed >= TILE_SIZE * 0.5)? TILE_SIZE * 0.5 : game.speed + 0.001;
+        /* Make sure the player's animation delay is keeping up with the scroll speed. */
+        game.player.animation.delay = Math.floor(10 - game.speed);
+        game.area.scroll();// Scroll!!!
 
         if (game.player.alive) {
 
@@ -240,20 +567,17 @@
             controller.active = false;
             game.player.jumping = true;
             game.player.y_velocity -= 15;
-            game.player.animation.change(display.tile_sheet.frame_sets[1], 15);
+            game.player.animation.change([10], 15);
 
           }
 
           if (game.player.jumping == false) {
 
-            game.player.animation.change(display.tile_sheet.frame_sets[0], 10 - Math.floor(game.speed));
+            game.player.animation.change(display.tile_sheet.frame_sets[3], Math.floor(TILE_SIZE - game.speed));
 
           }
 
-          game.player.y_velocity += 0.5;
-          game.player.y += game.player.y_velocity;
-
-          game.player.y_velocity *= 0.9;
+          game.player.update();
 
           if (game.player.y > TILE_SIZE * 6 - TILE_SIZE * 0.25) {
 
@@ -273,21 +597,10 @@
 
         }
 
-        game.object_manager.spawn();
-        game.object_manager.update();
-        game.object_manager.collide(game.player);
-
         game.player.animation.update();
 
-        display.render();
-
-        window.requestAnimationFrame(game.engine.loop);
-
-      },
-
-      start:function() {
-
-        this.afrequest = window.requestAnimationFrame(this.loop);
+        game.object_manager.spawn();
+        game.object_manager.update();
 
       }
 
@@ -298,25 +611,9 @@
       count:0,
       delay:100,
 
-      objects:[],
-
-      collide:function(player) {
-
-        for (let index = this.objects.length - 1; index > -1; -- index) {
-
-          let object = this.objects[index];
-
-          if (object.constructor == TarPit && !player.jumping && player.x + player.width * 0.5 > object.x + object.width * 0.1 && player.x + player.width * 0.5 < object.x + object.width - object.width * 0.2) {
-
-            player.alive = false;
-            player.animation.change(display.tile_sheet.frame_sets[2], 10);
-            return;
-
-          }
-
-        }
-
-      },
+      meteor_pool:new Pool(Meteor),
+      smoke_pool:new Pool(Smoke),
+      tarpit_pool:new Pool(TarPit),
 
       spawn:function() {
 
@@ -325,9 +622,17 @@
         if (this.count == this.delay) {
 
           this.count = 0;
-          this.delay = 100 + Math.floor(Math.random() * 200 - 10 * game.speed);
+          this.delay = 100;// + Math.floor(Math.random() * 200 - 10 * game.speed);
 
-          game.object_manager.objects.push(new TarPit(WORLD_WIDTH, WORLD_HEIGHT - TILE_SIZE * 1.75));
+          if (Math.random() > 0.5) {
+
+            this.tarpit_pool.get( {x: WORLD_WIDTH, y:WORLD_HEIGHT - 30} );
+
+          } else {
+
+            this.meteor_pool.get( {x: WORLD_WIDTH * 0.2, y: -32 } );
+
+          }
 
         }
 
@@ -335,21 +640,71 @@
 
       update:function() {
 
-        for (let index = this.objects.length - 1; index > -1; -- index) {
+        for (let index = this.meteor_pool.objects.length - 1; index > -1; -- index) {
 
-          let object = this.objects[index];
+          let meteor = this.meteor_pool.objects[index];
 
-          object.x -= game.speed;
+          meteor.update();
 
-          object.update();
-          object.animation.update();
+          meteor.collideObject(game.player);
 
-          /* Remove the object if it goes off the left side of the screen. */
-          if (object.x + object.width < 0) {
+          meteor.collideWorld();
 
-            this.objects.splice(this.objects.indexOf(object), 1);
+          if (meteor.smoke) {
+
+            meteor.smoke = false;
+
+            let parameters = { x:meteor.x + Math.random() * meteor.width, y:undefined, x_velocity:undefined, y_velocity:undefined };
+
+            if (meteor.grounded) {
+
+              parameters.y = meteor.y + Math.random() * meteor.height * 0.5;
+              parameters.x_velocity = Math.random() * 2 - 1 - game.speed;
+              parameters.y_velocity = Math.random() * -1;
+
+            } else {
+
+              parameters.y = meteor.y + Math.random() * meteor.height;
+              parameters.x_velocity = meteor.x_velocity * Math.random();
+              parameters.y_velocity = meteor.y_velocity * Math.random();
+
+            }
+
+            this.smoke_pool.get(parameters);
 
           }
+
+          if (!meteor.alive) {
+
+            this.meteor_pool.store(meteor);
+
+          };
+
+        }
+
+        for (let index = this.smoke_pool.objects.length - 1; index > -1; -- index) {
+
+          let smoke = this.smoke_pool.objects[index];
+
+          smoke.update();
+
+          smoke.collideWorld();
+
+          if (!smoke.alive) this.smoke_pool.store(smoke);
+
+        }
+
+        for (let index = this.tarpit_pool.objects.length - 1; index > -1; -- index) {
+
+          let tarpit = this.tarpit_pool.objects[index];
+
+          tarpit.update();
+
+          tarpit.collideObject(game.player);
+
+          tarpit.collideWorld();
+
+          if (!tarpit.alive) this.tarpit_pool.store(tarpit);
 
         }
 
@@ -360,23 +715,38 @@
     player: {
 
       alive:true,
-      animation:new Animation([0], 10),
+      animation:new Animation([15], 10),
       jumping:false,
-      height: 32, width: 64,
-      x:0, y:TILE_SIZE * 6 - TILE_SIZE * 0.25,
-      x_velocity:0, y_velocity:0
+      height: 32, width: 56,
+      x:8, y:TILE_SIZE * 6 - TILE_SIZE * 0.25,
+      y_velocity:0,
+
+      reset:function() {
+
+        this.alive = true;
+        this.x = 8;
+
+      },
+
+      update:function() {
+
+        game.player.y_velocity += 0.5;
+        game.player.y += game.player.y_velocity;
+        game.player.y_velocity *= 0.9;
+
+      }
 
     },
 
     reset:function() {
 
-      this.player.alive = true;
-      this.player.jumping = false;
-      this.player.x = 0;
+      this.player.reset();
 
-      this.object_manager.objects = [];
+      this.object_manager.meteor_pool.storeAll();
+      this.object_manager.smoke_pool.storeAll();
+      this.object_manager.tarpit_pool.storeAll();
 
-      this.speed = 2;
+      this.speed = 3;
 
     }
 
