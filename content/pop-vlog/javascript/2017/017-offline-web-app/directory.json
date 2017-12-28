@@ -1,0 +1,6 @@
+{
+
+  "directories": ["ssl"],
+  "files": ["favicon.ico", "manifest.json", "server.js", "web-app-service.js", "web-app.css", "web-app.html", "web-app.png"]
+  
+}

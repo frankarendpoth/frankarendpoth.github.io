@@ -4,33 +4,23 @@
 
   display:grid;
   grid-area:content;
-  grid-template-areas:"tutorial" "link-panels";
-  grid-template-columns:100%;
-  grid-template-rows:auto auto;
-  padding:8px 0;
+  grid-template-columns:auto auto auto auto;
+  grid-auto-rows:auto;
+  width:100%;
 
 }
 
-.tutorial-panel {
+a {
 
-  display:grid;
-  grid-area:tutorial;
-
-}
-
-#link-panels {
-
-  display:grid;
-  grid-area:link-panels;
-  grid-template-columns:1fr 1fr;
+  display:block;
 
 }
 
-@media screen and (max-width:720px) {
+@media screen and (max-width:480px) {
 
-  #link-panels {
+  #content {
 
-    grid-template-columns: auto;
+    grid-template-columns:auto auto;
 
   }
 

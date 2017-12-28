@@ -1,194 +1,158 @@
-// Frank Poth 09/16/2017
+// Frank Poth 12/27/2017
 
-/* FSKit makes it possible to create a directory object from various json files
-which can be used to gain access to files on the client side. The only downside
-to this system is that json files will need to be created in every directory
-you wish to use and those files must list all files and folders you wish to use.
-The upside is that your static site can access files and folders dynamically.
+/* fs-kit is a recursive file loader. It loads JSON files that act as directories
+with lists of files and sub directories inside. In this way, you can manually create
+JSON files that reference files and folders and use them to access your files dynamically
+on a static website. */
 
-directory.json files must look like this:
+/* A JSON directory file has this basic structure:
+
+directory_name.json
+
 {
-  "files":[],
-  "folders":[]
+
+  "directories": ["pictures", "stories", "whatever"],
+  "files":       ["beach.jpg", "notes.txt", "game.exe"]
+
 }
-You can name them anything you want, but they must contain the files and folders
-arrays and be populated with the file and folder names you wish to use.
 
-A directory that utilizes FSKit should look like this:
-
-myfruit
---apples
-----macintosh.txt
-----grannysmith.txt
-----directory.json
---pear.txt
---directory.json
-
-The corresponding directory.json files look like this:
-
-{ "files":["macintosh.txt", "grannysmith.txt"],
-"folders":[] }
-
-{ "files":["pear.txt"],
-"folders":["apples"] }
-
-*/
+You can omit either of these arrays, but it makes sense to have one present. */
 
 var FSKit = function() {};
 
-FSKit.Directory = function(path, files, folders, parent, children) {
+FSKit.Directory = function(path, root, name, files = [], directories = []) {
 
-  this.children = children || null;
-  this.files = files;
-  this.folders = folders;
-  this.parent = parent || null;
-  this.path = path;
-
-};
-
-FSKit.Directory.prototype = {};
-
-FSKit.requestDirectoryHTML = function(path, file_name, callBack) {
-
-  FSKit.requestDirectory(path, file_name, function(directory) {
-
-    var element, fragment, parseDirectory;
-
-    parseDirectory = function(directory, element) {
-
-      for (let index = directory.files.length - 1; index > -1; -- index) {
-
-        element.appendChild(DOMKit.createElement("a", ["href=" + directory.path], directory.files[index]))
-
-      }
-
-    };
-
-    element = DOMKit.createElement("div", undefined, directory.path);
-    fragment = document.createDocumentFragment();
-
-    fragment.appendChild(element);
-
-    parseDirectory(directory, element);
-
-    callBack(fragment);
-
-  });
+  this.files = files;// A potential array of file names.
+  this.name = name;// The name of the directory or the folder name.
+  this.path = path;// The path to this directory.
+  this.root = root;// The parent Directory object of this Directory object.
+  this.directories = directories;// A potential array of subdirectories.
 
 };
 
-/* Request a directory.json file at the specified url and call the callBack,
-handing it the parsed JSON in the directory.json file. */
+FSKit.Directory.prototype = {
 
-FSKit.requestJSON = function(path, file_name, callBack) {
+  constructor:FSKit.Directory,
 
-  AJAXKit.request(path + file_name, "GET", function(request) {
+  /* Gets the topmost directory in the tree whose root is null. */
+  getRoot:function() {
 
-    try {
+    var root = this;
 
-      callBack(JSON.parse(request.responseText));
+    while(root.root != null) {
 
-    } catch(error) {
-
-      callBack({
-
-        files:[],
-        folders:[]
-
-      });
+      root = root.root;
 
     }
 
-  });
+    return root;
+
+  },
+
+  traverse:function(callback) {
+
+    callback(this);
+
+    for (let index = this.directories.length - 1; index > -1; -- index) {
+
+      this.directories[index].traverse(callback);
+
+    }
+
+  }
 
 };
 
-FSKit.requestDirectory = function(path, file_name, callBack) {
+/* Note: all JSON directory files must have the same name, like directory.json.
+path is the path to the root directory.
+callback is the callback function that gets handed the root Directory object. */
+FSKit.requestDirectory = function(path, json_name, callback) {console.log("DIRECTORY REQUESTED");
 
-  var requestDirectory, root, searches;
+  var directories_to_resolve, generateDirectory;
 
-  searches = 1;
+  directories_to_resolve = 0;
 
-  requestDirectory = function(path, file_name, directory) {
+  generateDirectory = function(path, root, name) {
 
-    FSKit.requestJSON(path, file_name, function(json) {
+    var directory = new FSKit.Directory(path, root, name);
 
-      searches --;
+    directories_to_resolve ++;// We just created a directory and it has not yet been resolved.
 
-      directory.files = json.files;
-      directory.folders = json.folders;
+    FSKit.requestJSON(path + json_name, function(json) {// When the JSON directory loads, we can resolve the directory.
+      console.log("generating directory " + path + json_name + "\n    files: " + json.files + " directories: " + json.directories);
+      if (json.directories) {// If the file contains directory names:
 
-      searches += json.folders.length;
+        /* Populate the directory's directories array with new Directory objects. */
+        for (let index = json.directories.length - 1; index > -1; -- index) {
 
-      console.log("Creating Directory: " + directory.path + "\n  folders: " + json.folders.toString() + "\n searches: " + searches);
+          directory.directories[index] = generateDirectory(path + json.directories[index] + "/", directory, json.directories[index]);
 
-      for (let index = 0; index < json.folders.length; ++ index) {
-
-        let folder = json.folders[index] + "/";
-        let child = new FSKit.Directory(directory.path + folder, [], [], directory, []);
-        directory.children[index] = child;
-
-        requestDirectory(path + folder, file_name, child);
+        }
 
       }
 
-      if (searches == 0) {
+      if (json.files) {// If the file contains file names:
 
-        callBack(root);
+        /* Copy all the file names to the directory's files array. */
+        for (let index = json.files.length - 1; index > -1; -- index) {
+
+          directory.files[index] = json.files[index];
+
+        }
+
+      }
+
+      /* Once the directory has been populated, we know it's been resolved. */
+      directories_to_resolve --;
+
+      if (directories_to_resolve == 0) {// When all directories have been resolved:
+
+        console.log("DIRECTORY GRANTED");
+        /* Return the root directory. */
+        callback(directory.getRoot());
 
       }
 
     });
 
+    return directory;// generateDirectory returns the directory it generates.
+
   };
 
-  root =  new FSKit.Directory(path, [], [], null, []);
-
-  requestDirectory(path, file_name, root);
+  /* Since this process involves loading, we cannot return a directory right away.
+  generateDirectory will create a directory tree and when it detects that all directories
+  have been created, it will call the callback function and hand it the root directory. */
+  generateDirectory(path, null, path);
 
 };
 
-FSKit.requestDirectoryHTML = function(path, file_name, callBack) {
+FSKit.requestJSON = function(url, callback) {
 
-  var requestDirectory, root, searches;
+  var readyStateChange, request;
 
-  searches = 1;
+  request = new XMLHttpRequest();
 
-  requestDirectory = function(path, file_name, directory) {
+  readyStateChange = function(event) {
 
-    FSKit.requestJSON(path, file_name, function(json) {
+    if (this.readyState == 4 && this.status == 200) {
 
-      searches --;
+      if (this.responseText) {
 
-      directory.files = json.files;
-      directory.folders = json.folders;
+        callback(JSON.parse(this.responseText));
 
-      searches += json.folders.length;
+      } else {
 
-      console.log("Creating Directory: " + directory.path + "\n  folders: " + json.folders.toString() + "\n searches: " + searches);
-
-      for (let index = 0; index < json.folders.length; ++ index) {
-
-        let folder = json.folders[index] + "/";
-        let child = new FSKit.Directory(directory.path + folder, [], [], directory, []);
-        directory.children[index] = child;
-
-        requestDirectory(path + folder, file_name, child);
+        callback( {} );
 
       }
 
-      if (searches == 0) {
-
-        callBack(root);
-
-      }
-
-    });
+    }
 
   };
 
-  root =  new FSKit.Directory(path, [], [], null, []);
+  request.addEventListener("readystatechange", readyStateChange);
 
-  requestDirectory(path, file_name, root);
+  request.open("GET", url);
+  request.send(null);
 
 };

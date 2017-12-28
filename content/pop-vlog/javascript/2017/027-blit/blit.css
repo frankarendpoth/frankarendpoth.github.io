@@ -1,0 +1,112 @@
+/* Frank Poth 12/26/2017 */
+
+* {
+
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  user-select:none;
+
+}
+
+html {
+
+  height:100%;
+  width:100%;
+
+}
+
+body {
+
+  align-content:space-around;
+  background-color:#202830;
+  color:#ffffff;
+  display:grid;
+  grid-template-columns:auto;
+  grid-template-rows:auto auto auto auto;
+  height:100%;
+  justify-items:center;
+  padding:0 8px;
+  width:100%;
+
+}
+
+div {
+
+  align-content:space-around;
+  display:grid;
+  grid-column-gap:8px;
+  grid-row-gap:8px;
+  grid-template-areas:"input input" "button1 button2" "average1 average2" "output1 output2";
+  grid-template-columns:auto auto;
+  grid-template-rows:auto auto auto auto;
+  min-width:50%;
+
+}
+
+#number-of-tests-input {
+
+  background-color:rgba(0, 0, 0, 0);
+  border:none;
+  color:#ffffff;
+  font-size:1.0em;
+  grid-area:input;
+  text-align:center;
+
+}
+
+#draw-image-button {
+
+  grid-area:button1;
+
+}
+
+#draw-image-average {
+
+  grid-area:average1;
+
+}
+
+#draw-image-output {
+
+  grid-area:output1;
+
+}
+
+#image-data-button {
+
+  grid-area:button2;
+
+}
+
+#image-data-average {
+
+  grid-area:average2;
+
+}
+
+#image-data-output {
+
+  grid-area:output2;
+
+}
+
+.button {
+
+  border-color:#ffffff;
+  border-radius:16px;
+  border-style:solid;
+  border-width:1px;
+  cursor:pointer;
+  padding:4px;
+  text-align:center;
+
+}
+
+.output {
+
+  font-size:1.0em;
+  height:6.0em;
+  overflow-y:auto;
+
+}

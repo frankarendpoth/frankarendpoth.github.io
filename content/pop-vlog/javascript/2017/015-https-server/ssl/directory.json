@@ -1,0 +1,1 @@
+{ "files": ["crt.cnf", "crt.pfx", "csr.cnf", "make-crt.sh", "make-csr.sh", "make-key.sh", "make-pfx.sh"] }

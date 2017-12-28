@@ -1,5 +1,13 @@
 // Frank Poth 12/24/2017
 
+/* This example has a lot packed into it. It has a scrolling tile based background.
+The rightmost column is randomly generated when scrolling. There is animation.
+There is collision detection between all moving objects and the world as well as
+the player and the meteors and tarpits. There is an effect that turns the screen
+red when a meteor spawns using image data. I implement object pooling to avoid using
+"new" to create new objects. Some of this stuff I've covered in old tutorials, and
+some stuff I have not covered. */
+
 (function() { "use strict";
 
   const TILE_SIZE = 16;
@@ -56,6 +64,7 @@
 
   };
 
+  /* A frame just keeps track of a physical position inside the tile sheet for blitting. */
   var Frame = function(x, y, width, height) {
 
     this.height = height;
@@ -65,18 +74,22 @@
 
   };
 
-  Frame.prototype = {};
-
+  /* A Pool object manages objects. The objects array holds all objects that are
+  currently in use, and the pool holds objects that are not in use. By storing objects
+  that would otherwise be deleted, we can reuse them instead of creating totally new
+  instances with the new operator. Recycling saves memory. Do it. */
   var Pool = function(object) {
 
-    this.object = object;
-    this.objects = [];
-    this.pool = [];
+    this.object = object;// The constructor of the object we are pooling.
+    this.objects = [];// The array of objects in use.
+    this.pool = [];// The array of objects not in use.
 
   };
 
   Pool.prototype = {
 
+    /* Get an object from the pool or create a new object. Pool expects objects to
+    have a few basic functions, like reset. */
     get:function(parameters) {
 
       if (this.pool.length != 0) {
@@ -119,19 +132,22 @@
 
   var Meteor = function(x, y) {
 
-    this.alive = true;
+    this.alive = true;// Meteor dies when it goes offscreen.
     this.animation = new Animation(display.tile_sheet.frame_sets[1], 8);
     this.grounded = false;
-    this.smoke = false;
+    this.smoke = false;// smoke values are used for spawning smoke particles.
     this.smoke_count = 0;
     this.smoke_delay = Math.floor(Math.random() * 10 + 5);
     this.height = Math.floor(Math.random() * 16 + 24); this.width = this.height;
     this.x = x; this.y = y - this.height * 0.5;
-    let direction = Math.PI * 1.75 + Math.random() * Math.PI * 0.1;
+    let direction = Math.PI * 1.75 + Math.random() * Math.PI * 0.1;// The trajectory.
     this.x_velocity = Math.cos(direction) * 3; this.y_velocity = -Math.sin(direction) * 3;
 
   };
 
+  /* All game objects are expected to have collideWorld and CollideObject functions,
+  as well as update and reset functions. If this were a strongly typed language, I
+  would be using a base class called GameObject or something. */
   Meteor.prototype = {
 
     constructor:Meteor,
@@ -320,6 +336,8 @@
 
   var controller, display, game;
 
+  /* This is awesome. I can use the same event handler for all mouseup, mousedown,
+  touchstart, and touchend events. This controller works on everything! */
   controller = {
 
     active:false, state:false,
@@ -342,8 +360,7 @@
     buffer:document.createElement("canvas").getContext("2d"),
     context:document.querySelector("canvas").getContext("2d"),
 
-    tint:0,
-    tint_count:0,
+    tint:0,// The red tint value to add to the buffer's red channel when a meteor is on screen.
 
     tile_sheet: {
 
@@ -364,12 +381,13 @@
                   [22,23,24,25,26,27]//dino crisp
 
       ],
-      image:new Image()
+      image:new Image()// The tile sheet image is loaded at the bottom of this file.
 
     },
 
     render:function() {
 
+      // Draw Tiles
       for (let index = game.area.map.length - 1; index > -1; -- index) {
 
         let value = game.area.map[index];
@@ -378,6 +396,12 @@
 
       }
 
+      // Draw distance
+      this.buffer.font = "20px Arial";
+      this.buffer.fillStyle = "#ffffff";
+      this.buffer.fillText(String(Math.floor(game.distance/10)), 10, 20);
+
+      // Draw TarPits
       for (let index = game.object_manager.tarpit_pool.objects.length - 1; index > -1; -- index) {
 
         let tarpit = game.object_manager.tarpit_pool.objects[index];
@@ -388,10 +412,12 @@
 
       }
 
+      // Draw Player
       let frame = this.tile_sheet.frames[game.player.animation.frame_value];
 
       this.buffer.drawImage(this.tile_sheet.image, frame.x, frame.y, frame.width, frame.height, game.player.x, game.player.y, game.player.width, game.player.height);
 
+      // Draw Meteors
       for (let index = game.object_manager.meteor_pool.objects.length - 1; index > -1; -- index) {
 
         let meteor = game.object_manager.meteor_pool.objects[index];
@@ -402,6 +428,7 @@
 
       }
 
+      // Draw Smoke
       for (let index = game.object_manager.smoke_pool.objects.length - 1; index > -1; -- index) {
 
         let smoke = game.object_manager.smoke_pool.objects[index];
@@ -412,26 +439,31 @@
 
       }
 
+      // Draw tint if a meteor is on screen
       if (game.object_manager.meteor_pool.objects.length != 0) {
 
         this.tint = (this.tint < 80) ? this.tint + 1 : 80;
 
-      } else {
+      } else {// Reduce tint otherwise
 
         this.tint = (this.tint > 0) ? this.tint - 2 : 0;
 
       }
 
-      let image_data = this.buffer.getImageData(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-      let data = image_data.data
+      if (this.tint != 0) {// If there is a tint to draw, apply it to the buffer
 
-      for (let index = data.length - 4; index > -1; index -= 4) {
+        let image_data = this.buffer.getImageData(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+        let data = image_data.data
 
-        data[index] += this.tint;
+        for (let index = data.length - 4; index > -1; index -= 4) {
+
+          data[index] += this.tint;
+
+        }
+
+        this.buffer.putImageData(image_data, 0, 0);
 
       }
-
-      this.buffer.putImageData(image_data, 0, 0);
 
       this.context.drawImage(this.buffer.canvas, 0, 0, WORLD_WIDTH, WORLD_HEIGHT, 0, 0, this.context.canvas.width, this.context.canvas.height);
 
@@ -460,6 +492,7 @@
 
   game = {
 
+    distance:0,
     speed:3,
 
     area: {
@@ -476,8 +509,11 @@
             2, 2, 2, 3, 2, 2, 3, 2, 4, 6, 7, 7, 6, 9, 2, 3, 2,
            10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
 
+      /* Takes care of scrolling the background and generating the next column to
+      display on the far right of the map. */
       scroll:function() {
 
+        game.distance += game.speed;
         this.offset += game.speed;
         if (this.offset >= TILE_SIZE) {
 
@@ -492,6 +528,9 @@
 
           }
 
+          /* This next part replaces the grass with an appropriate grass tile. I
+          made it a bit more complex than it needed to be, but the tiles actually
+          reconcile their edges with the tile directly to the left. */
           this.map.splice(this.columns * 7, 1);
 
           let right_index = this.columns * 8 - 1;
@@ -508,6 +547,8 @@
 
           this.map.splice(right_index, 0, value);
 
+          // The last row stays the same. It's just dirt.
+
         }
 
       }
@@ -516,12 +557,20 @@
 
     engine: {
 
-      afrequest:undefined,
+      /* Fixed time step game loop!! */
+      afrequest:undefined,// animation frame request reference
       accumulated_time:window.performance.now(),
-      time_step:1000/60,
+      time_step:1000/60,// update rate
 
       loop:function(time_stamp) {
 
+        /* How easy does this look? This is a fixed step loop with frame dropping.
+        Amazingly it's super simple and only a few lines. This will make your game
+        run at the same speed on all devices. Now that I look at it, I think there
+        may be a better way to implement this because entire frames can be dropped
+        without updating or rendering. Rather than fixing this now, I will just leave it.
+        Ideally, I would utilize the free time and not do both updates and renderings
+        at the same time unless I have to... Another day... This does work fine, though. */
         if (time_stamp >= game.engine.accumulated_time + game.engine.time_step) {
 
           if (time_stamp - game.engine.accumulated_time >= game.engine.time_step * 4) {
@@ -546,13 +595,13 @@
 
       },
 
-      start:function() {
+      start:function() {// Start the game loop.
 
         this.afrequest = window.requestAnimationFrame(this.loop);
 
       },
 
-      update:function() {
+      update:function() {// Update the game logic.
 
         /* Slowly increase speed and cap it when it gets too high. */
         game.speed = (game.speed >= TILE_SIZE * 0.5)? TILE_SIZE * 0.5 : game.speed + 0.001;
@@ -562,7 +611,7 @@
 
         if (game.player.alive) {
 
-          if (controller.active && !game.player.jumping) {
+          if (controller.active && !game.player.jumping) {// Get user input
 
             controller.active = false;
             game.player.jumping = true;
@@ -579,7 +628,7 @@
 
           game.player.update();
 
-          if (game.player.y > TILE_SIZE * 6 - TILE_SIZE * 0.25) {
+          if (game.player.y > TILE_SIZE * 6 - TILE_SIZE * 0.25) {// Collide with floor
 
             controller.active = false;
             game.player.y = TILE_SIZE * 6 - TILE_SIZE * 0.25;
@@ -606,6 +655,7 @@
 
     },
 
+    /* Manages all non player objects. */
     object_manager: {
 
       count:0,
@@ -624,6 +674,7 @@
           this.count = 0;
           this.delay = 100;// + Math.floor(Math.random() * 200 - 10 * game.speed);
 
+          /* Pick randomly between tarpits and meteors */
           if (Math.random() > 0.5) {
 
             this.tarpit_pool.get( {x: WORLD_WIDTH, y:WORLD_HEIGHT - 30} );
@@ -740,8 +791,10 @@
 
     reset:function() {
 
+      this.distance = 0;
       this.player.reset();
 
+      /* Put all of our objects away. */
       this.object_manager.meteor_pool.storeAll();
       this.object_manager.smoke_pool.storeAll();
       this.object_manager.tarpit_pool.storeAll();
