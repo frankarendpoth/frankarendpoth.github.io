@@ -399,7 +399,7 @@ some stuff I have not covered. */
       // Draw distance
       this.buffer.font = "20px Arial";
       this.buffer.fillStyle = "#ffffff";
-      this.buffer.fillText(String(Math.floor(game.distance/10)), 10, 20);
+      this.buffer.fillText(String(Math.floor(game.distance/10) + " / " + Math.floor(game.max_distance/10)), 10, 20);
 
       // Draw TarPits
       for (let index = game.object_manager.tarpit_pool.objects.length - 1; index > -1; -- index) {
@@ -493,6 +493,7 @@ some stuff I have not covered. */
   game = {
 
     distance:0,
+    max_distance:0,
     speed:3,
 
     area: {
@@ -514,6 +515,9 @@ some stuff I have not covered. */
       scroll:function() {
 
         game.distance += game.speed;
+
+        if (game.distance > game.max_distance) game.max_distance = game.distance;
+
         this.offset += game.speed;
         if (this.offset >= TILE_SIZE) {
 

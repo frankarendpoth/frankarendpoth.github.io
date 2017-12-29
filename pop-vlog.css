@@ -2,10 +2,14 @@
 
 #content {
 
+  align-items:space-around;
   display:grid;
   grid-area:content;
-  grid-template-columns:auto auto auto auto;
+  grid-template-columns:auto auto auto;
+  grid-row-gap:8px;
   grid-auto-rows:auto;
+  justify-content:space-around;
+  padding:8px;
   width:100%;
 
 }
@@ -13,6 +17,9 @@
 a {
 
   display:block;
+  font-size:1.5em;
+  font-weight:bold;
+  text-decoration:none;
 
 }
 
@@ -20,7 +27,7 @@ a {
 
   #content {
 
-    grid-template-columns:auto auto;
+    grid-template-columns:auto;
 
   }
 
