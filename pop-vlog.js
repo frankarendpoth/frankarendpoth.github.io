@@ -12,7 +12,7 @@
 
         if (dir.files[index].split(".")[1] == "html") {
 
-          content.appendChild(DOMKit.createElement("a", ["href=" + dir.path + "/" + dir.files[index]], dir.name));
+          content.appendChild(DOMKit.createElement("a", ["href=" + dir.path + dir.files[index]], dir.name));
 
         }
 

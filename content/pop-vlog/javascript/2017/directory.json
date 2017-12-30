@@ -26,6 +26,7 @@
                   "024-load-image",
                   "025-animation",
                   "026-dino",
-                  "027-blit"]
+                  "027-blit",
+                  "028-calculator"]
 
 }
