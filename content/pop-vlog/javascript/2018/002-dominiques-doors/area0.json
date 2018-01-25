@@ -1,0 +1,15 @@
+{
+
+  "message":"~The Tiny Closet~",
+  "background_color":"#052623",
+  "floor":62,
+  "height":64,
+  "width":128,
+
+  "doors":[
+
+    { "area":"area1.json", "x":48, "new_x":112 }
+
+  ]
+
+}

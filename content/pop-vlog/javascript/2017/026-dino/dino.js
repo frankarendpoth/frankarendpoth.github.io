@@ -453,7 +453,7 @@ some stuff I have not covered. */
       if (this.tint != 0) {// If there is a tint to draw, apply it to the buffer
 
         let image_data = this.buffer.getImageData(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-        let data = image_data.data
+        let data = image_data.data;
 
         for (let index = data.length - 4; index > -1; index -= 4) {
 

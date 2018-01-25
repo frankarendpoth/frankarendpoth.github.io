@@ -2,6 +2,9 @@
 
 (function() {
 
+  const ip = process.env.MY_IP || "127.0.0.1";
+  const port = process.env.MY_PORT || "3000";
+
   var fs, https, mimetypes, options, path, server;
 
   fs = require("fs"); // file system
@@ -76,10 +79,10 @@
 
   });
 
-  server.listen("2468", "192.168.0.101", function() {
+  server.listen(port, ip, function() {
 
-    console.log("Server started at 192.168.0.101:2468!");
+    console.log("Server started at " + ip + ":" + port + "!");
 
-  }); // listen on 192.168.0.101:2468
+  });
 
 })();

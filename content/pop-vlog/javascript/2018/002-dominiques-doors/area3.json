@@ -1,0 +1,15 @@
+{
+
+  "message":"~The Passageway~",
+  "background_color":"#148977",
+  "floor":60,
+  "height":64,
+  "width":200,
+
+  "doors":[
+
+    { "area":"area1.json", "x":16, "new_x":176 }
+
+  ]
+
+}

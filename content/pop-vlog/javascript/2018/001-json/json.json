@@ -1,0 +1,13 @@
+{
+
+  "array":["apple", "sandwich", 2, "a dog"],
+  "number":4,
+  "string":"Hello, I'm a string!",
+
+  "object": {
+
+    "string":"I'm a string from inside a JSON object!"
+
+  }
+
+}

@@ -1,0 +1,17 @@
+{
+
+  "message":"~The Main Lobby~",
+  "background_color":"#003333",
+  "floor":120,
+  "height":128,
+  "width":256,
+
+  "doors":[
+
+    { "area":"area2.json", "x":48, "new_x":48 },
+    { "area":"area0.json", "x":112, "new_x":48 },
+    { "area":"area3.json", "x":176, "new_x":16 }
+
+  ]
+
+}
