@@ -1,0 +1,9 @@
+4. If you are planning to build a static website and want a simple paginator
+to help your users view photos or links, this paginator will work well. Keep in
+mind that it requires far more maintenance than a dynamic server. You will have
+to update the list of files to cycle through anytime you add new content you want
+to paginate to your website. If you are building a website that gets frequent updates, you
+should seriously consider a hosting service that supports NodeJS. NodeJS is an easy
+to learn and use backend scripting language that writes like JavaScript. Of course
+there are many great server languages to choose from, but NodeJS is a natural fit
+for front end developers who want to write a simple server with minimal overhead.

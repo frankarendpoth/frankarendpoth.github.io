@@ -225,7 +225,10 @@ frame sets. */
     where to cut your image from the sprite sheet. It's the same technique used
     for cutting tiles out of a tile sheet. Here I have a very easy implementation
     set up because my sprite sheet is only a single row. */
-    buffer.drawImage(sprite_sheet.image, player.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, player.x, player.y, SPRITE_SIZE, SPRITE_SIZE);
+
+    /* 02/07/2018 I added Math.floor to the player's x and y positions to eliminate
+    antialiasing issues. Take out the Math.floor to see what I mean. */
+    buffer.drawImage(sprite_sheet.image, player.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(player.x), Math.floor(player.y), SPRITE_SIZE, SPRITE_SIZE);
 
     display.drawImage(buffer.canvas, 0, 0, buffer.canvas.width, buffer.canvas.height, 0, 0, display.canvas.width, display.canvas.height);
 

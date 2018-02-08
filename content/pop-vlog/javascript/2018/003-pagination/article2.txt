@@ -1,0 +1,9 @@
+2. Pagination is used in many applications, perhaps without you even knowing it. If
+you have used a search engine recently, you have used a web page employing pagination.
+Search results are broken up into 10 to 20 items per page and at the bottom of that
+page there is usually a small navigator bar that you can use to view the next set
+of results if you wish to do so. Many paginators also allow the user to select a
+specific page within several pages of the currently loaded content. Some paginators
+allow the user to input a specific page manually with the keyboard. Another common
+feature of pagination is to allow the user to specify how many results are loaded
+per page.

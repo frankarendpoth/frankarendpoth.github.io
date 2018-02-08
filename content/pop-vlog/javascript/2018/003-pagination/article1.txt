@@ -1,0 +1,6 @@
+1. Pagination is a verb. To paginate content one must break that content into smaller
+groups. For instance, if I had a database with 1,000 items in it and wanted to display
+them to clients via a web page, I could make viewing the items more manageable by
+breaking up the 1,000 items into groups of 10, 20, 50 or even 100. The
+practice of breaking large chunks of data into smaller, more manageable groups for
+viewing is known as pagination.

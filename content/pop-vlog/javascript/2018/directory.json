@@ -1,5 +1,8 @@
 {
 
-  "directories":["001-json", "002-dominiques-doors"]
+  "directories":[
+    "001-json",
+    "002-dominiques-doors",
+    "003-pagination"]
 
 }

@@ -1,0 +1,10 @@
+3. The most common use case of pagination is to organize search results requested from
+a database. Good examples of this are sites like Ebay and Craigslist. Social media
+sites like Facebook and Twitter also use a type of pagination to limit the number
+of results loaded per page in their news feeds or especially in photo albums. Because
+this example is written for a static web server, it cannot access server side databases,
+making it rather uncommon. Some good uses for a static paginator are: photo albums,
+articles for blog sites, and custom links inside of a personal portfolio. Ambitious
+static site builders might even implement a search engine for their static website.
+Keep in mind, doing any of this on a static website requires a lot of additional
+overhead and maintenance for things that can be done easily with a dynamic server.

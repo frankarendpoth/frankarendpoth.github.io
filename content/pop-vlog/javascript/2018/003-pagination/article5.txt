@@ -1,0 +1,7 @@
+5. Your static site can greatly benefit from AJAX and the XMLHttpRequest. This paginator
+relies entirely on XMLHttpRequest to communicate with the static file server. Luckily,
+if you are building a static site and want dynamic content, a static file server
+will allow you to use AJAX to request files. Any free hosting site will offer this
+functionality, so you can use AJAX to create awesome tools like this paginator for
+your static site. To further improve the functionality of your static website, you
+can use things like service workers and Indexed DB to give your users a great experience.
