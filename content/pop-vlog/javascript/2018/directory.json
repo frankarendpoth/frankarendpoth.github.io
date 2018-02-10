@@ -3,6 +3,8 @@
   "directories":[
     "001-json",
     "002-dominiques-doors",
-    "003-pagination"]
+    "003-pagination",
+    "004-tile-graphics",
+    "005-pre-scaling-graphics"]
 
 }

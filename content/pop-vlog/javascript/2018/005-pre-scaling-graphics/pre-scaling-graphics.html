@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <link href = "pre-scaling-graphics.css" rel = "stylesheet" type = "text/css">
+
+    <meta name = "viewport" content = "width=device-width">
+    <meta name = "description" content = "This example shows how to increase drawing efficiency by pre scaling your graphics.">
+
+    <title>PoP Vlog - Pre-scaling-graphics</title>
+
+  </head>
+
+  <body>
+
+    <h1>PoP Vlog<br>Pre-Scaling Graphics</h1>
+
+    <canvas></canvas>
+
+    <p>This application creates an array of graphics scaled up from their original
+       size every time the screen is resized. This eliminates the need to scale
+       on future redraws. If I redrew the screen at 60fps, I would avoid scaling
+       60 times per second! That's a huge performance gain! In addition, by storing
+       each tile graphic in its own canvas element, I eliminate texture bleeding
+       upon scaling the image. Texture bleeding occurs when an image is scaled and
+       a pixel needs to be colored based on its neighbors. In a tile sheet, you
+       don't want colors from one tile image bleeding into a neighboring tile image.
+       In addition, this approach eliminates the chance of poor edge reconciliation
+       due to rounding errors and/or antialiasing at tile edges giving the appearance
+       of "gutters" or borders between tiles that should not be there.</p>
+
+    <script src = "pre-scaling-graphics.js" type = "text/javascript"></script>
+
+  </body>
+
+</html>
