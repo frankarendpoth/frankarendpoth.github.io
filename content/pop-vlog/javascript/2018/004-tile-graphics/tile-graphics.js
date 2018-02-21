@@ -52,7 +52,7 @@ tile map. The buffer canvas is then blitted to the display canvas. */
         /* This is the x and y location at which to draw the tile image we are cutting
         from the tile_sheet.image to the buffer canvas. */
         var destination_x = (index % world.columns) * this.tile_sheet.tile_width;
-        var destination_y = Math.floor(index / world.columns) * this.tile_sheet.tile_width;
+        var destination_y = Math.floor(index / world.columns) * this.tile_sheet.tile_height;
 
         /* Draw the tile image to the buffer. The width and height of the tile is taken from the tile_sheet object. */
         this.buffer.drawImage(this.tile_sheet.image, source_x, source_y, this.tile_sheet.tile_width, this.tile_sheet.tile_height, destination_x, destination_y, this.tile_sheet.tile_width, this.tile_sheet.tile_height);
