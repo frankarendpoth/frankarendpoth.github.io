@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <link href = "rabbit-trap.css" rel = "stylesheet" type = "text/css">
+    <title>Rabbit Trap</title>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <!-- Since Rabbit Trap is a multi-part series and I didn't feel like writing
+    html and css for every single part, I decided to dynamically add the appropriate
+    js file containing the game logic for each part based on url parameters. -->
+    <script type = "text/javascript">
+
+      let sources = ["controller-", "display-", "game-", "engine-", "main-"];
+      let part = String(window.location).split("?")[1];
+
+      switch(part) {
+
+        case "01": case "02": break;
+        default:
+          part = "01";
+
+      }
+
+      for (let index = 0; index < sources.length; index ++) {
+
+        let script = document.createElement("script");
+        script.setAttribute("type", "text/javascript");
+        script.setAttribute("src", String(part + "/" + sources[index] + part + ".js"));
+        document.head.appendChild(script);
+
+      }
+
+    </script>
+
+  </body>
+
+</html>

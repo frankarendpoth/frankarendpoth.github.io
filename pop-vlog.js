@@ -10,7 +10,9 @@
 
       for (let index = dir.files.length - 1; index > -1; -- index) {
 
-        if (dir.files[index].split(".")[1] == "html") {
+        let extension = dir.files[index].split(".")[1];
+        extension = extension.split("?")[0];
+        if (extension == "html") {
 
           content.appendChild(DOMKit.createElement("a", ["href=" + dir.path + dir.files[index]], dir.name));
 

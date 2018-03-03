@@ -1,0 +1,17 @@
+/* Frank Poth 02/28/2018 */
+
+* { box-sizing:border-box; margin:0; padding:0; }
+
+html { height:100%; width:100%; }
+
+body {
+
+  align-content:center;
+  align-items:space-around;
+  background-color:#202830;
+  display:grid;
+  justify-items:center;
+  height:100%;
+  width:100%;
+
+}

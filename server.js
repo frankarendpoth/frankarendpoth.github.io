@@ -55,6 +55,9 @@
     is www.coolsite.com, then __dirname is www.coolsite.com. When you put it all
     together it looks like www.coolsite.com/index.html or whatever the requested
     url is */
+
+    request.url = request.url.split("?")[0];
+
     fs.readFile(__dirname + "/" + request.url, function(error, content) {
 
       if (error) { // if there is an error reading the requested url
