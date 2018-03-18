@@ -1,0 +1,6 @@
+{
+
+  "01":["01/controller-01.js", "01/display-01.js", "01/engine-01.js", "01/game-01.js", "01/main-01.js"],
+  "02":["02/controller-02.js", "02/display-02.js", "01/engine-01.js", "02/game-02.js", "02/main-02.js"]
+
+}

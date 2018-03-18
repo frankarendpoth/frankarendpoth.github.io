@@ -1,0 +1,41 @@
+
+Hey, guys, my name is Frank and THIS is the Poth on Programming Video Log.
+
+Today I'm covering Part 2 of how to make a tile based platforming game using pure
+HTML5 and JavaScript! Today's video is going to be on adding a player object to
+the screen and controlling him with the keyboard. This is a vital component of any
+game, so stay tuned to find out how it's done!
+
+
+
+IN THIS VIDEO, I'm going to talk about the example program, what it does, and how
+the program has changed since part 1. Then I'm going to show you the specific code
+that handles creating the player, controlling him, and drawing everything to the screen.
+Finally, I'm going to show you my implementation of a fixed time step game loop and
+how it works.
+
+If you have any comments or questions, POST 'EM! And if at any point while you're
+watching this video you get the sensation that you're learning, be sure to support
+this video with a like!
+
+Intro
+Bullets
+
+ a. What this example does and how it's changed since part 1
+ b. Defining the player and world in game
+ c. Controlling the player
+ d. Drawing the player
+ e. engine
+
+Conclusion
+
+In this video I showed you how to lay the groundwork for any platforming game.
+So far I've implemented keyboard input, simple platforming physics, scaling for
+multiple devices, and a fixed time step game loop to handle updating your game at
+a consistent rate no matter what device it's on, which is perhaps the most important
+thing you can take away from this video.
+
+If you want to learn more about this example, check out the source code and working
+example that I have linked in the video description, and if you want to see more,
+subscribe to my channel and I'll keep the code coming. Until then, thanks for watching
+and have a good one!

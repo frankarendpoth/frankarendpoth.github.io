@@ -10,6 +10,7 @@ smooth on slower devices rather than freezing or lagging to the point of unplaya
 
 const Engine = function(time_step, update, render) {
 
+  this.accumulated_time        = 0;// Amount of time that's accumulated since the last update.
   this.animation_frame_request = undefined,// reference to the AFR
   this.time                    = undefined,// The most recent timestamp of loop execution.
   this.time_step               = time_step,// 1000/30 = 30 frames per second
