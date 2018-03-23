@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <title>Embed SWF</title>
+
+  </head>
+
+  <body>
+
+    <script type = "text/javascript">
+
+      let url = String(window.location).split("?")[1];
+
+      let embed = document.createElement("embed");
+      embed.setAttribute("src", url);
+
+      document.body.appendChild(embed);
+
+    </script>
+
+  </body>
+
+</html>

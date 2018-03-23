@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <script src = "library/dom-kit.js" type = "text/javascript"></script>
+    <script src = "library/fs-kit.js" type = "text/javascript"></script>
+    <title>Frank Poth's SWFs</title>
+
+  </head>
+
+  <body>
+
+    <p>These are ShockWaveFlash files that can be run using Adobe's Flash Player.</p>
+    <p>These things are old.</p>
+
+    <div id = "content"></div>
+
+    <script type = "text/javascript">
+
+      (function() {
+
+        var content = document.getElementById("content");
+
+        FSKit.requestDirectory("content/actionscript/", "directory.json", function(directory) {
+
+          directory.traverse(function(dir) {
+
+            for (let index = dir.files.length - 1; index > -1; -- index) {
+
+              let extension = dir.files[index].split(".")[1];
+              extension = extension.split("?")[0];
+              if (extension == "swf") {
+
+                content.appendChild(DOMKit.createElement("a", ["href=swf-embedded.html?" + dir.path + dir.files[index]], dir.files[index]));
+                content.appendChild(DOMKit.createElement("br", []));
+
+              }
+
+            }
+
+          });
+
+        });
+
+      })();
+
+    </script>
+
+  </body>
+
+</html>
