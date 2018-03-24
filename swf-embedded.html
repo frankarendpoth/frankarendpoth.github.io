@@ -6,6 +6,13 @@
 
     <title>Embed SWF</title>
 
+    <style>
+
+      html { height:100%; width:100%; }
+      body { height:100%; width:100%; }
+
+    </style>
+
   </head>
 
   <body>
@@ -16,6 +23,8 @@
 
       let embed = document.createElement("embed");
       embed.setAttribute("src", url);
+      embed.setAttribute("height", "100%");
+      embed.setAttribute("width", "100%");
 
       document.body.appendChild(embed);
 
