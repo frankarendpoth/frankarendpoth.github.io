@@ -66,7 +66,7 @@ FSKit.Directory.prototype = {
 /* Note: all JSON directory files must have the same name, like directory.json.
 path is the path to the root directory.
 callback is the callback function that gets handed the root Directory object. */
-FSKit.requestDirectory = function(path, json_name, callback) {console.log("DIRECTORY REQUESTED");
+FSKit.requestDirectory = function(path, json_name, callback) {//console.log("DIRECTORY REQUESTED");
 
   var directories_to_resolve, generateDirectory;
 
@@ -79,7 +79,7 @@ FSKit.requestDirectory = function(path, json_name, callback) {console.log("DIREC
     directories_to_resolve ++;// We just created a directory and it has not yet been resolved.
 
     FSKit.requestJSON(path + json_name, function(json) {// When the JSON directory loads, we can resolve the directory.
-      console.log("generating directory " + path + json_name + "\n    files: " + json.files + " directories: " + json.directories);
+      //console.log("generating directory " + path + json_name + "\n    files: " + json.files + " directories: " + json.directories);
       if (json.directories) {// If the file contains directory names:
 
         /* Populate the directory's directories array with new Directory objects. */
@@ -107,7 +107,7 @@ FSKit.requestDirectory = function(path, json_name, callback) {console.log("DIREC
 
       if (directories_to_resolve == 0) {// When all directories have been resolved:
 
-        console.log("DIRECTORY GRANTED");
+        //console.log("DIRECTORY GRANTED");
         /* Return the root directory. */
         callback(directory.getRoot());
 

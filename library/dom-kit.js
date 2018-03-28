@@ -12,7 +12,7 @@ DOMKit.createElement = function(tag_name, attributes, content) {
 
     DOMKit.setAttributes(element, attributes);
   }
-  
+
   if (content) {
 
     element.innerHTML = content;
@@ -20,6 +20,41 @@ DOMKit.createElement = function(tag_name, attributes, content) {
   }
 
   return element;
+
+};
+
+DOMKit.maintainAspectRatio = function(element, aspect_ratio = 1) {
+
+  element.style.height = Math.floor(element.clientWidth * aspect_ratio) + "px";
+  console.log("first call: w " + element.clientWidth + ", h " + element.clientHeight);
+
+};
+
+DOMKit.parseHTMLString = function(string) {
+
+  let fragment = document.createDocumentFragment();
+  //fragment.content = string;
+
+  return fragment;
+
+};
+
+// created 03/27/2018
+DOMKit.replaceCurrentScript = function(element) {
+
+  let script = document.currentScript;
+
+  script.parentNode.replaceChild(element, script);
+
+  return element;
+
+};
+
+DOMKit.replaceElement = function(element, new_element) {
+
+  element.parentNode.replaceChild(new_element, element);
+
+  return new_element;
 
 };
 

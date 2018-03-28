@@ -1,0 +1,10 @@
+/* Frank Poth 03/27/2018 */
+
+#links {
+
+  display:grid;
+  grid-template-columns:auto auto;
+  height:100%;
+  width:100%;
+
+}

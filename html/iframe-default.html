@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <style>
+
+      * {
+
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+
+      }
+
+      html, body {
+
+        height:100%;
+        width:100%;
+
+      }
+
+      body {
+
+        align-content:center;
+        color:#ffffff;
+        cursor:pointer;
+        background-color:#405060;
+        display:grid;
+        justify-content:center;
+        user-select:none;
+
+      }
+
+    </style>
+
+    <script src = "../library/dom-kit.js" type = "text/javascript"></script>
+
+  </head>
+
+  <body>
+
+    <h1>Click Me!</h1>
+
+    <script type = "text/javascript">
+
+      (() => {
+
+        window.addEventListener("click", (event) => {
+
+          DOMKit.replaceElement(this.frameElement, DOMKit.createElement("iframe", ["src="+this.frameElement.dataset.src2]));
+
+        }, { once:true });
+
+      })();
+
+    </script>
+
+  </body>
+
+</html>

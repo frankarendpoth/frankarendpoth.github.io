@@ -34,27 +34,16 @@
 
   };
 
-  // Start a secure server that uses the credentials in ssl/crt.pfx
   server = https.createServer(options, function(request, response) {
 
-    /* When requesting the homepage of a website, we usually only type
-    www.mysite.com, but the server returns www.mysite.com/index.html. To make
-    it easier for users to access our site, we add "/index.html" to their url
-    so the user doesn't have to type out the whole address of our home page. */
+    console.log(request.url);
 
-    // If the url is empty
     if (request.url == "" || request.url == "/") {
 
       // The user is requesting the home page of the website, so give it to them
       request.url = "index.html";
 
     }
-
-    // Next we read the file at the requested url and write it to the document.
-    /* __dirname is just the base directory of your website, so if your website
-    is www.coolsite.com, then __dirname is www.coolsite.com. When you put it all
-    together it looks like www.coolsite.com/index.html or whatever the requested
-    url is */
 
     request.url = request.url.split("?")[0];
 
