@@ -1,6 +1,6 @@
 /* Frank Poth 03/27/2018 */
 
-* { border:none; box-sizing:border-box; margin:0; padding:0; text-align:center; word-break:break-word; word-wrap:break-word; }
+* { border:none; box-sizing:border-box; margin:0; padding:0; word-break:break-word; word-wrap:break-word; }
 
 html { height: 100%; width:100%; }
 
@@ -27,4 +27,4 @@ a {
 
 }
 
-h1 { color:#0080f0; font-weight:800; font-size:3.0em; }
+h1 { color:#0080f0; font-weight:800; font-size:3.0em; text-align:center; }
