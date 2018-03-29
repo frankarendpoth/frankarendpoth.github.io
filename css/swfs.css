@@ -4,11 +4,9 @@ p { max-width:480px; text-align:justify; }
 
 #content {
 
-  align-items:space-around;
+  align-content:space-around;
   display:grid;
   grid-template-columns:auto auto;
-  height:100%;
   justify-content:space-around;
-  width:100%;
 
 }
