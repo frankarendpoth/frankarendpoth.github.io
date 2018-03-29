@@ -25,8 +25,42 @@ DOMKit.createElement = function(tag_name, attributes, content) {
 
 DOMKit.maintainAspectRatio = function(element, aspect_ratio = 1) {
 
-  element.style.height = Math.floor(element.clientWidth * aspect_ratio) + "px";
-  console.log("first call: w " + element.clientWidth + ", h " + element.clientHeight);
+  let height = element.parentNode.clientHeight;
+  let width  = element.parentNode.clientWidth;
+  let max_height = document.documentElement.clientHeight;
+  let max_width  = document.documentElement.clientWidth;
+  let parent_ratio = height / width;
+  let max_ratio = max_height / max_width;
+
+  if (parent_ratio - max_ratio > aspect_ratio) {
+
+    if (parent_ratio > aspect_ratio) {
+
+      element.style.height = String(width * aspect_ratio) + "px";
+      element.style.width  = width + "px";
+
+    } else {
+
+      element.style.height = height + "px";
+      element.style.width  = String(height / aspect_ratio) + "px";
+
+    }
+
+  } else {
+
+    if (max_ratio > aspect_ratio) {
+
+      element.style.height = String(max_width * aspect_ratio) + "px";
+      element.style.width  = max_width + "px";
+
+    } else {
+
+      element.style.height = max_height + "px";
+      element.style.width  = String(max_height / aspect_ratio) + "px";
+
+    }
+
+  }
 
 };
 

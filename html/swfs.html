@@ -20,15 +20,16 @@
   <body>
 
     <h1>Shockwave Flash Files</h1>
+
     <p>These are ActionScript programs that I wrote around 2015 and 2016. ActionScript was a very popular language that allowed developers to embed interactive content into HTML. With the advent of HTML5, ActionScript has become obsolete. You may not even have browser support to run these programs. Keep in mind that most of these programs are just components of larger programs, so they may not make sense to you right away. Some of my favorites are: Toader, Roids, Soulflight, Multipath, and Rain2. If you play Toader, be sure to maximize the screen with the button in the bottom corner.</p>
 
-    <div id = "content"></div>
+    <div id = "links"></div>
 
     <script type = "text/javascript">
 
       (function() {
 
-        var content = document.getElementById("content");
+        var links = document.getElementById("links");
 
         FSKit.requestDirectory("../content/actionscript/", "directory.json", function(directory) {
 
@@ -40,7 +41,7 @@
               extension = extension.split("?")[0];
               if (extension == "swf") {
 
-                content.appendChild(DOMKit.createElement("a", ["href=swf-embedded.html?" + dir.path + dir.files[index]], dir.files[index]));
+                links.appendChild(DOMKit.createElement("a", ["href=swf-embedded.html?" + dir.path + dir.files[index]], dir.files[index]));
 
               }
 

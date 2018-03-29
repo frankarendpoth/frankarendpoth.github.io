@@ -1,9 +1,10 @@
 // Frank Poth 03/23/2018
 
-/* I moved some generic functions to the Display.prototype.
-I created the Display.TileSheet class, which handles the tile sheet image and its
-dimensions.
-I got rid of the drawRectangle function and replaced it with the drawPlayer function. */
+/* I changed a few small things since part 3. First, I got rid of my tile value
+offset when drawing tiles from the game object's map. Each value used to be offset
+by 1 due to the export format of my tile map editor. I also changed the rounding
+method in the drawPlayer function from Math.floor to Math.round to better represent
+where the player is actually standing. */
 
 const Display = function(canvas) {
 
@@ -32,9 +33,9 @@ const Display = function(canvas) {
   this.drawPlayer = function(rectangle, color1, color2) {
 
     this.buffer.fillStyle = color1;
-    this.buffer.fillRect(Math.floor(rectangle.x), Math.floor(rectangle.y), rectangle.width, rectangle.height);
+    this.buffer.fillRect(Math.round(rectangle.x), Math.round(rectangle.y), rectangle.width, rectangle.height);
     this.buffer.fillStyle = color2;
-    this.buffer.fillRect(Math.floor(rectangle.x + 2), Math.floor(rectangle.y + 2), rectangle.width - 4, rectangle.height - 4);
+    this.buffer.fillRect(Math.round(rectangle.x + 2), Math.round(rectangle.y + 2), rectangle.width - 4, rectangle.height - 4);
 
   };
 
