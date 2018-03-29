@@ -4,7 +4,7 @@ function ClickForIframe() {}
 
 ClickForIframe.replaceCurrentScript = function(source, width, aspect_ratio = 0.5625) {
 
-  var div = DOMKit.replaceCurrentScript(DOMKit.createElement("div", ["style=align-content:center;display:grid;justify-content:center;width:" + width + ";"], "<p style=\"font-size:3.0em;\">click for iframe</p>"));
+  var div = DOMKit.replaceCurrentScript(DOMKit.createElement("div", ["style=align-content:center;border-color:#202830;border-style:solid;border-width:2px;display:grid;justify-content:center;width:" + width + ";"], "<p style=\"color:#202830;cursor:pointer;font-size:2.0em;user-select:none;\">Click For iFrame</p>"));
 
   div.addEventListener("click", function(event) {
 
