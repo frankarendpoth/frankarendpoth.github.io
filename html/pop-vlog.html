@@ -29,22 +29,64 @@
 
     <div id = "links"></div>
 
-    <script src = "../js/pop-vlog.js" type = "text/javascript"></script>
-
     <script type = "text/javascript">
 
-      window.addEventListener("resize", function(event) {
+      (() => { document.body.style.display = "none";
 
-        var resize_event = new Event("resize");
-        var elements = document.getElementsByTagName("*");
+        var links = document.getElementById("links");
 
-        for (let index = elements.length - 1; index > -1; -- index) {
+        FSKit.requestDirectory("../content/pop-vlog/javascript/", "directory.json", function(directory) {
 
-          elements[index].dispatchEvent(resize_event);
+          directory.traverse(function(dir) {
 
-        }
+            for (let index = dir.files.length - 1; index > -1; -- index) {
 
-      });
+              let extension = dir.files[index].split(".")[1];
+              extension = extension.split("?")[0];
+              if (extension == "html") {
+
+                links.appendChild(DOMKit.createElement("a", ["href=" + dir.path + dir.files[index]], dir.name));
+
+              }
+
+            }
+
+          });
+
+          var resize_event = new Event("resize");
+          var elements = document.getElementsByTagName("*");
+
+          for (let index = elements.length - 1; index > -1; -- index) {
+
+            elements[index].dispatchEvent(resize_event);
+
+          }
+
+          document.body.style.display = "grid";
+          window.scrollTo(0, window.sessionStorage.getItem("pop-vlog-scrollY"));
+
+        });
+
+        window.addEventListener("resize", function(event) {
+
+          var resize_event = new Event("resize");
+          var elements = document.getElementsByTagName("*");
+
+          for (let index = elements.length - 1; index > -1; -- index) {
+
+            elements[index].dispatchEvent(resize_event);
+
+          }
+
+        });
+
+        window.addEventListener("beforeunload", function(event) {
+
+          window.sessionStorage.setItem("pop-vlog-scrollY", window.scrollY);
+
+        });
+
+      })();
 
     </script>
 

@@ -8,10 +8,11 @@ body {
 
   align-content:space-around;
   align-items:center;
+  background:linear-gradient(to bottom, #ffffff, #dfefff) fixed;
+  background-size:cover;
   display:grid;
   grid-row-gap:16px;
   grid-template-columns:100%;
-  grid-template-rows:auto auto auto;
   justify-content:center;
   justify-items:center;
   min-height:100%;

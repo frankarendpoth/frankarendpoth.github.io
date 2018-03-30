@@ -25,9 +25,9 @@
 
     <div id = "links"></div>
 
-    <script type = "text/javascript">
+    <script type = "text/javascript">document.body.style.display = "none";
 
-      (function() {
+      (() => { document.body.style.display = "none";
 
         var links = document.getElementById("links");
 
@@ -48,6 +48,15 @@
             }
 
           });
+
+          document.body.style.display = "grid";
+          window.scrollTo(0, window.sessionStorage.getItem("swfs-scrollY"));
+
+        });
+
+        window.addEventListener("beforeunload", function(event) {
+
+          window.sessionStorage.setItem("swfs-scrollY", window.scrollY);
 
         });
 

@@ -1,5 +1,7 @@
 /* Frank Poth 03/27/2018 */
 
+body { grid-template-rows:auto auto auto auto; }
+
 p { max-width:480px; text-align:justify; }
 
 #links {
