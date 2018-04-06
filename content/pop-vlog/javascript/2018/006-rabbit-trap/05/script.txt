@@ -1,0 +1,47 @@
+
+
+INTRO
+
+Hey, Guys, my name is Frank and THIS IS the Poth on Programming video log - Part 5
+of how to make a tile based platforming game in Pure HTML5 & JavaScript.
+
+Today I'm going to show YOU how I added Sprite Animation to the game so you can
+take my example and use it to put sprite animation into your own programs! So
+stay tuned to find out how it's done!
+
+BULLETS
+
+1. Changes since 4
+  a. look at the example
+  b. There were a lot of changes that you can read about in the source code
+  c. Mainly we're looking at the Animator class and the render function in main.
+
+2. How sprite animation works
+  a. take frames from the tile sheet and draw them in quick succession to the screen.
+  b. This is a frame rate dependent method, meaning animation speed depends on the
+     game loop's framerate
+
+3. In depth look at Animator class
+  a. Animator class
+  b. Player's animation related stuff
+  c. render function in main
+
+IN THIS VIDEO I'm going to talk about what's new in part 5. Then I'll give you a
+very simple and brief refresher on how sprite animation works when using a sprite sheet,
+and finally we'll take an in depth look at the Animator class and how it works with
+the player's movement to render the appropriate animations.
+
+If you learn something, give this video a like, and if you have any questions or
+comments, of course those go in the comments section! Now let's get to the video!
+
+CONCLUSION
+
+In this video I talked a bit about how sprite animation works and how I did the
+sprite animation for this example program. It's hard to cover everything in just
+one video, so if you have questions please ask, and if you have any ideas on how
+I can improve my content, let me know! This program is reaching the point where
+it's too big to understand the whole thing if you haven't watched from the beginning,
+so if you feel a little lost, I suggest going back and watching the first four videos
+in this series, and of course be sure to check out the source code on my Github Page!
+
+Anyway, thanks for watching, and I'll see you next time!
