@@ -1,0 +1,1 @@
+This github repository is mainly used to store the projects I write for my YouTube Channel, Poth on Programming Video Log. These projects are largely focused on game design. You can also find the code for my website, which is just a way to access the working examples from my channel in a browser.
