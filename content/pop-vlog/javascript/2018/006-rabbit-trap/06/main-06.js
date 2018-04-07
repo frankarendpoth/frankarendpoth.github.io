@@ -1,26 +1,15 @@
-// Frank Poth 04/03/2018
+// Frank Poth 04/06/2018
 
-/* Changes:
-
-1. I added an AssetsManager class which will eventually store all my graphics and sounds.
-2. The render function now draws the player's frame instead of a square like in part 4.
-3. The resize function now stretches the display canvas to the full viewport capacity.
-
-The project is starting to grow unmanagable as it grows. Luckily my IPO structure
-is dramatically decreasing the amount of rewrites I have to do to other classes,
-but since most of my code is in the Game class, edits in that class are becoming
-rather tedious. As the project grows I will have to focus my videos more on individual
-changes and ignore the vast bulk of existing code. */
+/* Changes: */
 
 window.addEventListener("load", function(event) {
 
   "use strict";
 
-  //// CLASSES ////
+      /////////////////
+    //// CLASSES ////
+  /////////////////
 
-  /* The assets manager will be responsible for loading and storing graphics for
-  the game. Because it only has to load the tilesheet image right now, it's very specific
-  about what it does. */
   const AssetsManager = function() {
 
     this.tile_set_image = undefined;
@@ -31,19 +20,38 @@ window.addEventListener("load", function(event) {
 
     constructor: Game.AssetsManager,
 
-    loadTileSetImage:function(url, callback) {
+    /* Requests a file and hands the callback function the contents of that file
+    parsed by JSON.parse. */
+    requestJSON:function(url, callback) {
 
-      this.tile_set_image = new Image();
+      let request = new XMLHttpRequest();
 
-      this.tile_set_image.addEventListener("load", function(event) {
+      request.addEventListener("load", function(event) {
 
-        callback();
+        callback(JSON.parse(this.responseText));
 
-      }, { once : true});
+      }, { once:true });
 
-      this.tile_set_image.src = url;
+      request.open("GET", url);
+      request.send();
 
-    }
+    },
+
+    /* Creates a new Image and sets its src attribute to the specified url. When
+    the image loads, the callback function is called. */
+    requestImage:function(url, callback) {
+
+      let image = new Image();
+
+      image.addEventListener("load", function(event) {
+
+        callback(image);
+
+      }, { once:true });
+
+      image.src = url;
+
+    },
 
   };
 
@@ -64,8 +72,6 @@ window.addEventListener("load", function(event) {
 
   };
 
-  /* The render function uses the new display methods now. I will eventually have to create
-  some sort of object manager when I get more objects on the screen. */
   var render = function() {
 
     display.drawMap   (assets_manager.tile_set_image,
@@ -96,7 +102,7 @@ window.addEventListener("load", function(event) {
     //// OBJECTS ////
   /////////////////
 
-  var assets_manager = new AssetsManager();// Behold the new assets manager!
+  var assets_manager = new AssetsManager();
   var controller     = new Controller();
   var display        = new Display(document.querySelector("canvas"));
   var game           = new Game();
@@ -106,18 +112,24 @@ window.addEventListener("load", function(event) {
     //// INITIALIZE ////
   ////////////////////
 
-  /* This is going to have to be moved to a setup function inside of the Display class or something.
-  Leaving it out here is kind of sloppy. */
   display.buffer.canvas.height = game.world.height;
   display.buffer.canvas.width  = game.world.width;
   display.buffer.imageSmoothingEnabled = false;
 
-  /* Now my image is loaded into the assets manager instead of the display object.
-  The callback starts the game engine when the graphic is loaded. */
-  assets_manager.loadTileSetImage("rabbit-trap.png", () => {
+  assets_manager.requestJSON("rabbit-trap-world00.json", (json) => {
 
-    resize();
-    engine.start();
+    assets_manager.requestJSON(json.tile_set, (json) => {
+
+      assets_manager.requestImage(json.image_url, (image) => {
+
+        assets_manager.tile_set_image = image;
+
+        resize();
+        engine.start();
+
+      });
+
+    });
 
   });
 

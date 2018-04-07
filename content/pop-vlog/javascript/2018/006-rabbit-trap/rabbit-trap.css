@@ -15,3 +15,44 @@ body {
   width:100%;
 
 }
+
+/* 04/07/2018 */
+
+#menu {
+
+  background-color:rgba(0, 0, 0, 0.5);
+  color:#ffffff;
+  cursor:pointer;
+  display:grid;
+  max-height:100%;
+  overflow-y:auto;
+  padding:8px;
+  position:fixed;
+  right:0px;
+  top:0px;
+  user-select:none;
+
+  -webkit-tap-highlight-color:transparent;
+
+}
+
+#menu p {
+
+  color:#ffffff;
+  font-size:2.0em;
+
+}
+
+#menu-list {
+
+  display:none;
+
+}
+
+#menu-list a {
+
+  color:#ffffff;
+  font-size:1.5em;
+  text-decoration:none;
+
+}

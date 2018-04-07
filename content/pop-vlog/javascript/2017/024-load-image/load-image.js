@@ -77,6 +77,10 @@
       //prompt("Copy data url?", data_url);
       /* Now we can set the src value directly. Setting it this way doesn't load anything,
       and you have access to the useable image directly after setting src. */
+      /* 04/06/2018 looking back on this, it's not true. In fact, setting the src is
+      not synchronous even if you set it directly to a data_url. There may be a load
+      time which will cause any immediate requests for the image's data to fail because
+      the image has technically not loaded. */
       image.src = data_url;
       //alert(image.width);
 

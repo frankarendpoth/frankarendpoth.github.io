@@ -4,12 +4,28 @@
 
   <head>
 
+    <!-- Added this meta tag 04/07/2018 -->
+    <meta name = "viewport" content = "user-scale=no,width=device-width">
     <link href = "rabbit-trap.css" rel = "stylesheet" type = "text/css">
     <title>Rabbit Trap</title>
 
   </head>
 
   <body>
+
+    <!-- Added a menu to navigate projects from the main page -->
+    <div id = "menu">
+      <p>menu</p>
+      <div id = "menu-list">
+        <br>
+        <a href = "rabbit-trap.html?01">part1</a>
+        <a href = "rabbit-trap.html?02">part2</a>
+        <a href = "rabbit-trap.html?03">part3</a>
+        <a href = "rabbit-trap.html?04">part4</a>
+        <a href = "rabbit-trap.html?05">part5</a>
+        <a href = "rabbit-trap.html?06">part6</a>
+      </div>
+    </div>
 
     <canvas></canvas>
 
@@ -27,13 +43,14 @@
         "02":["02/controller-02.js", "02/display-02.js", "01/engine-01.js", "02/game-02.js", "02/main-02.js"],
         "03":["02/controller-02.js", "03/display-03.js", "01/engine-01.js", "03/game-03.js", "03/main-03.js"],
         "04":["02/controller-02.js", "04/display-04.js", "01/engine-01.js", "04/game-04.js", "03/main-03.js"],
-        "05":["02/controller-02.js", "05/display-05.js", "01/engine-01.js", "05/game-05.js", "05/main-05.js"]
+        "05":["02/controller-02.js", "05/display-05.js", "01/engine-01.js", "05/game-05.js", "05/main-05.js"],
+        "06":["02/controller-02.js", "05/display-05.js", "01/engine-01.js", "06/game-06.js", "06/main-06.js"]
 
       };
 
       switch(part) {
 
-        case "01": case "02": case "03": case "04": case "05": break;
+        case "01": case "02": case "03": case "04": case "05": case "06": break;
         default:
           part = "04";
 
@@ -47,6 +64,17 @@
         document.head.appendChild(script);
 
       }
+
+      let menu      = document.getElementById("menu");
+      let menu_list = document.getElementById("menu-list");
+
+      menu.addEventListener("click", function(event) {
+
+        menu_list.style.display = (menu_list.style.display == "none") ? "grid" : "none";
+
+      });
+
+      menu_list.style.display = "none";
 
     </script>
 
