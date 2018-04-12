@@ -18,6 +18,8 @@ body {
 
 /* 04/07/2018 */
 
+canvas { image-rendering:pixelated; }
+
 #menu {
 
   background-color:rgba(0, 0, 0, 0.5);

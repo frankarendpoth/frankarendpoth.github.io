@@ -1,10 +1,26 @@
 // Frank Poth 04/06/2018
 
-/* Changes: */
+/* Changes:
 
+  1. The update function now check on every frame for game.world.door. If a door
+     is selected, the game engine stops and the door's level is loaded.
+  2. When the game is first initialized at the bottom of this file, game.world is
+     loaded using it's default values defined in its constructor.
+  3. The AssetsManager class has been changed to load both images and json.
+
+*/
+ 
 window.addEventListener("load", function(event) {
 
   "use strict";
+
+  //// CONSTANTS ////
+
+  /* Each zone has a url that looks like: zoneXX.json, where XX is the current zone
+  identifier. When loading zones, I use the game.world's zone identifier with these
+  two constants to construct a url that points to the appropriate zone file. */
+  const ZONE_PREFIX = "zone";
+  const ZONE_SUFFIX = ".json";
 
       /////////////////
     //// CLASSES ////
@@ -75,7 +91,7 @@ window.addEventListener("load", function(event) {
   var render = function() {
 
     display.drawMap   (assets_manager.tile_set_image,
-    game.world.tile_set.columns, game.world.map, game.world.columns,  game.world.tile_set.tile_size);
+    game.world.tile_set.columns, game.world.graphical_map, game.world.columns,  game.world.tile_set.tile_size);
 
     let frame = game.world.tile_set.frames[game.world.player.frame_value];
 
@@ -95,6 +111,26 @@ window.addEventListener("load", function(event) {
     if (controller.up.active   ) { game.world.player.jump();      controller.up.active = false; }
 
     game.update();
+
+    /* This if statement checks to see if a door has been selected by the player.
+    If the player collides with a door, he selects it. The engine is then stopped
+    and the assets_manager loads the door's level. */
+    if (game.world.door) {
+
+      engine.stop();
+
+      /* Here I'm requesting the JSON file to use to populate the game.world object. */
+      assets_manager.requestJSON(ZONE_PREFIX + game.world.door.destination_zone + ZONE_SUFFIX, (zone) => {
+
+        game.world.setup(zone);
+
+        engine.start();
+
+      });
+
+      return;
+
+    }
 
   };
 
@@ -116,25 +152,23 @@ window.addEventListener("load", function(event) {
   display.buffer.canvas.width  = game.world.width;
   display.buffer.imageSmoothingEnabled = false;
 
-  assets_manager.requestJSON("rabbit-trap-world00.json", (json) => {
+  assets_manager.requestJSON(ZONE_PREFIX + game.world.zone_id + ZONE_SUFFIX, (zone) => {
 
-    assets_manager.requestJSON(json.tile_set, (json) => {
+    game.world.setup(zone);
 
-      assets_manager.requestImage(json.image_url, (image) => {
+    assets_manager.requestImage("rabbit-trap.png", (image) => {
 
-        assets_manager.tile_set_image = image;
+      assets_manager.tile_set_image = image;
 
-        resize();
-        engine.start();
-
-      });
+      resize();
+      engine.start();
 
     });
 
   });
 
   window.addEventListener("keydown", keyDownUp);
-  window.addEventListener("keyup",   keyDownUp);
-  window.addEventListener("resize",  resize);
+  window.addEventListener("keyup"  , keyDownUp);
+  window.addEventListener("resize" , resize);
 
 });

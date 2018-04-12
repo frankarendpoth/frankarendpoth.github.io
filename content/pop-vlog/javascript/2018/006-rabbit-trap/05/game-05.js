@@ -16,6 +16,11 @@ have super long ridiculous constructors. However, the long constructor is still 
 to determine where a class is pertinent and what it's purpose is. Still, it feels very
 clunky, and I will probably change it soon. */
 
+/* 04/11/2018 I noticed a problem with tunneling in the lower right nook of the T
+on the floor of the level. If you run into from the right and jump up, the player
+seemingly moves through the wall. This is not a problem with tile collision, but rather,
+tunneling. His jump velocity moves him upwards more than one full tile space. */
+
 const Game = function() {
 
   this.world    = new Game.World();

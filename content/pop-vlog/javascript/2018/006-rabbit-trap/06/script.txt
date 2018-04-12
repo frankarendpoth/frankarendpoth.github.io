@@ -1,0 +1,23 @@
+INTRO
+
+Hey, guys, my name is Frank and THIS is the Poth on Programming Video Log Part 6
+of how to make a tile based platformer in pure HTML5 and JavaScript.
+
+This video is going to be about loading JSON levels with doors. You're definitely
+going to want this functionality in your game so stay tuned to find out how it's done!
+
+BULLETS
+
+1. Basic Procedure
+  a. collide with door
+  b. stop the Engine
+  c. start loading level
+  d. populate the world object
+  e. start the engine again
+
+2. A look at each part
+  a. The default values in world
+  b. The initial load in main
+  c. first population of world
+  d. collision with a door object
+  e. 
