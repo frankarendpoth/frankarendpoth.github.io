@@ -9,7 +9,7 @@
   3. The AssetsManager class has been changed to load both images and json.
 
 */
- 
+
 window.addEventListener("load", function(event) {
 
   "use strict";
@@ -19,7 +19,9 @@ window.addEventListener("load", function(event) {
   /* Each zone has a url that looks like: zoneXX.json, where XX is the current zone
   identifier. When loading zones, I use the game.world's zone identifier with these
   two constants to construct a url that points to the appropriate zone file. */
-  const ZONE_PREFIX = "zone";
+  /* I updated this after I made the video. I decided to move the zone files into
+  the 06 folder because I won't be using these levels again in future parts. */
+  const ZONE_PREFIX = "06/zone";
   const ZONE_SUFFIX = ".json";
 
       /////////////////

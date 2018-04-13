@@ -17,6 +17,7 @@
   9. Organized classes by alphabeticalish order.
   10. Put a limit on player velocity because there was a problem with "tunneling"
       through tiles due to jump movement speed.
+  11. Changed the player's hitbox size and his frame offsets for animation.
 
 */
 
@@ -263,7 +264,7 @@ Game.MovingObject.prototype.constructor = Game.MovingObject;
 
 Game.Door = function(door) {
 
-  Game.Object.call(this, door.x, door.y, door.width, door.height);
+ Game.Object.call(this, door.x, door.y, door.width, door.height);
 
  this.destination_x    = door.destination_x;
  this.destination_y    = door.destination_y;
@@ -291,7 +292,7 @@ Game.Door.prototype.constructor = Game.Door;
 
 Game.Player = function(x, y) {
 
-  Game.MovingObject.call(this, x, y, 7, 14);
+  Game.MovingObject.call(this, x, y, 7, 12);
   Game.Animator.call(this, Game.Player.prototype.frame_sets["idle-left"], 10);
 
   this.jumping     = true;
@@ -319,7 +320,7 @@ Game.Player.prototype = {
     if (!this.jumping && this.velocity_y < 10) {
 
       this.jumping     = true;
-      this.velocity_y -= 15;
+      this.velocity_y -= 13;
 
     }
 
@@ -394,18 +395,18 @@ Game.TileSet = function(columns, tile_size) {
 
   let f = Game.Frame;
 
-  this.frames = [new f(115,  96, 13, 16, 0, -2), // idle-left
-                 new f( 50,  96, 13, 16, 0, -2), // jump-left
-                 new f(102,  96, 13, 16, 0, -2), new f(89, 96, 13, 16, 0, -2), new f(76, 96, 13, 16, 0, -2), new f(63, 96, 13, 16, 0, -2), // walk-left
-                 new f(  0, 112, 13, 16, 0, -2), // idle-right
-                 new f( 65, 112, 13, 16, 0, -2), // jump-right
-                 new f( 13, 112, 13, 16, 0, -2), new f(26, 112, 13, 16, 0, -2), new f(39, 112, 13, 16, 0, -2), new f(52, 112, 13, 16, 0, -2) // walk-right
+  this.frames = [new f(115,  96, 13, 16, 0, -4), // idle-left
+                 new f( 50,  96, 13, 16, 0, -4), // jump-left
+                 new f(102,  96, 13, 16, 0, -4), new f(89, 96, 13, 16, 0, -4), new f(76, 96, 13, 16, 0, -4), new f(63, 96, 13, 16, 0, -4), // walk-left
+                 new f(  0, 112, 13, 16, 0, -4), // idle-right
+                 new f( 65, 112, 13, 16, 0, -4), // jump-right
+                 new f( 13, 112, 13, 16, 0, -4), new f(26, 112, 13, 16, 0, -4), new f(39, 112, 13, 16, 0, -4), new f(52, 112, 13, 16, 0, -4) // walk-right
                 ];
 
 };
 Game.TileSet.prototype = { constructor: Game.TileSet };
 
-Game.World = function(friction = 0.85, gravity = 2.5) {
+Game.World = function(friction = 0.85, gravity = 2) {
 
   this.collider  = new Game.Collider();
 
