@@ -4,10 +4,12 @@
 
   1. Added the carrots array to the zone file.
   2. Moved the collideObject method out of Game.Door and into Game.Object.
-  3. Renamed collideObject collideObjectCenter and made a new collideObject function for rectangular collision detection.
+  3. Renamed collideObject to collideObjectCenter and made a new collideObject function for rectangular collision detection.
   4. Added the Game.Carrot class and Game.Grass class.
   5. Added frames for carrots and grass to the tile_set.
   6. Made a slight change to the Game.Animator constructor.
+  7. Added carrot_count to count carrots.
+  8. Added the grass array to the zone file. Also reflected in Game.World
 
 */
 
@@ -202,11 +204,11 @@ Game.Object = function(x, y, width, height) {
  this.y      = y;
 
 };
-/* I added getCenterX, getCenterY, setCenterX, and setCenterY */
 Game.Object.prototype = {
 
   constructor:Game.Object,
 
+  /* Now does rectangular collision detection. */
   collideObject:function(object) {
 
     if (this.getRight()  < object.getLeft()  ||
@@ -218,6 +220,7 @@ Game.Object.prototype = {
 
   },
 
+  /* Does rectangular collision detection with the center of the object. */
   collideObjectCenter:function(object) {
 
     let center_x = object.getCenterX();
@@ -277,6 +280,7 @@ Game.MovingObject.prototype = {
 Object.assign(Game.MovingObject.prototype, Game.Object.prototype);
 Game.MovingObject.prototype.constructor = Game.MovingObject;
 
+/* The carrot class extends Game.Object and Game.Animation. */
 Game.Carrot = function(x, y) {
 
   Game.Object.call(this, x, y, 7, 14);
@@ -284,6 +288,9 @@ Game.Carrot = function(x, y) {
 
   this.frame_index = Math.floor(Math.random() * 2);
 
+  /* base_x and base_y are the point around which the carrot revolves. position_x
+  and y are used to track the vector facing away from the base point to give the carrot
+  the floating effect. */
   this.base_x     = x;
   this.base_y     = y;
   this.position_x = Math.random() * Math.PI * 2;

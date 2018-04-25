@@ -1,30 +1,29 @@
 // Frank Poth 03/27/2018
 
-function ClickForIframe() {}
+const ClickForIframe = function() {};
 
-ClickForIframe.replaceCurrentScript = function(source, width, aspect_ratio = 0.5625) {
+ClickForIframe.replace = function(element, source, width, aspect_ratio) {
 
-  var div = DOMKit.replaceCurrentScript(DOMKit.createElement("div", ["style=align-content:center;border-color:#202830;border-style:solid;border-width:2px;display:grid;justify-content:center;width:" + width + ";"], "<p style=\"color:#202830;cursor:pointer;font-size:2.0em;user-select:none;\">Click For iFrame</p>"));
+  var div = DocKit.createElement("div", ["class=ClickForIframe", "style=max-width:" + width], "click to load content");
+
+  DocKit.replaceElement(element, div);
 
   div.addEventListener("click", function(event) {
 
-    let iframe = DOMKit.replaceElement(div, DOMKit.createElement("iframe", ["src=" + source, "style=width:" + div.style.width + ";height:" + div.style.height + ";"]));
-    iframe.addEventListener("resize", function(event) {
+    div.innerHTML = "";
 
-      DOMKit.maintainAspectRatio(iframe, aspect_ratio);
+    let iframe = DocKit.createElement("iframe", ["src=" + source]);
 
-    });
+    div.appendChild(iframe);
 
-    DOMKit.maintainAspectRatio(iframe, aspect_ratio);
+    div.style.height = div.clientWidth * aspect_ratio + "px";
 
   }, { once:true });
 
-  div.addEventListener("resize", function(event) {
+  window.addEventListener("resize", function(event) {
 
-    DOMKit.maintainAspectRatio(div, aspect_ratio);
+    div.style.height = div.clientWidth * aspect_ratio + "px";
 
   });
-
-  DOMKit.maintainAspectRatio(div, aspect_ratio);
 
 };

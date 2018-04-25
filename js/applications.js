@@ -1,8 +1,7 @@
 // Frank Poth 03/28/2018
+(() => {
 
-window.addEventListener("load", (event) => {
-
-  var links = document.getElementById("links");
+  var links = document.getElementById("link-box");
 
   FSKit.requestDirectory("../content/applications/", "directory.json", function(directory) {
 
@@ -24,4 +23,4 @@ window.addEventListener("load", (event) => {
 
   });
 
-}, { once:true });
+})();

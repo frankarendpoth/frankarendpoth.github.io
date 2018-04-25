@@ -1,0 +1,22 @@
+/* Frank Poth 04/22/2018 */
+
+#footer {
+
+  align-items:center;
+  background-color:var(--footer-color);
+  border-top:2px solid var(--border-color);
+  display:grid;
+  grid-template-columns:repeat(auto-fill, 120px);
+  grid-template-rows:1fr;
+  height:256px;
+  justify-content:center;
+  width:100%;
+
+}
+
+#footer a {
+
+  color:#ffffff;
+  text-decoration:none;
+
+}

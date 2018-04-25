@@ -1,0 +1,30 @@
+/* Frank Poth 04/23/2018 */
+
+.ClickForIframe {
+
+  align-content:center;
+  align-self:center;
+  background-color:var(--iframe-color);
+  border:2px solid var(--border-color);
+  color:#ffffff;
+  cursor:pointer;
+  display:grid;
+  font-size:1.25em;
+  jusfity-content:center;
+  justify-self:center;
+  position:relative;
+  text-align:center;
+  width:100%;
+  user-select:none;
+
+}
+
+.ClickForIframe > iframe {
+
+  height:100%;
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+
+}

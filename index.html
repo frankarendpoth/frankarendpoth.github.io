@@ -13,20 +13,29 @@
 
     <title>Frank Poth</title>
 
+    <script src = "library/doc-kit.js" type = "text/javascript"></script>
+    <script src = "library/temp-kit.js" type = "text/javascript"></script>
+
   </head>
 
   <body>
 
-    <h1>frankpoth.info</h1>
+    <script type = "text/javascript">TempKit.replace(document.currentScript, ["html/templates/header.html"]);</script>
 
-    <div id = "links">
+    <main>
 
-      <a href = "html/pop-vlog.html">PoP Vlog</a>       <p>See videos and working example programs from the Poth on Programming Video log YouTube Channel!</p>
-      <a href = "html/swfs.html">SWFs</a>               <p>If you have a working Flash Player plugin in your desktop browser, check out some of my old AS3.0 programs.</p>
-      <a href = "html/applications.html">Apps</a>       <p>Right now there's only one app that shifts comma separated values by a specified amount. Application: tile map editor.</p>
-      <a href = "http://docs.google.com/gview?url=https://frankpoth.info/content/websafe-resume.pdf">Resume</a> <p>This is my professional resume.</p>
+      <div id = "links">
 
-    </div>
+        <a href = "html/pop-vlog.html">PoP Vlog</a>       <p>See videos and working example programs from the Poth on Programming Video log YouTube Channel!</p>
+        <a href = "html/swfs.html">SWFs</a>               <p>If you have a working Flash Player plugin in your desktop browser, check out some of my old AS3.0 programs.</p>
+        <a href = "html/applications.html">Apps</a>       <p>Right now there's only one app that shifts comma separated values by a specified amount. Application: tile map editor.</p>
+        <a href = "http://docs.google.com/gview?url=https://frankpoth.info/content/websafe-resume.pdf">Resume</a> <p>This is my professional resume.</p>
+
+      </div>
+
+    </main>
+
+    <script type = "text/javascript">TempKit.replace(document.currentScript, ["html/templates/footer.html"]);</script>
 
   </body>
 
