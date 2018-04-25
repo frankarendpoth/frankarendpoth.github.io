@@ -2,21 +2,37 @@
 
 #header {
 
-  align-items:center;
+  align-content:center;
   background-color:var(--header-color);
   border-bottom:2px solid var(--border-color);
   display:grid;
-  grid-template-columns:repeat(auto-fill, 120px);
-  grid-template-rows:1fr;
+  grid-column-gap:8px;
+  grid-row-gap:8px;
+  grid-template-columns:repeat(auto-fit, 128px);
   height:128px;
   justify-content:center;
+  position:relative;
   width:100%;
 
 }
 
 #header a {
 
+  align-self:center;
   color:#ffffff;
+  display:grid;
+  jusfity-self:center;
+  text-align:center;
   text-decoration:none;
+
+}
+
+#header .OffSiteLink {
+
+  align-content:center;
+  border:2px solid #ffffff;
+  border-radius:8px;
+  justify-content:center;
+  padding:4px 8px;
 
 }
