@@ -3,7 +3,7 @@
 #header {
 
   align-content:center;
-  border-bottom:2px solid var(--border-color);
+  border-bottom:4px solid var(--border-color);
   display:grid;
   grid-column-gap:8px;
   grid-row-gap:8px;

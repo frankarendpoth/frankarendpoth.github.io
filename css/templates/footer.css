@@ -3,7 +3,7 @@
 #footer {
 
   align-content:center;
-  border-top:2px solid var(--border-color);
+  border-top:4px solid var(--border-color);
   display:grid;
   grid-template-columns:repeat(auto-fit, 128px);
   grid-template-rows:1fr;

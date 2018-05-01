@@ -17,10 +17,21 @@
 
     var tile_size = 32;
 
-    function resize(event) {
+    var height = undefined;
+    var width  = undefined;
 
-      context.canvas.height = context.canvas.parentElement.clientHeight;
-      context.canvas.width = context.canvas.parentElement.clientWidth;
+    function checkForResize() {
+
+      window.requestAnimationFrame(checkForResize);
+
+      if (height != context.canvas.clientHeight || width != context.canvas.clientWidth) resize();
+
+    }
+
+    function resize() {
+
+      height = context.canvas.height = context.canvas.parentElement.clientHeight;
+      width  = context.canvas.width = context.canvas.parentElement.clientWidth;
 
       var columns = Math.ceil(context.canvas.width  / tile_size);
       var rows    = Math.ceil(context.canvas.height / tile_size);
@@ -43,8 +54,7 @@
 
     }
 
-    window.addEventListener("resize", resize);
-    resize();
+    checkForResize();
 
   }
 

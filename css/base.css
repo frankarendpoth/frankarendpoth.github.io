@@ -42,8 +42,13 @@ main {
 
 a {
 
+  background-color:rgba(0, 0, 0, 0.75);
+  border-radius:8px;
+  color:#ffffff;
+  display:inline-grid;
   font-size:1.25em;
-  font-weight:600;
+  padding:4px 8px;
+  text-align:center;
   text-decoration:none;
 
 }
