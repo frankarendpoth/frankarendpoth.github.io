@@ -3,7 +3,6 @@
 #header {
 
   align-content:center;
-  /*background-color:var(--header-color);*/
   border-bottom:2px solid var(--border-color);
   display:grid;
   grid-column-gap:8px;
@@ -11,6 +10,7 @@
   grid-template-columns:repeat(auto-fit, 128px);
   justify-content:center;
   min-height:128px;
+  padding:8px;
   position:relative;
   width:100%;
 
@@ -19,9 +19,12 @@
 #header a {
 
   align-self:center;
+  background-color:rgba(0, 0, 0, 0.75);
+  border-radius:8px;
   color:#ffffff;
   display:grid;
   jusfity-self:center;
+  padding:4px 8px;
   text-align:center;
   text-decoration:none;
 
@@ -30,43 +33,15 @@
 #header .OffSiteLink {
 
   align-content:center;
-  border:2px solid #ffffff;
-  border-radius:8px;
   justify-content:center;
-  padding:4px 8px;
 
 }
 
-#header-background {
+#header-canvas {
 
-  display:grid;
-  grid-template-areas:"b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b"
-                      "b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b"
-                      "b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b"
-                      "g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g g";
-  grid-template-columns:repeat(auto-fit, minmax(auto, 32px));
-  grid-template-rows:repeat(auto-fit, minmax(auto, 32px));
   height:100%;
-  left:0;
   position:absolute;
-  top:0;
   width:100%;
   z-index:-1;
-
-}
-
-#header-background-green {
-
-  background-color:#008000;
-  display:grid;
-  grid-area:g;
-
-}
-
-#header-background-brown {
-
-  background-color:#705010;
-  display:grid;
-  grid-area:b;
 
 }

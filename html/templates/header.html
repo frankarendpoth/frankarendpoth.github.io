@@ -1,11 +1,6 @@
 <header id = "header">
 
-  <div id = "header-background">
-
-    <div id = "header-background-green"></div>
-    <div id = "header-background-brown"></div>
-
-  </div>
+  <canvas id = "header-canvas"></canvas>
 
   <a href = "/">HOME</a>
   <a class = "OffSiteLink" href = "https://www.facebook.com/PothOnProgramming">Facebook</a>
@@ -18,7 +13,44 @@
 
 <script type = "text/javascript">
 
-  document.head.appendChild(DocKit.parseHTML("<link href = '/css/templates/header.css' rel = 'stylesheet' type = 'text/css'>"));
+  document.head.appendChild(DocKit.parseHTML("<link onload='styleHeader();' href = '/css/templates/header.css' rel = 'stylesheet' type = 'text/css'>"));
   DocKit.removeElement(document.currentScript);
+
+  function styleHeader() {
+
+    var context = document.getElementById("header-canvas").getContext("2d");
+
+    var tile_size = 32;
+
+    function resize(event) {
+
+      context.canvas.height = context.canvas.parentElement.clientHeight;
+      context.canvas.width = context.canvas.parentElement.clientWidth;
+
+      var columns = Math.ceil(context.canvas.width  / tile_size);
+      var rows    = Math.ceil(context.canvas.height / tile_size);
+
+      var offset_x = Math.round((columns * tile_size - context.canvas.width)  * 0.5);
+      var offset_y = Math.round((rows    * tile_size - context.canvas.height) * 0.5);
+
+      for (let column = 0; column < columns; column ++) {
+
+        for (let row = 0; row < rows; row ++) {
+
+          var color = "rgb(" + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + ")"
+
+          context.fillStyle = color;
+          context.fillRect(column * tile_size - offset_x, row * tile_size - offset_y, tile_size, tile_size);
+
+        }
+
+      }
+
+    }
+
+    window.addEventListener("resize", resize);
+    resize();
+
+  }
 
 </script>

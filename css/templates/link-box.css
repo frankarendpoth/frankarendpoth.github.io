@@ -2,12 +2,6 @@
 
 .LinkBox {
 
-  /*display:grid;
-  grid-column-gap:8px;
-  grid-row-gap:   8px;
-  grid-template-columns:repeat(auto-fill, 192px);
-  justify-content:space-around;*/
-
   display:flex;
   flex-direction:column;
   flex-flow:wrap;
@@ -17,10 +11,10 @@
 .LinkBox a {
 
   align-content:center;
-  background-color:var(--header-color);
-  border:2px solid var(--border-color);
+  background-color:rgba(0, 0, 0, 0.5);
+  border:2px solid #000000;
   border-radius:8px;
-  color:var(--iframe-color);
+  color:#ffffff;
   display:flex;
   flex-grow:1;
   justify-content:center;
@@ -32,6 +26,6 @@
 
 .LinkBox a:hover {
 
-  background-color:#333333;
+  background-color:#000000;
 
 }

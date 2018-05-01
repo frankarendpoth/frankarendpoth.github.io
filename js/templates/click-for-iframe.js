@@ -21,8 +21,8 @@ ClickForIframe.replace = function(element, source, width, aspect_ratio) {
   }, { once:true });
 
   window.addEventListener("resize", function(event) {
-
-    div.style.height = div.clientWidth * aspect_ratio + "px";
+    
+    if (div.querySelector("iframe")) div.style.height = div.clientWidth * aspect_ratio + "px";
 
   });
 

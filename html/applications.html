@@ -26,21 +26,29 @@
 
     <script type = "text/javascript">TempKit.replace(document.currentScript, ["/html/templates/header.html"]);</script>
 
-    <nav class = "LinkBox" id = "links">
+    <main>
 
-      <script type = "text/javascript">LinkBox.getLinks("/content/applications/", "directory.json", (path, file, name, element) => {
+      <canvas id = "main-canvas"></canvas>
 
-        let extension = file.split(".")[1];
-        extension = extension.split("?")[0];
-        if (extension == "html") {
+      <nav class = "LinkBox" id = "links">
 
-          element.appendChild(DocKit.createElement("a", ["href=" + path + file], name));
+        <script type = "text/javascript">LinkBox.getLinks("/content/applications/", "directory.json", (path, file, name, element) => {
 
-        }
+          let extension = file.split(".")[1];
+          extension = extension.split("?")[0];
+          if (extension == "html") {
 
-      });</script>
+            element.appendChild(DocKit.createElement("a", ["href=" + path + file], name));
 
-    </nav>
+          }
+
+        });</script>
+
+      </nav>
+
+    </main>
+
+    <script src = "/js/templates/base.js" type = "text/javascript"></script>
 
     <script type = "text/javascript">TempKit.replace(document.currentScript, ["/html/templates/footer.html"]);</script>
 

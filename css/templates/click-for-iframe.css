@@ -4,8 +4,8 @@
 
   align-content:center;
   align-self:center;
-  background-color:var(--iframe-color);
-  border:2px solid var(--border-color);
+  background-color:rgba(0, 0, 0, 0.5);
+  border:2px solid #000000;
   color:#ffffff;
   cursor:pointer;
   display:grid;

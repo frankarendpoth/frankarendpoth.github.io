@@ -2,21 +2,37 @@
 
 #footer {
 
-  align-items:center;
-  background-color:var(--footer-color);
+  align-content:center;
   border-top:2px solid var(--border-color);
   display:grid;
-  grid-template-columns:repeat(auto-fill, 120px);
+  grid-template-columns:repeat(auto-fit, 128px);
   grid-template-rows:1fr;
   height:256px;
   justify-content:center;
+  position:relative;
   width:100%;
 
 }
 
 #footer a {
 
+  align-self:center;
+  background-color:rgba(0, 0, 0, 0.75);
+  border-radius:8px;
   color:#ffffff;
+  display:grid;
+  jusfity-self:center;
+  padding:4px 8px;
+  text-align:center;
   text-decoration:none;
+
+}
+
+#footer-canvas {
+
+  height:100%;
+  position:absolute;
+  width:100%;
+  z-index:-1;
 
 }

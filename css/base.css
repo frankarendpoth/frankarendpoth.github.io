@@ -16,10 +16,8 @@ html { height: 100%; width:100%; }
 
 body {
 
-  align-content:space-between;
-  background-color:var(--header-color);
+  align-items:stretch;
   display:grid;
-  grid-row-gap:16px;
   grid-template-columns:auto;
   grid-template-rows:auto auto auto;
   min-height:100%;
@@ -30,11 +28,14 @@ body {
 main {
 
   align-content:space-around;
+  background-color:rgba(0, 0, 0, 0.75);
   display:grid;
   grid-row-gap:8px;
   grid-template-rows:repeat(auto-fill, auto);
   justify-content:space-around;
   min-height:calc(100vh - 128px);
+  padding:8px 0;
+  position:relative;
   width:100%;
 
 }
@@ -44,5 +45,16 @@ a {
   font-size:1.25em;
   font-weight:600;
   text-decoration:none;
+
+}
+
+p { font-size:1.25em; }
+
+#main-canvas {
+
+    height:100%;
+    position:absolute;
+    width:100%;
+    z-index:-1;
 
 }
