@@ -10,7 +10,7 @@
 
 }
 
-* { border:none; box-sizing:border-box; color:#ffffff; margin:0; padding:0; word-break:break-word; word-wrap:break-word; }
+* { border:none; box-sizing:border-box; color:#ffffff; margin:0; padding:0; }
 
 html { height: 100%; width:100%; }
 
@@ -52,6 +52,8 @@ a {
   text-decoration:none;
 
 }
+
+a:hover { background-color:#000000; }
 
 p { font-size:1.25em; }
 
