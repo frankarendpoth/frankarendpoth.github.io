@@ -10,6 +10,7 @@
     "007-ipo",
     "008-circle-collision-detection",
     "009-circle-collision-response",
-    "010-wmw-basic"]
+    "010-wmw-basic",
+    "011-wmw-bouncing-balls"]
 
 }
