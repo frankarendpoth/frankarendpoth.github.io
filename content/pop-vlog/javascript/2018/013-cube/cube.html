@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta charset = "utf-8">
+    <meta name = "viewport" content = "width=device-width">
+    <title>Cube</title>
+
+    <style>
+
+      * { box-sizing:border-box; margin:0; padding:0; }
+
+      html, body { height:100%; width:100%; }
+
+      canvas { height:100%; position:fixed; width:100%; }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+
+      const Point2D = function(x, y) {
+
+        this.x = x;
+        this.y = y;
+
+      };
+
+      const Point3D = function(x, y, z) {
+
+        this.x = x;
+        this.y = y;
+        this.z = z;
+
+      };
+
+      Point3D.prototype = {
+
+        scale:function(scalar) {
+
+          this.x *= scalar;
+          this.y *= scalar;
+          this.z *= scalar;
+
+        }
+
+      };
+
+      const Cube = function(size) {
+
+        this.vertices = [new Point3D(-1, -1, -1),
+                         new Point3D( 1, -1, -1),
+                         new Point3D( 1,  1, -1),
+                         new Point3D(-1,  1, -1),
+                         new Point3D(-1, -1,  1),
+                         new Point3D( 1, -1,  1),
+                         new Point3D( 1,  1,  1),
+                         new Point3D(-1,  1,  1)];
+
+        this.faces   =  [[0, 1, 2, 3, "#00f000"],
+                         [0, 4, 5, 1, "#00d000"],
+                         [1, 5, 6, 2, "#00b000"],
+                         [3, 2, 6, 7, "#009000"],
+                         [0, 3, 7, 4, "#007000"],
+                         [4, 7, 6, 5, "#005000"]];
+
+        for (let index = 0; index < 8; index ++) {
+
+          this.vertices[index].scale(size * 0.5);
+
+        }
+
+      };
+
+      Cube.prototype = {
+
+        rotateX:function(radians) {
+
+          var cosine = Math.cos(radians);
+          var sine   = Math.sin(radians);
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let point3d = this.vertices[index];
+            let y = point3d.y * cosine - point3d.z * sine;
+            let z = point3d.y * sine   + point3d.z * cosine;
+
+            point3d.y = y;
+            point3d.z = z;
+
+          }
+
+        },
+
+        rotateY:function(radians) {
+
+          var cosine = Math.cos(radians);
+          var sine   = Math.sin(radians);
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let point3d = this.vertices[index];
+            let x = point3d.z * sine   + point3d.x * cosine;
+            let z = point3d.z * cosine - point3d.x * sine;
+
+            point3d.x = x;
+            point3d.z = z;
+
+          }
+
+        },
+
+        rotateZ:function(radians) {
+
+          var cosine = Math.cos(radians);
+          var sine   = Math.sin(radians);
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let point3d = this.vertices[index];
+            let x = point3d.x * cosine - point3d.y * sine;
+            let y = point3d.x * sine   + point3d.y * cosine;
+
+            point3d.x = x;
+            point3d.y = y;
+
+          }
+
+        }
+
+      };
+
+      var context = document.querySelector("canvas").getContext("2d");
+      var cube    = new Cube(50);
+      var pointer = new Point2D(document.documentElement.clientWidth * 0.5, document.documentElement.clientHeight * 0.5);
+
+      function project2D(points3d, width, height) {
+
+        let points2d = new Array(points3d.length);
+
+        for (let index = points3d.length - 1; index > -1; -- index) {
+
+          let point3d = points3d[index];
+          let factor = ((width + height) * 0.5) / (200 + point3d.z);
+
+          points2d[index] = new Point2D(point3d.x * factor + width * 0.5, point3d.y * factor + height * 0.5);
+
+        }
+
+        return points2d;
+
+      }
+
+      function loop() {
+
+        window.requestAnimationFrame(loop);
+
+        let width = document.documentElement.clientWidth;
+        let height = document.documentElement.clientHeight;
+
+        context.canvas.width  = width;
+        context.canvas.height = height;
+
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, width, height);
+
+        cube.rotateX((pointer.x - width * 0.5) * 0.0001);
+        cube.rotateY((pointer.y - height * 0.5) * 0.0001);
+        cube.rotateZ(((pointer.x - width * 0.5) + (pointer.y - height * 0.5)) * 0.0001);
+
+        let vertices = project2D(cube.vertices, width, height);
+
+        for (let index = cube.faces.length - 1; index > -1; -- index) {
+
+          let face = cube.faces[index];
+
+          let p1 = vertices[face[0]];
+          let p2 = vertices[face[1]];
+          let p3 = vertices[face[2]];
+
+          //let v1 = new Point3D(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+
+          //let v2 = new Point3D(p3.x - p2.x, p3.y - p2.y, p3.z - p2.z);
+
+          //let vc = new Point3D(0 - p1.x, 0 - p1.y, 100 - p1.z);
+
+          //let n = new Point3D(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
+
+          if (((p2.y - p1.y) / (p2.x - p1.x) - (p3.y - p1.y) / (p3.x - p1.x) < 0) ^ (p1.x <= p2.x == p1.x > p3.x)) {
+
+          //if (n.x * vc.x + n.y * vc.y + n.z * vc.z >= 0) {
+
+            context.fillStyle = face[4];
+            context.beginPath();
+            context.moveTo(vertices[face[0]].x, vertices[face[0]].y);
+            context.lineTo(vertices[face[1]].x, vertices[face[1]].y);
+            context.lineTo(vertices[face[2]].x, vertices[face[2]].y);
+            context.lineTo(vertices[face[3]].x, vertices[face[3]].y);
+            context.closePath();
+            context.fill();
+
+          }
+
+        }
+
+      }
+
+      loop();
+
+      window.addEventListener("click", (event) => {
+
+        pointer.x = event.pageX;
+        pointer.y = event.pageY;
+
+      });
+
+    </script>
+
+  </body>
+
+</html>

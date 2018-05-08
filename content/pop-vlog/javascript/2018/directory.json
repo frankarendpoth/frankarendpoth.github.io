@@ -12,6 +12,7 @@
     "009-circle-collision-response",
     "010-wmw-basic",
     "011-wmw-bouncing-balls",
-    "012-starfield"]
+    "012-starfield",
+    "013-cube"]
 
 }
