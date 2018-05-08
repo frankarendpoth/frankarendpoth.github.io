@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta name = "viewport" content = "width=device-width">
+    <title>StarField</title>
+
+    <style>
+
+      * { box-sizing:border-box; margin:0; padding:0; }
+
+      html, body { height:100%; width:100%; }
+
+      canvas { height:100%; position:fixed; width:100%; }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+
+      const Star = function(x, y, z) {
+
+        this.size = 25;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+
+      }
+
+      var stars = new Array();
+      var max_depth = 7500;
+
+      for (var index = 0; index < 200; index ++) {
+
+        stars.push(new Star(Math.random() * document.documentElement.clientWidth, Math.random() * document.documentElement.clientHeight, index * (max_depth / 200)));
+
+      }
+
+      var context = document.querySelector("canvas").getContext("2d");
+
+      function loop(time_stamp) {
+
+        window.requestAnimationFrame(loop);
+
+        let width = document.documentElement.clientWidth;
+        let height = document.documentElement.clientHeight;
+
+        context.canvas.width = width;
+        context.canvas.height = height;
+
+        context.fillStyle = "#000000";
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+        for (let index = stars.length - 1; index > -1; -- index) {
+
+          let star = stars[index];
+
+          star.z -= 5;
+
+          let screen_average = (width + height) * 0.5;
+
+          let star_x = (star.x - width * 0.5) / (star.z / screen_average) + width * 0.5;
+          let star_y = (star.y - height * 0.5) / (star.z / screen_average) + height * 0.5;
+          let star_size = screen_average / (screen_average + star.z) * star.size;
+
+          if (star.z < 0 ) {
+
+            star.x = Math.random() * width;
+            star.y = Math.random() * height;
+            star.z = max_depth;
+            stars.push(stars.splice(stars.indexOf(star), 1)[0]);
+
+          }
+
+          let color = Math.floor(screen_average / (screen_average + star.z) * 256);
+
+          context.fillStyle = "rgb(" + color + "," + color + "," + color +")";
+
+          context.fillRect(star_x, star_y, star_size, star_size);
+
+        }
+
+      }
+
+      loop();
+
+    </script>
+
+  </body>
+
+</html>

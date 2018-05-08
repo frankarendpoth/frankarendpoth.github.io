@@ -11,6 +11,7 @@
     "008-circle-collision-detection",
     "009-circle-collision-response",
     "010-wmw-basic",
-    "011-wmw-bouncing-balls"]
+    "011-wmw-bouncing-balls",
+    "012-starfield"]
 
 }
