@@ -64,22 +64,38 @@
                          new Point3D( 1,  1,  1),
                          new Point3D(-1,  1,  1)];
 
-        this.faces   =  [[0, 1, 2, 3, "#00f000"],
-                         [0, 4, 5, 1, "#00d000"],
-                         [1, 5, 6, 2, "#00b000"],
-                         [3, 2, 6, 7, "#009000"],
-                         [0, 3, 7, 4, "#007000"],
-                         [4, 7, 6, 5, "#005000"]];
+        this.faces   =  [[0, 1, 2, 3],
+                         [0, 4, 5, 1],
+                         [1, 5, 6, 2],
+                         [3, 2, 6, 7],
+                         [0, 3, 7, 4],
+                         [4, 7, 6, 5]];
 
-        for (let index = 0; index < 8; index ++) {
+        this.randomizeColors();
 
-          this.vertices[index].scale(size * 0.5);
-
-        }
+        for (let index = 0; index < 8; index ++) this.vertices[index].scale(size * 0.5);
 
       };
 
       Cube.prototype = {
+
+        randomizeColors:function() {
+
+          let r = Math.floor(Math.random() * 256);
+          let g = Math.floor(Math.random() * 256);
+          let b = Math.floor(Math.random() * 256);
+
+          for (let index = this.faces.length - 1; index > -1; -- index) {
+
+            r = (r - 10 >= 0) ? r - 10: 0;
+            g = (g - 10 >= 0) ? g - 10: 0;
+            b = (b - 10 >= 0) ? b - 10: 0;
+
+            this.faces[index][4] = "rgb(" + r + "," + g + "," + b + ")";
+
+          }
+
+        },
 
         rotateX:function(radians) {
 
@@ -171,9 +187,8 @@
         context.fillStyle = "#ffffff";
         context.fillRect(0, 0, width, height);
 
-        cube.rotateX((pointer.x - width * 0.5) * 0.0001);
-        cube.rotateY((pointer.y - height * 0.5) * 0.0001);
-        cube.rotateZ(((pointer.x - width * 0.5) + (pointer.y - height * 0.5)) * 0.0001);
+        cube.rotateX((pointer.y - height * 0.5) * 0.0001);
+        cube.rotateY(-(pointer.x - width * 0.5) * 0.0001);
 
         let vertices = project2D(cube.vertices, width, height);
 
@@ -185,17 +200,7 @@
           let p2 = vertices[face[1]];
           let p3 = vertices[face[2]];
 
-          //let v1 = new Point3D(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
-
-          //let v2 = new Point3D(p3.x - p2.x, p3.y - p2.y, p3.z - p2.z);
-
-          //let vc = new Point3D(0 - p1.x, 0 - p1.y, 100 - p1.z);
-
-          //let n = new Point3D(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
-
           if (((p2.y - p1.y) / (p2.x - p1.x) - (p3.y - p1.y) / (p3.x - p1.x) < 0) ^ (p1.x <= p2.x == p1.x > p3.x)) {
-
-          //if (n.x * vc.x + n.y * vc.y + n.z * vc.z >= 0) {
 
             context.fillStyle = face[4];
             context.beginPath();
@@ -210,11 +215,21 @@
 
         }
 
+        context.fillStyle = cube.faces[0][4];
+        context.fillRect(0, 0, 75, 75);
+
       }
 
       loop();
 
       window.addEventListener("click", (event) => {
+
+        if (event.pageX < 75 && event.pageY < 75) {
+
+          cube.randomizeColors();
+          return;
+
+        }
 
         pointer.x = event.pageX;
         pointer.y = event.pageY;

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta charset = "utf-8">
+    <meta name = "viewport" content = "width=device-width">
+
+    <title>Move 3D</title>
+
+    <style>
+
+      * { margin:0; padding:0; }
+
+      html, body { height:100%; position:relative; width:100%; }
+
+      canvas { height:100%; position:fixed; width:100%; }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+
+      const Point2D = function(x, y) { };
+
+      const Point3D = function(x, y, z) { this.x = x; this.y = y; this.z = z; };
+
+      Point3D.prototype = {
+
+        project2D:function(){},
+        rotateX:function(){},
+        rotateY:function(){},
+        rotateZ:function(){}
+
+      };
+
+      const Tree = function() {
+
+        this.vertices = [];
+
+      };
+
+      var context = document.querySelector("canvas").getContext("2d");
+
+      function loop() {
+
+        window.requestAnimationFrame(loop);
+
+        var height = context.canvas.height = document.documentElement.clientHeight;
+        var width  = context.canvas.width  = document.documentElement.clientWidth;
+
+
+
+      }
+
+      loop();
+
+    </script>
+
+  </body>
+
+</html>
