@@ -27,26 +27,101 @@
 
     <script type = "text/javascript">
 
-      const Point2D = function(x, y) { };
+      const Point2D = function(x, y) { this.x = x; this.y = y; };
 
       const Point3D = function(x, y, z) { this.x = x; this.y = y; this.z = z; };
 
       Point3D.prototype = {
 
-        project2D:function(){},
-        rotateX:function(){},
-        rotateY:function(){},
-        rotateZ:function(){}
+        rotateX:function(y, z) {},
+        rotateY:function(x, z) {},
+        rotateZ:function(x, y) {}
 
       };
 
-      const Tree = function() {
+      const Eye = function(x, y, z, focal_length) {
+
+        Point3D.call(this, x, y, z);
+
+        this.direction = new Point3D(0, 0, 1);
+
+        this.focal_length = focal_length;
+
+      };
+
+      Eye.prototype = {
+
+        cullBackFaces:function(object3d) {
+
+          var faces = new Array();
+
+          for (let index = object3d.faces.length - 1; index > -1; -- index) {
+
+            let face = object3d.faces[index];
+
+            let p1 = object3d.vertices[face[0]];
+            let p2 = object3d.vertices[face[1]];
+            let p3 = object3d.vertices[face[2]];
+
+            let v1 = new Point3D(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+            let v2 = new Point3D(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z);
+
+            let n  = new Point3D(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
+
+            if ((p1.x - this.x) * n.x + (p1.y - this.y) * n.y + (p1.z - this.z) * n.z >= 0) faces.unshift(face);
+
+          }
+
+          return faces;
+
+        },
+
+        project:function(points3d, width, height) {
+
+          var points2d = new Array(points3d.length);
+
+          for (let index = points3d.length - 1; index > -1; -- index) {
+
+            let p = points3d[index];
+
+            let z = (p.z > 0) ? p.z : 0;
+
+            points2d[index] = new Point2D((p.x - this.x) * (this.focal_length / (z - this.z)) + width * 0.5, (p.y - this.y) * (this.focal_length / (z - this.z)) + height * 0.5);
+
+          }
+
+          return points2d;
+
+        }
+
+      };
+
+      const Prism = function(x, y, z, w, h, d) {
+
+        Point3D.call(this, x, y, z);
+        this.w = w; this.h = h; this.d = d;
+
+        var hw = w * 0.5;
+        var hh = h * 0.5;
+        var hd = d * 0.5;
+
+        this.vertices = [new Point3D(x - hw, y - hh, z - hd), new Point3D(x + hw, y - hh, z - hd), new Point3D(x + hw, y + hh, z - hd), new Point3D(x - hw, y + hh, z - hd), new Point3D(x - hw, y - hh, z + hd), new Point3D(x + hw, y - hh, z + hd), new Point3D(x + hw, y + hh, z + hd), new Point3D(x - hw, y + hh, z + hd)];
+
+        this.faces = [[0, 1, 2, 3], [0, 4, 5, 1], [1, 5, 6, 2], [3, 2, 6, 7], [0, 3, 7, 4], [4, 7, 6, 5]];
+
+      };
+
+      const Tree = function(x, y, z) {
 
         this.vertices = [];
 
       };
 
       var context = document.querySelector("canvas").getContext("2d");
+
+      var base = new Prism(0, 0, 0, 10000, 10, 10000);
+
+      var eye = new Eye(0, -100, 0, 200);
 
       function loop() {
 
@@ -55,7 +130,29 @@
         var height = context.canvas.height = document.documentElement.clientHeight;
         var width  = context.canvas.width  = document.documentElement.clientWidth;
 
+        context.canvas.height = height;
+        context.canvas.width = width;
 
+        context.fillStyle = "#beb2ad";
+        context.fillRect(0, 0, width, height);
+
+        context.fillStyle = "#000000";
+        let vertices = eye.project(base.vertices, width, height);
+        let faces    = eye.cullBackFaces(base);
+
+        for (let index = faces.length - 1; index > -1; -- index) {
+
+          let face = faces[index];
+
+          context.beginPath();
+          context.moveTo(vertices[face[0]].x, vertices[face[0]].y);
+          context.lineTo(vertices[face[1]].x, vertices[face[1]].y);
+          context.lineTo(vertices[face[2]].x, vertices[face[2]].y);
+          context.lineTo(vertices[face[3]].x, vertices[face[3]].y);
+          context.closePath();
+          context.fill();
+
+        }
 
       }
 
