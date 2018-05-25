@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta charset = "utf-8">
+    <meta name = "viewport" content = "width=device-width">
+
+    <title>Tile Scroll</title>
+
+    <style>
+
+      * { margin:0; padding:0; }
+
+      html, body { background-color:#202830; height:100%; position:relative; width:100%; }
+
+      canvas { height:100%; position:fixed; width:100%; }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+
+      var context = document.querySelector("canvas").getContext("2d");
+
+      var columns   = 24;
+      var rows      = 20;
+      var tile_size = 24;
+      var offset_x = 0;
+      var offset_y = 0;
+      var map = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1,
+                 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1,
+                 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1,
+                 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1,
+                 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1,
+                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+                 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+                 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+                 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1,
+                 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1,
+                 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1,
+                 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+                 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+                 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
+                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1,
+                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+
+      var player = { x:24, y:24, dx:100, dy:100,
+
+        updatePosition:function() {
+
+          this.x += (this.dx - this.x - 12) * 0.05;
+          this.y += (this.dy - this.y - 12) * 0.05;
+
+        }
+
+      };
+
+      var height = document.documentElement.clientHeight;
+      var width = document.documentElement.clientWidth;
+
+      function loop() {
+
+        window.requestAnimationFrame(loop);
+
+        height = document.documentElement.clientHeight;
+        width = document.documentElement.clientWidth;
+
+        context.canvas.height = height;
+        context.canvas.width = width;
+
+        player.updatePosition();
+
+        var x_tile = Math.floor(player.x / tile_size);
+        var y_tile = Math.floor(player.y / tile_size);
+
+        var x_min = (x_tile - 5 < 0)       ? 0       : x_tile - 5;
+        var y_min = (y_tile - 5 < 0)       ? 0       : y_tile - 5;
+        var x_max = (x_tile + 5 > columns) ? columns : x_tile + 5;
+        var y_max = (y_tile + 5 > rows)    ? rows    : y_tile + 5;
+
+        offset_x += (-offset_x + player.x - 240 * 0.5) * 0.1; // smooth scroll
+        offset_y += (-offset_y + player.y - 240 * 0.5) * 0.1; // smooth scroll
+
+        //offset_x = player.x - 240 * 0.5; // stiff scroll
+        //offset_y = player.y - 240 * 0.5; // stiff scroll
+
+        for (let x = x_min; x < x_max; x ++) {
+
+          for (let y = y_min; y < y_max; y ++ ) {
+
+            let value = map[y * columns + x];
+            let color = (value == 0) ? "#ffffff" : "#000000";
+
+            context.fillStyle = color;
+            context.fillRect(Math.round(x * tile_size - offset_x + width * 0.5 - 240 * 0.5), Math.round(y * tile_size - offset_y + height * 0.5 - 240 * 0.5), tile_size, tile_size);
+
+          }
+
+        }
+
+        context.fillStyle = "#ff0000";
+        context.fillRect(Math.floor(player.x - offset_x + width * 0.5 - 240 * 0.5), Math.floor(player.y - offset_y + height * 0.5 - 240 * 0.5), 24, 24);
+
+      }
+
+      loop();
+
+      window.addEventListener("click", (event) => {
+
+        player.dx = event.pageX + offset_x - width * 0.5 + 240 * 0.5;
+        player.dy = event.pageY + offset_y - height * 0.5 + 240 * 0.5;
+
+      });
+
+    </script>
+
+  </body>
+
+</html>
