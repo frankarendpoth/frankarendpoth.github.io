@@ -13,7 +13,7 @@
 
       * { margin:0; padding:0; }
 
-      html, body { background-color:#202830; height:100%; position:relative; width:100%; }
+      html, body { background-color:#ffffff; height:100%; position:relative; width:100%; }
 
       canvas { height:100%; position:fixed; width:100%; }
 
@@ -27,47 +27,65 @@
 
     <script type = "text/javascript">
 
-      var context = document.querySelector("canvas").getContext("2d");
+      const Viewport = function(x, y, w, h) {
 
-      var columns   = 24;
-      var rows      = 20;
-      var tile_size = 24;
-      var offset_x = 0;
-      var offset_y = 0;
-      var map = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1,
-                 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1,
-                 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1,
-                 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1,
-                 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1,
-                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-                 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-                 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-                 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1,
-                 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1,
-                 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1,
-                 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-                 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-                 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
-                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1,
-                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+        this.h = h; this.w = w; this.x = x; this.y = y;
 
-      var player = { x:24, y:24, dx:100, dy:100,
+      };
 
-        updatePosition:function() {
+      Viewport.prototype = {
 
-          this.x += (this.dx - this.x - 12) * 0.05;
-          this.y += (this.dy - this.y - 12) * 0.05;
+        scrollTo:function(x, y) {
+
+          //this.x = x - this.w * 0.5; // stiff scroll
+          //this.y = y - this.h * 0.5; // stiff scroll
+
+          this.x += (-this.x + x - this.w * 0.5) * 0.05; // smooth scroll
+          this.y += (-this.y + y - this.h * 0.5) * 0.05; // smooth scroll
 
         }
 
       };
 
+      const Player = function(x, y, w, h) {
+
+        this.h = h; this.w = w; this.x = x; this.y = y;
+
+      };
+
+      Player.prototype = {
+
+        moveTo:function(x, y) {
+
+          this.x += (x - this.x - this.w * 0.5) * 0.01;
+          this.y += (y - this.y - this.h * 0.5) * 0.01;
+
+        }
+
+      };
+
+      var context = document.querySelector("canvas").getContext("2d");
+
+      var colors = ["#203040", "#f08000", "#0070e0", "#0080f0"];
+
+      var tile_size = 32;
+      var view_width = 10 * tile_size;
+      var view_height = 10 * tile_size;
+      var offset_x = 0;
+      var offset_y = 0;
+      var columns   = 24;
+      var rows      = 24;
+      var map = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 1, 0, 3, 3, 3, 0, 0, 2, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 3, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 2, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 2, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 3, 0, 0, 2, 3, 2, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 3, 3, 0, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 2, 3, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 3, 1, 2, 0, 0, 2, 2, 0, 0, 2, 0, 2, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 3, 0, 0, 3, 3, 2, 2, 3, 2, 3, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 3, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 2, 3, 2, 0, 2, 2, 2, 2, 1, 2, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 1, 2, 2, 2, 2, 1, 3, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+
       var height = document.documentElement.clientHeight;
       var width = document.documentElement.clientWidth;
+
+      var player = new Player(columns * 0.5 * tile_size, rows * 0.5 * tile_size, 32, 32);
+
+      var viewport = new Viewport(0, 0, tile_size * 10, tile_size * 10);
+
+      var pointer = { x:0, y:0 };
 
       function loop() {
 
@@ -79,49 +97,70 @@
         context.canvas.height = height;
         context.canvas.width = width;
 
-        player.updatePosition();
+        player.moveTo(pointer.x, pointer.y);
+        viewport.scrollTo(player.x + player.w * 0.5, player.y + player.h * 0.5);
 
-        var x_tile = Math.floor(player.x / tile_size);
-        var y_tile = Math.floor(player.y / tile_size);
+        var x_min = Math.floor(viewport.x / tile_size);
+        var y_min = Math.floor(viewport.y / tile_size);
+        var x_max = Math.ceil((viewport.x + viewport.w) / tile_size);
+        var y_max = Math.ceil((viewport.y + viewport.h) / tile_size);
 
-        var x_min = (x_tile - 5 < 0)       ? 0       : x_tile - 5;
-        var y_min = (y_tile - 5 < 0)       ? 0       : y_tile - 5;
-        var x_max = (x_tile + 5 > columns) ? columns : x_tile + 5;
-        var y_max = (y_tile + 5 > rows)    ? rows    : y_tile + 5;
+        if (x_min < 0) x_min = 0;
+        if (y_min < 0) y_min = 0;
+        if (x_max > columns) x_max = columns;
+        if (y_max > rows) y_max = rows;
 
-        offset_x += (-offset_x + player.x - 240 * 0.5) * 0.1; // smooth scroll
-        offset_y += (-offset_y + player.y - 240 * 0.5) * 0.1; // smooth scroll
+        /*var x_min = Math.floor((player.x + player.w - view_width * 0.5) / tile_size) - 1;
+        var y_min = Math.floor((player.y + player.h - view_height * 0.5) / tile_size) - 1;
+        var x_max = x_min + view_width / tile_size + 1;
+        var y_max = y_min + view_height / tile_size + 1;
 
-        //offset_x = player.x - 240 * 0.5; // stiff scroll
-        //offset_y = player.y - 240 * 0.5; // stiff scroll
+        if (x_min < 0) { x_min = 0; x_max = x_min + view_width / tile_size + 1; }
+        else if (x_max > columns) { x_max = columns; x_min = x_max - view_width / tile_size - 1; }
+        if (y_min < 0) { y_min = 0; y_max = y_min + view_height / tile_size + 1; }
+        else if (y_max > rows) { y_max = rows; y_min = y_max - view_height / tile_size - 1; }*/
+
+        //offset_x += (-offset_x + player.x + player.w * 0.5 - view_width * 0.5) * 0.1; // smooth scroll
+        //offset_y += (-offset_y + player.y + player.h * 0.5 - view_height * 0.5) * 0.1; // smooth scroll
+
+        /*if (player.x < 0) player.x = 0;
+        else if (player.x + player.w > tile_size * columns) player.x = tile_size * columns - player.w;
+        if (player.y < 0) player.y = 0;
+        else if (player.y + player.h > tile_size * rows) player.y = tile_size * rows - player.h;*/
 
         for (let x = x_min; x < x_max; x ++) {
 
           for (let y = y_min; y < y_max; y ++ ) {
 
             let value = map[y * columns + x];
-            let color = (value == 0) ? "#ffffff" : "#000000";
 
-            context.fillStyle = color;
-            context.fillRect(Math.round(x * tile_size - offset_x + width * 0.5 - 240 * 0.5), Math.round(y * tile_size - offset_y + height * 0.5 - 240 * 0.5), tile_size, tile_size);
+            let tile_x = Math.round(x * tile_size - viewport.x + width * 0.5 - viewport.w * 0.5);
+            let tile_y = Math.round(y * tile_size - viewport.y + height * 0.5 - viewport.h * 0.5);
+
+            context.fillStyle = colors[value];
+            context.fillRect(tile_x, tile_y, tile_size, tile_size);
 
           }
 
         }
 
-        context.fillStyle = "#ff0000";
-        context.fillRect(Math.floor(player.x - offset_x + width * 0.5 - 240 * 0.5), Math.floor(player.y - offset_y + height * 0.5 - 240 * 0.5), 24, 24);
+        context.strokeStyle = "#ff0000";
+        context.rect(width * 0.5 - view_width * 0.5, height * 0.5 - view_height * 0.5, view_width, view_height);
+        context.stroke();
+
+        context.fillStyle = "#ffffff";
+        context.fillRect(Math.round(player.x - viewport.x + width * 0.5 - viewport.w * 0.5), Math.round(player.y - viewport.y + height * 0.5 - viewport.h * 0.5), player.w, player.h);
 
       }
 
-      loop();
-
       window.addEventListener("click", (event) => {
 
-        player.dx = event.pageX + offset_x - width * 0.5 + 240 * 0.5;
-        player.dy = event.pageY + offset_y - height * 0.5 + 240 * 0.5;
+        pointer.x = event.pageX + viewport.x - width * 0.5 + viewport.w * 0.5;
+        pointer.y = event.pageY + viewport.y - height * 0.5 + viewport.h * 0.5;
 
       });
+
+      loop();
 
     </script>
 
