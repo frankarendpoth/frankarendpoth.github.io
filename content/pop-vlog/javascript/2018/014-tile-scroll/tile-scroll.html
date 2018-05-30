@@ -37,11 +37,11 @@
 
         scrollTo:function(x, y) {
 
-          this.x = x - this.w * 0.5; // stiff scroll
-          this.y = y - this.h * 0.5; // stiff scroll
+          //this.x = x - this.w * 0.5; // stiff scroll
+          //this.y = y - this.h * 0.5; // stiff scroll
 
-          //this.x += (-this.x + x - this.w * 0.5) * 0.05; // smooth scroll
-          //this.y += (-this.y + y - this.h * 0.5) * 0.05; // smooth scroll
+          this.x += (-this.x + x - this.w * 0.5) * 0.05; // smooth scroll
+          this.y += (-this.y + y - this.h * 0.5) * 0.05; // smooth scroll
 
         }
 
@@ -57,8 +57,8 @@
 
         moveTo:function(x, y) {
 
-          this.x += (x - this.x - this.w * 0.5) * 0.01;
-          this.y += (y - this.y - this.h * 0.5) * 0.01;
+          this.x += (x - this.x - this.w * 0.5) * 0.05;
+          this.y += (y - this.y - this.h * 0.5) * 0.05;
 
         }
 
@@ -102,7 +102,7 @@
 
       var viewport = new Viewport(0, 0, tile_size * 10, tile_size * 10);
 
-      var pointer = { x:0, y:0 };
+      var pointer = { x:columns * 0.5 * tile_size, y:rows * 0.5 * tile_size };
 
       function loop() {
 
