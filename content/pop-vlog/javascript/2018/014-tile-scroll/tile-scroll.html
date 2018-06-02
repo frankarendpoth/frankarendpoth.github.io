@@ -27,29 +27,10 @@
 
     <script type = "text/javascript">
 
-      const Viewport = function(x, y, w, h) {
+      /* The player is just a simple 2d point with a moveTo function. */
+      const Player = function(x, y) {
 
-        this.h = h; this.w = w; this.x = x; this.y = y;
-
-      };
-
-      Viewport.prototype = {
-
-        scrollTo:function(x, y) {
-
-          //this.x = x - this.w * 0.5; // stiff scroll
-          //this.y = y - this.h * 0.5; // stiff scroll
-
-          this.x += (-this.x + x - this.w * 0.5) * 0.05; // smooth scroll
-          this.y += (-this.y + y - this.h * 0.5) * 0.05; // smooth scroll
-
-        }
-
-      };
-
-      const Player = function(x, y, w, h) {
-
-        this.h = h; this.w = w; this.x = x; this.y = y;
+        this.x = x; this.y = y;
 
       };
 
@@ -57,17 +38,42 @@
 
         moveTo:function(x, y) {
 
-          this.x += (x - this.x - this.w * 0.5) * 0.05;
-          this.y += (y - this.y - this.h * 0.5) * 0.05;
+          /* Gradually moves the player closer to x, y every time moveTo is called. */
+          this.x += (x - this.x - scaled_size * 0.5) * 0.05;
+          this.y += (y - this.y - scaled_size * 0.5) * 0.05;
 
         }
 
       };
 
-      var context = document.querySelector("canvas").getContext("2d");
+      /* The viewport (camera) is a rectangular region that defines the visible
+      area of the map to be drawn. It's x, y coordinates are relative to the map
+      itself, but you can easily draw its contents in a stationary location on screen,
+      thus giving the effect of scrolling. */
+      const Viewport = function(x, y, w, h) {
 
-      var tile_size = 32;
-      var columns   = 24;
+        this.x = x; this.y = y; this.w = w; this.h = h;
+
+      };
+
+      Viewport.prototype = {
+
+        scrollTo:function(x, y) {
+
+          this.x = x - this.w * 0.5;// Rigid scrolling
+          this.y = y - this.w * 0.5;
+
+          // Smooth scrolling (forgot to put this in the video)
+          //this.x += (x - this.x - this.w * 0.5) * 0.05;
+          //this.y += (y - this.y - this.h * 0.5) * 0.05;
+
+        }
+
+      };
+
+      var scaled_size = 32;// The size I want my sprites to be;
+      var sprite_size = 16;// The actual size of sprites / tiles in the tile_sheet image
+      var columns   = 24;// columns and rows in map below
       var rows      = 24;
       var map = [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
                  3,2,1,1,0,0,3,3,3,2,1,0,3,0,0,0,3,0,0,1,2,2,2,3,
@@ -94,83 +100,98 @@
                  3,3,1,1,2,3,3,3,3,3,3,3,1,0,1,2,3,1,0,0,0,0,1,3,
                  3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3];
 
+      /* The drawing context of the on screen canvas */
+      var context = document.querySelector("canvas").getContext("2d");
 
+      /* The width and height of the inside of the browser window */
       var height = document.documentElement.clientHeight;
-      var width = document.documentElement.clientWidth;
+      var width  = document.documentElement.clientWidth;
 
-      var player = new Player(columns * 0.5 * tile_size, rows * 0.5 * tile_size, 32, 32);
+      var player = new Player(100, 100);
+      var viewport = new Viewport(200, 200, 300, 300);
 
-      var viewport = new Viewport(0, 0, tile_size * 10, tile_size * 10);
+      var pointer = { x:0, y:0 };// The adjusted mouse position
 
-      var pointer = { x:columns * 0.5 * tile_size, y:rows * 0.5 * tile_size };
-
-      function loop() {
+      function loop() {// The game loop
 
         window.requestAnimationFrame(loop);
 
-        height = document.documentElement.clientHeight;
-        width = document.documentElement.clientWidth;
+          var height = document.documentElement.clientHeight;
+          var width  = document.documentElement.clientWidth;
 
-        context.canvas.height = height;
-        context.canvas.width = width;
-        context.imageSmoothingEnabled = false;
+          /* Resize canvas on every frame */
+          context.canvas.height = height;
+          context.canvas.width  = width;
 
-        player.moveTo(pointer.x, pointer.y);
-        viewport.scrollTo(player.x + player.w * 0.5, player.y + player.h * 0.5);
+          context.imageSmoothingEnabled = false;// prevent antialiasing of drawn image
 
-        var x_min = Math.floor(viewport.x / tile_size);
-        var y_min = Math.floor(viewport.y / tile_size);
-        var x_max = Math.ceil((viewport.x + viewport.w) / tile_size);
-        var y_max = Math.ceil((viewport.y + viewport.h) / tile_size);
+          player.moveTo(pointer.x, pointer.y);
+          viewport.scrollTo(player.x, player.y);
 
-        if (x_min < 0) x_min = 0;
-        if (y_min < 0) y_min = 0;
-        if (x_max > columns) x_max = columns;
-        if (y_max > rows) y_max = rows;
+          /* Get the min and max column and row in the map to draw. For the min
+          column and row (x and y) we use floor to round down and for the max we
+          use ceil to round up. We want to get the rows and columns under the borders
+          of the viewport rectangle. This is visualized by the white square in the example. */
+          var x_min = Math.floor(viewport.x / scaled_size);
+          var y_min = Math.floor(viewport.y / scaled_size);
+          var x_max = Math.ceil((viewport.x + viewport.w) / scaled_size);
+          var y_max = Math.ceil((viewport.y + viewport.h) / scaled_size);
 
-        for (let x = x_min; x < x_max; x ++) {
+          /* the min and max column and row values cannot go beyond the boundaries
+          of the map. Those values are 0 and the number of columns and rows in the map. */
+          if (x_min < 0) x_min = 0;
+          if (y_min < 0) y_min = 0;
+          if (x_max > columns) x_max = columns;
+          if (y_max > rows) y_max = rows;
 
-          for (let y = y_min; y < y_max; y ++ ) {
+          /* Now we loop through the tiles in the map, but only between the min
+          and max columns and rows that the viewport is over. To do this we use two
+          for loops, one for the columns (x) and one for the rows (y) of the map. */
+          for (let x = x_min; x < x_max; x ++) {
 
-            let value = map[y * columns + x];
+            for (let y = y_min; y < y_max; y ++) {
 
-            let tile_x = Math.round(x * tile_size - viewport.x + width * 0.5 - viewport.w * 0.5);
-            let tile_y = Math.round(y * tile_size - viewport.y + height * 0.5 - viewport.h * 0.5);
+              let value = map[y * columns + x];// Tile value
+              let tile_x = Math.floor(x * scaled_size - viewport.x + width * 0.5 - viewport.w * 0.5);// Tile x destination for drawing
+              let tile_y = Math.floor(y * scaled_size - viewport.y + height * 0.5 - viewport.h * 0.5);// Tile y destination for drawing
 
-            context.drawImage(image, value * 16, 0, 16, 16, tile_x, tile_y, tile_size, tile_size);
+              // Draw tile from tile_sheet
+              context.drawImage(tile_sheet, value * sprite_size, 0, sprite_size, sprite_size, tile_x, tile_y, scaled_size, scaled_size);
+
+            }
 
           }
 
-        }
+          /* This bit of code gets the player's position in the world in terms of
+          columns and rows and converts it to an index in the map array */
+          let player_index = Math.floor((player.y + scaled_size * 0.5) / scaled_size) * columns + Math.floor((player.x + scaled_size * 0.5) / scaled_size);
 
-        let player_index = Math.floor((player.y + player.h * 0.5) / tile_size) * columns + Math.floor((player.x + player.w * 0.5) / tile_size);
+          /* If the player is standing on a grass tile, make it a short grass tile */
+          if (map[player_index] == 2) map[player_index] = 1;
 
-        if (map[player_index] == 2) map[player_index] = 1;
+          /* Draw the player. Remember to offset by the viewport position and
+          center screen position. */
+          context.drawImage(tile_sheet, 64, 0, sprite_size, sprite_size, Math.round(player.x - viewport.x + width * 0.5 - viewport.w * 0.5), Math.round(player.y - viewport.y + height * 0.5 - viewport.h * 0.5), scaled_size, scaled_size);
 
-        context.strokeStyle = "#ffffff";
-        context.rect(width * 0.5 - viewport.w * 0.5, height * 0.5 - viewport.h * 0.5, viewport.w, viewport.h);
-        context.stroke();
-
-        context.drawImage(image, 64, 0, 16, 16, Math.round(player.x - viewport.x + width * 0.5 - viewport.w * 0.5), Math.round(player.y - viewport.y + height * 0.5 - viewport.h * 0.5), tile_size, tile_size);
+          /* Draw the viewport rectangle. */
+          context.strokeStyle = "#ffffff";
+          context.rect(width * 0.5 - viewport.w * 0.5, height * 0.5 - viewport.h * 0.5, viewport.w, viewport.h);
+          context.stroke();
 
       }
 
-      window.addEventListener("click", (event) => {
+      var tile_sheet = new Image();
+
+      tile_sheet.addEventListener("load", (event) => { loop(); });
+
+      tile_sheet.src = "tile-scroll.png";
+
+      context.canvas.addEventListener("click", (event) => {
 
         pointer.x = event.pageX + viewport.x - width * 0.5 + viewport.w * 0.5;
         pointer.y = event.pageY + viewport.y - height * 0.5 + viewport.h * 0.5;
 
       });
-
-      var image = new Image();
-
-      image.addEventListener("load", (event) => {
-
-        loop();
-
-      });
-
-      image.src = "tile-scroll.png";
 
     </script>
 
