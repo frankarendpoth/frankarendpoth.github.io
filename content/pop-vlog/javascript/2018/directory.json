@@ -17,6 +17,7 @@
     "014-tile-scroll",
     "015-shoot",
     "016-platformer-ai",
-    "017-platform"]
+    "017-platform",
+    "018-inventory"]
 
 }

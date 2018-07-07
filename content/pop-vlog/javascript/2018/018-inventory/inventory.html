@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta name = "viewport" content = "width=device-width">
+
+    <style>
+
+      * { margin:0; padding:0; }
+
+      html, body { height:100%; width:100%; }
+
+      body { background-color:#000000; display:grid; }
+
+      canvas { align-self:center; justify-self:center; }
+
+    </style>
+
+    <title>Inventory</title>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+
+    var tile_set = new Image();
+    var tile_size = 16;
+    var map_columns = 16;
+    var map_rows = 12;
+    var map_ratio = map_columns / map_rows;
+    var map_scale = 1;
+    var map = [ 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+                9, 9, 9,10,11,12, 9, 9,10,11,12, 9, 9, 9, 9, 9,
+                9, 9,10, 5, 0, 0,12,10, 5, 0, 0, 9, 9, 9, 9, 9,
+                9, 9, 4, 0, 0, 0, 0, 4, 0, 0, 0,12, 9, 9, 9, 9,
+                9,10, 5, 0,11, 5, 0, 5, 0, 5, 0, 0, 9, 9, 9, 9,
+               12, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,12, 9, 9, 9,
+                0, 5, 0, 4, 0, 3, 0, 9, 9, 4, 0, 2, 0,12, 9, 9,
+                0, 2, 0, 5, 0, 5, 0,11,11, 5, 0, 5, 0, 0,11,11,
+                0, 2, 3, 0, 0, 0, 0, 2, 0, 0, 0, 3, 2, 0, 0, 2,
+                8, 6, 7, 8, 8, 8, 8, 7, 8, 8, 8, 7, 6, 8, 8, 7,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+
+    var context = document.querySelector("canvas").getContext("2d");
+    var buffer = document.createElement("canvas").getContext("2d");
+
+    var screen_h = document.documentElement.clientHeight - 16;
+    var screen_w = document.documentElement.clientWidth - 16;
+
+    function loop(time_step) {
+
+      window.requestAnimationFrame(loop);
+
+      screen_h = document.documentElement.clientHeight - 16;
+      screen_w = document.documentElement.clientWidth - 16;
+
+      if (screen_h / buffer.canvas.height < screen_w / buffer.canvas.width) screen_w = screen_h * map_ratio;
+      else screen_h = screen_w / map_ratio;
+
+      map_scale = screen_h / (map_rows * tile_size);
+
+      context.canvas.height = screen_h;
+      context.canvas.width = screen_w;
+      context.imageSmoothingEnabled = false;
+
+      for (let index = map.length - 1; index > -1; -- index) {
+
+        let value = map[index];
+        let tile_x = (index % map_columns) * tile_size;
+        let tile_y = Math.floor(index / map_columns) * tile_size;
+
+        buffer.drawImage(tile_set, (value % 8) * tile_size, Math.floor(value / 8) * tile_size, tile_size, tile_size, tile_x, tile_y, tile_size, tile_size);
+
+      }
+
+      context.drawImage(buffer.canvas, 0, 0, buffer.canvas.width, buffer.canvas.height, 0, 0, context.canvas.width, context.canvas.height);
+
+    }
+
+    buffer.canvas.height = map_rows * tile_size;
+    buffer.canvas.width  = map_columns * tile_size;
+
+    tile_set.addEventListener("load", (event) => { loop(); });
+    tile_set.src = "inventory.png";
+
+    </script>
+
+  </body>
+
+</html>
