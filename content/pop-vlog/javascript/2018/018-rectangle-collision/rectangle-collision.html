@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta name = "viewport" content = "width=device-width">
+
+    <style>
+
+      * { margin:0; padding:0; overflow:hidden; }
+
+      html, body { height:100%; width:100%; }
+
+      body { background-color:#ffffff; display:grid; }
+
+      canvas { align-self:center; justify-self:center; }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+
+      class Rectangle {
+
+        constructor (x, y, w, h) {
+
+          this.x = x; this.y = y; this.w = w; this.h = h;
+
+        }
+
+        get cx() { return this.x + this.w * 0.5; }
+        get cy() { return this.y + this.h * 0.5; }
+
+        get b() { return this.y + this.h; }
+        get l() { return this.x; }
+        get r() { return this.x + this.w; }
+        get t() { return this.y; }
+
+        collideRectangle(rect) {
+
+          if (rect.l > this.r || rect.r < this.l || rect.t > this.b || rect.b < this.t) return false;
+
+          var dx = this.cx - rect.cx;
+          var dy = this.cy - rect.cy;
+
+          if (Math.abs((rect.w + this.w) * 0.5 - Math.abs(dx)) < Math.abs((rect.h + this.h) * 0.5 - Math.abs(dy))) {
+
+            if (dy < 0) rect.x = this.x - rect.w;
+            else rect.x = this.r;
+
+
+
+          }
+
+          return true;
+
+        }
+
+      }
+
+      var context = document.querySelector("canvas").getContext("2d");
+
+      var screen_h = document.documentElement.clientHeight;
+      var screen_w = document.documentElement.clientWidth;
+
+      var r1 = new Rectangle(100, 100, 200, 150);
+      var r2 = new Rectangle(100, 100, 160, 120);
+
+      var pointer = { x:0, y:0 };
+
+      function loop() {
+
+        window.requestAnimationFrame(loop);
+
+        screen_h = document.documentElement.clientHeight - 16;
+        screen_w = document.documentElement.clientWidth - 16;
+
+        context.canvas.height = screen_h;
+        context.canvas.width = screen_w;
+
+        context.fillStyle = "#202830";
+        context.fillRect(0, 0, screen_w, screen_h);
+
+        r1.x = screen_w * 0.5 - r1.w * 0.5;
+        r1.y = screen_h * 0.5 - r1.h * 0.5;
+
+        r2.x = pointer.x - r2.w * 0.5;
+        r2.y = pointer.y - r2.h * 0.5;
+
+        context.fillStyle = "#ffffff";
+        context.fillRect(r1.x, r1.y, r1.w, r1.h);
+        context.strokeStyle = "#808080";
+        context.beginPath();
+        context.moveTo(r1.l, r1.t);
+        context.lineTo(r1.r, r1.b);
+        context.stroke();
+        context.moveTo(r1.r, r1.t);
+        context.lineTo(r1.l, r1.b);
+        context.stroke();
+
+        var collision = false;
+        if (r1.collideRectangle(r2)) collision = true;
+
+        context.fillStyle = "#ff0000";
+        context.fillRect(r2.x, r2.y , r2.w, r2.h);
+
+        if (collision) {
+
+          context.strokeStyle = "#800000";
+          context.rect(pointer.x - r2.w * 0.5, pointer.y - r2.h * 0.5, r2.w, r2.h);
+          context.stroke();
+
+        }
+
+      }
+
+      loop();
+
+      window.addEventListener("mousemove", function(event) {
+
+        var rect = context.canvas.getBoundingClientRect();
+
+        pointer.x = event.clientX - rect.left;
+        pointer.y = event.clientY - rect.top;
+
+      });
+
+    </script>
+
+  </body>
+
+</html>
