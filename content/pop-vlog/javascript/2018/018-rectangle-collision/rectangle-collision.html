@@ -16,11 +16,15 @@
 
       canvas { align-self:center; justify-self:center; }
 
+      p { color:#ffffff; position:fixed; top:16px; left:16px; }
+
     </style>
 
   </head>
 
   <body>
+
+    <p></p>
 
     <canvas></canvas>
 
@@ -34,27 +38,40 @@
 
         }
 
+        getMax(x, y) {
+
+          var v = { x:undefined, y:undefined };
+
+          if (x < 0) v.x = this.x;
+          else v.x = this.x + this.w;
+          if (y < 0) v.y = this.y;
+          else v.y = this.y + this.h;
+
+          return v;
+
+        }
+
         get cx() { return this.x + this.w * 0.5; }
         get cy() { return this.y + this.h * 0.5; }
 
-        get b() { return this.y + this.h; }
-        get l() { return this.x; }
-        get r() { return this.x + this.w; }
-        get t() { return this.y; }
-
         collideRectangle(rect) {
 
-          if (rect.l > this.r || rect.r < this.l || rect.t > this.b || rect.b < this.t) return false;
+          var dx = rect.cx - this.cx;
+          var dy = rect.cy - this.cy;
+          var w2 = (rect.w + this.w) * 0.5;
+          var h2 = (rect.h + this.h) * 0.5;
 
-          var dx = this.cx - rect.cx;
-          var dy = this.cy - rect.cy;
+          if (Math.abs(dx) > w2 || Math.abs(dy) > h2) return false;
 
-          if (Math.abs((rect.w + this.w) * 0.5 - Math.abs(dx)) < Math.abs((rect.h + this.h) * 0.5 - Math.abs(dy))) {
+          if (Math.abs(dx / this.w) > Math.abs(dy / this.h)) {
 
-            if (dy < 0) rect.x = this.x - rect.w;
-            else rect.x = this.r;
+            if (dx < 0) rect.x = this.x - rect.w;
+            else rect.x = this.x + this.w;
 
+          } else {
 
+            if (dy < 0) rect.y = this.y - rect.h;
+            else rect.y = this.y + this.h;
 
           }
 
@@ -66,11 +83,13 @@
 
       var context = document.querySelector("canvas").getContext("2d");
 
+      var p = document.querySelector("p");
+
       var screen_h = document.documentElement.clientHeight;
       var screen_w = document.documentElement.clientWidth;
 
-      var r1 = new Rectangle(100, 100, 200, 150);
-      var r2 = new Rectangle(100, 100, 160, 120);
+      var r1 = new Rectangle(100, 100, Math.round(Math.random() * 100 + 50), Math.round(Math.random() * 100 + 50));
+      var r2 = new Rectangle(100, 100, Math.round(Math.random() * 100 + 50), Math.round(Math.random() * 100 + 50));
 
       var pointer = { x:0, y:0 };
 
@@ -95,14 +114,6 @@
 
         context.fillStyle = "#ffffff";
         context.fillRect(r1.x, r1.y, r1.w, r1.h);
-        context.strokeStyle = "#808080";
-        context.beginPath();
-        context.moveTo(r1.l, r1.t);
-        context.lineTo(r1.r, r1.b);
-        context.stroke();
-        context.moveTo(r1.r, r1.t);
-        context.lineTo(r1.l, r1.b);
-        context.stroke();
 
         var collision = false;
         if (r1.collideRectangle(r2)) collision = true;
@@ -114,6 +125,20 @@
 
           context.strokeStyle = "#800000";
           context.rect(pointer.x - r2.w * 0.5, pointer.y - r2.h * 0.5, r2.w, r2.h);
+          context.stroke();
+
+          context.strokeStyle = "#800000";
+          context.moveTo(r1.cx, r1.cy);
+          context.lineTo(pointer.x, pointer.y);
+          context.stroke();
+
+          context.strokeStyle = "#808080";
+          context.beginPath();
+          context.moveTo(r1.x, r1.y);
+          context.lineTo(r1.x + r1.w, r1.y + r1.h);
+          context.stroke();
+          context.moveTo(r1.x + r1.w, r1.y);
+          context.lineTo(r1.x, r1.y + r1.h);
           context.stroke();
 
         }
@@ -128,6 +153,35 @@
 
         pointer.x = event.clientX - rect.left;
         pointer.y = event.clientY - rect.top;
+
+      });
+
+      var offset_x = offset_y = 0;
+
+      window.addEventListener("touchstart", function(event) {
+
+        var rect = context.canvas.getBoundingClientRect();
+
+        offset_x = event.targetTouches[0].clientX - rect.left - r2.cx;
+        offset_y = event.targetTouches[0].clientY - rect.top - r2.cy;
+
+      });
+
+      window.addEventListener("touchmove", function(event) {
+
+        var rect = context.canvas.getBoundingClientRect();
+
+        pointer.x = event.targetTouches[0].clientX - rect.left - offset_x;
+        pointer.y = event.targetTouches[0].clientY - rect.top - offset_y;
+
+      });
+
+      window.addEventListener("click", function(event) {
+
+        r1.h = Math.round(Math.random() * 100 + 50);
+        r1.w = Math.round(Math.random() * 100 + 50);
+        r2.h = Math.round(Math.random() * 100 + 50);
+        r2.w = Math.round(Math.random() * 100 + 50);
 
       });
 
