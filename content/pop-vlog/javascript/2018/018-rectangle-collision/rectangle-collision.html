@@ -16,15 +16,11 @@
 
       canvas { align-self:center; justify-self:center; }
 
-      p { color:#ffffff; position:fixed; top:16px; left:16px; }
-
     </style>
 
   </head>
 
   <body>
-
-    <p></p>
 
     <canvas></canvas>
 
@@ -38,40 +34,31 @@
 
         }
 
-        getMax(x, y) {
-
-          var v = { x:undefined, y:undefined };
-
-          if (x < 0) v.x = this.x;
-          else v.x = this.x + this.w;
-          if (y < 0) v.y = this.y;
-          else v.y = this.y + this.h;
-
-          return v;
-
-        }
-
         get cx() { return this.x + this.w * 0.5; }
         get cy() { return this.y + this.h * 0.5; }
 
         collideRectangle(rect) {
 
-          var dx = rect.cx - this.cx;
-          var dy = rect.cy - this.cy;
-          var w2 = (rect.w + this.w) * 0.5;
-          var h2 = (rect.h + this.h) * 0.5;
+          var dx = rect.cx - this.cx;// x difference between centers
+          var dy = rect.cy - this.cy;// y difference between centers
+          var aw = (rect.w + this.w) * 0.5;// average width
+          var ah = (rect.h + this.h) * 0.5;// average height
 
-          if (Math.abs(dx) > w2 || Math.abs(dy) > h2) return false;
+          /* If either distance is greater than the average dimension there is no collision. */
+          if (Math.abs(dx) > aw || Math.abs(dy) > ah) return false;
 
+          /* To determine which region of this rectangle the rect's center
+          point is in, we have to account for the scale of the this rectangle.
+          To do that, we divide dx and dy by it's width and height respectively. */
           if (Math.abs(dx / this.w) > Math.abs(dy / this.h)) {
 
-            if (dx < 0) rect.x = this.x - rect.w;
-            else rect.x = this.x + this.w;
+            if (dx < 0) rect.x = this.x - rect.w;// left
+            else rect.x = this.x + this.w; // right
 
           } else {
 
-            if (dy < 0) rect.y = this.y - rect.h;
-            else rect.y = this.y + this.h;
+            if (dy < 0) rect.y = this.y - rect.h; // top
+            else rect.y = this.y + this.h; // bottom
 
           }
 
