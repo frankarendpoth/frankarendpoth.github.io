@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta name = "viewport" content = "width=device-width">
+    <title>Tile Animation</title>
+
+    <style>
+
+      * { margin:0; padding:0; overflow:hidden; }
+
+      body, html { height:100%; width:100%; }
+
+      body { background-color:#000000; display:grid; }
+
+      canvas { align-self:center; justify-self:center; }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+
+      class Animator {
+
+        constructor(frame_set, delay) {
+          
+          this.count = 0;
+          this.delay = delay;
+
+          this.frame_set = frame_set;// animation frames
+          this.frame_index = 0;// playhead
+          this.frame_value = frame_set[0];// current frame
+
+        }
+
+        animate() {
+
+          this.count ++;
+
+          if (this.count > this.delay) {
+
+            this.count = 0;
+
+            this.frame_index = (this.frame_index == this.frame_set.length - 1) ? 0 : this.frame_index + 1;
+            this.frame_value = this.frame_set[this.frame_index];
+
+
+          }
+
+        }
+
+      }
+
+      var buffer  = document.createElement("canvas").getContext("2d");
+      var context = document.querySelector("canvas").getContext("2d");
+
+      var source_columns = 8;
+      var tile_sheet = new Image();
+      var tile_size  = 16;
+
+      var map_columns = 10;
+      var map_rows    = 10;
+      var map_ratio   = map_columns / map_rows; // columns / rows
+      var map = [ 6, 0,22, 8, 8,21, 1, 5, 0,22,
+                 20,14,21, 8, 8,21, 8,12, 7,22,
+                 21,22,21, 8, 8,22, 8,19,14,21,
+                  0, 1, 5,15,15, 0, 8,21,22,22,
+                  7, 8,12,13,13, 7, 8,22, 1, 1,
+                 14, 8,12,13,13, 7, 8,21, 8, 8,
+                 22, 8,19,20,20,14, 8,21, 8, 8,
+                 21, 8,21,22,21,21, 8, 5,15,15,
+                  1, 8, 1, 5, 0,21, 8,19,20,20,
+                  8, 8, 8,12, 7,21, 8,21,22,21];
+
+       var animations = {
+
+         1: new Animator([1, 2, 3, 4], 10),
+         8: new Animator([8, 9,10,11], 10),
+         15: new Animator([15, 16, 17, 18], 10),
+         22: new Animator([22, 23], 40)
+
+       };
+
+      let screen_h = document.documentElement.clientHeight - 16;
+      let screen_w = document.documentElement.clientWidth  - 16;
+
+      function loop() {
+
+        window.requestAnimationFrame(loop);
+
+        screen_h = document.documentElement.clientHeight - 16;
+        screen_w = document.documentElement.clientWidth  - 16;
+
+        let ratio = screen_w / screen_h;
+
+        if (screen_h / map_rows * tile_size < screen_w / map_columns * tile_size) {
+
+            context.canvas.height = screen_h;
+            context.canvas.width  = map_ratio * screen_h;
+
+        } else {
+
+            context.canvas.height = screen_w / map_ratio;
+            context.canvas.width  = screen_w;
+
+        }
+
+        context.imageSmoothingEnabled = false;
+        
+        Object.values(animations).forEach(animator => {
+
+          animator.animate();
+          
+        });
+
+
+        for (let index = map.length - 1; index > -1; -- index) {
+
+          let value = map[index];
+
+          if (animations[value]) value = animations[value].frame_value;
+
+          let source_x =           (value % source_columns) * tile_size;
+          let source_y = Math.floor(value / source_columns) * tile_size;
+          let dest_x   =           (index % map_columns)    * tile_size;
+          let dest_y   = Math.floor(index / map_columns)    * tile_size;
+
+          buffer.drawImage(tile_sheet, source_x, source_y, tile_size, tile_size, dest_x, dest_y, tile_size, tile_size);
+
+        }
+
+        context.drawImage(buffer.canvas, 0, 0, buffer.canvas.width, buffer.canvas.height, 0, 0, context.canvas.width, context.canvas.height);
+
+      }
+
+      buffer.canvas.height = map_rows    * tile_size;
+      buffer.canvas.width  = map_columns * tile_size;
+      buffer.imageSmoothingEnabled = false;
+
+      tile_sheet.addEventListener("load", event => {
+
+        loop();
+
+      });
+
+      tile_sheet.src = "animated-tile.png";
+
+    </script>
+
+  </body>
+
+</html>
