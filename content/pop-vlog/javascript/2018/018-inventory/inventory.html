@@ -28,51 +28,109 @@
 
     <script type = "text/javascript">
 
-      const Sprite = function(x, y, sx, sy, sw, sh) {
+      class Sprite {
 
-        this.x = x; this.y = y; this.sx = sx; this.sy = sy; this.sw = sw; this.sh = sh;
+        constructor(x, y, sx, sy, w, h) {
 
-        this.vx = this.vy = 0;
+          this.x = x; this.y = y; this.sx = sx; this.sy = sy; this.w = w; this.h = h;
 
-      };
+          this.vx = this.vy = 0;
 
-      Sprite.prototype = {
+        }
 
-        updatePosition:function(g, f) {
+        collidePoint(point) {
 
-          this.vy += g;
+          if (point.x < this.x || point.x > this.x + this.w ||
+              point.y < this.y || point.y > this.y + this.h) return false;
+
+          return true;
+
+        }
+
+        collideRect(sprite) {
+          
+          if (this.x > sprite.x + sprite.w || this.x + this.w < sprite.x ||
+              this.y > sprite.y + sprite.h || this.y + this.h < sprite.y) return false;
+
+          return true;
+              
+        }
+
+        updatePosition(gravity, friction, floor) {
+
+          this.vy += gravity;
 
           this.x += this.vx;
           this.y += this.vy;
 
-          this.vx *= f;
-          this.vy *= f;
+          this.vx *= friction;
+          this.vy *= friction;
 
-          if (this.y + this.sh > 148) {
+          if (this.y + this.h > floor) {
 
-            this.y = 148 - this.sh;
+            this.y = floor - this.h;
             this.vy = 0;
 
           }
 
         }
 
-      };
+      }
 
-      const Player = function(x, y) {
+      class Inventory {
 
-        Sprite.call(this, x, y, 112, 16, 16, 32);
+        constructor(x, y, w, h) {
 
-      };
+          this.x = x; this.y = y; this.w = w; this.h = h;
+          this.color = "rgba(255, 255, 255, 0.5)";
+          this.items = new Array();
+          this.columns = 4;
 
-      Object.assign(Player.prototype, Sprite.prototype);
+        }
 
+        addItem(sprite) {
+          
+          if (this.items.length == this.columns) {
+
+            sprite.vy = -4;
+            return false;
+
+          }
+
+          this.items.push(sprite)
+
+          return true;
+              
+        }
+
+        dropItem(index, x, y) {
+
+          var item = this.items[index];
+
+          if (item) {
+
+            this.items.splice(index, 1);
+            item.x = x;
+            item.y = y - item.h;
+            item.vx = Math.random() * 2 - 1;
+            item.vy = Math.random() * -5 - 1;
+
+          } return item;
+
+        }
+
+      }
+
+      Inventory.prototype.collidePoint = Sprite.prototype.collidePoint;
 
       var tile_set = new Image();
       var tile_size = 16;
       var map_columns = 16;
       var map_rows = 12;
       var map_ratio = map_columns / map_rows;
+      var map_floor = 148;
+      var map_friction = 0.9;
+      var map_gravity = 1;
       var map_scale = 1;
       var map = [ 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
                   9, 9, 9,10,11,12, 9, 9,10,11,12, 9, 9, 9, 9, 9,
@@ -87,30 +145,63 @@
                   1, 1, 1, 1,13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,13,
                   8, 8, 8, 8, 6, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 7];
 
-      var context = document.querySelector("canvas").getContext("2d");
-      var buffer = document.createElement("canvas").getContext("2d");
+      var context = document.querySelector("canvas").getContext("2d", { alpha: false });
+      var buffer = document.createElement("canvas").getContext("2d", { alpha: false });
 
       var screen_h = document.documentElement.clientHeight - 16;
       var screen_w = document.documentElement.clientWidth - 16;
 
-      var player = new Player(100, 100, 16, 32);
+      var player = new Sprite(100, 100, 112, 16, 16, 32);
+      var inventory = new Inventory(120, 8, 128, 32);
+      var items = [new Sprite(Math.random() * 240, 100, 96, 16, tile_size, tile_size),
+                   new Sprite(Math.random() * 240, 100, 0, 32, tile_size, tile_size),
+                   new Sprite(Math.random() * 240, 100, 16, 32, tile_size, tile_size),
+                   new Sprite(Math.random() * 240, 100, 32, 32, tile_size, tile_size),
+                   new Sprite(Math.random() * 240, 100, 48, 32, tile_size, tile_size),
+                   new Sprite(Math.random() * 240, 100, 64, 32, tile_size, tile_size),
+                   new Sprite(Math.random() * 240, 100, 80, 32, tile_size, tile_size),
+                   new Sprite(Math.random() * 240, 100, 96, 32, tile_size, tile_size)];
+
+      var pointer = { x:0, y:0, down:false };
 
       function loop(time_step) {
 
-        window.requestAnimationFrame(loop);
+        window.requestAnimationFrame(loop);// perpetuate the loop
 
-        screen_h = document.documentElement.clientHeight - 16;
+        screen_h = document.documentElement.clientHeight - 16;// Get screen height and width
         screen_w = document.documentElement.clientWidth - 16;
+        
+        if (screen_w / screen_h < map_ratio) { // fit map to screen
 
-        if (screen_h / buffer.canvas.height < screen_w / buffer.canvas.width) screen_w = screen_h * map_ratio;
-        else screen_h = screen_w / map_ratio;
+            context.canvas.width = screen_w;
+            context.canvas.height = screen_w / map_ratio;
 
-        map_scale = screen_h / (map_rows * tile_size);
+        } else {
 
-        context.canvas.height = screen_h;
-        context.canvas.width = screen_w;
+            context.canvas.width = screen_h * map_ratio;
+            context.canvas.height = screen_h;
+
+        }
+
         context.imageSmoothingEnabled = false;
 
+        map_scale = context.canvas.height / (map_rows * tile_size);
+
+        if (pointer.down && inventory.items.length > 0 && inventory.collidePoint(pointer)) {
+          
+          let index = Math.floor((pointer.x - inventory.x) / (inventory.w / inventory.columns));
+
+          pointer.x = player.x + player.w * 0.5;
+
+          let item = inventory.dropItem(index, player.x, player.y);
+
+          if (item) items.unshift(item);
+
+          pointer.down = false;
+
+        }
+
+        /* Draw the map */
         for (let index = map.length - 1; index > -1; -- index) {
 
           let value = map[index];
@@ -121,11 +212,49 @@
 
         }
 
-        player.updatePosition(1, 0.9);
+        player.vx = (pointer.x - player.x - tile_size * 0.5) * 0.025;
+        player.updatePosition(map_gravity, map_friction, map_floor);
 
-        buffer.drawImage(tile_set, player.sx, player.sy, player.sw, player.sh, Math.round(player.x), Math.round(player.y), player.sw, player.sh);
+        /* Draw the player */
+        buffer.drawImage(tile_set, player.sx, player.sy, player.w, player.h, Math.round(player.x), Math.round(player.y), player.w, player.h);
 
+        var front_item_index = undefined;
+         /* Draw the items */
+        for (let index = items.length - 1; index > -1; -- index) {
+
+          let item = items[index];
+
+          if (item.y + item.h >= map_floor && item.collideRect(player) && pointer.down && item.collidePoint(pointer)) {
+              
+            front_item_index = index;  
+
+          }
+
+          item.updatePosition(map_gravity, map_friction, map_floor);
+
+          buffer.drawImage(tile_set, item.sx, item.sy, item.w, item.h, Math.round(item.x), Math.round(item.y), item.w, item.h);
+
+        }
+
+        if (front_item_index != undefined && inventory.addItem(items[front_item_index])) items.splice(front_item_index, 1); 
+
+        /* Draw the inventory */
+        buffer.fillStyle = inventory.color;
+        buffer.fillRect(inventory.x, inventory.y, inventory.w, inventory.h);
+
+        for (let index = inventory.items.length - 1; index > -1; -- index) {
+
+          let item = inventory.items[index];
+          let dest_x = inventory.x + index * tile_size * 2;
+            
+          buffer.drawImage(tile_set, item.sx, item.sy, item.w, item.h, dest_x, inventory.y, tile_size * 2, tile_size * 2);
+
+        }
+
+        /* Draw to the display context */
         context.drawImage(buffer.canvas, 0, 0, buffer.canvas.width, buffer.canvas.height, 0, 0, context.canvas.width, context.canvas.height);
+
+        pointer.down = false;
 
       }
 
@@ -135,6 +264,30 @@
 
       tile_set.addEventListener("load", (event) => { loop(); });
       tile_set.src = "inventory.png";
+
+      var clickable = false;
+
+      window.addEventListener("click", event => {
+
+        var rect = context.canvas.getBoundingClientRect();
+
+        pointer.x = (event.clientX - rect.left) / map_scale;
+        pointer.y = (event.clientY - rect.top) / map_scale;
+        pointer.down = true;
+
+        clickable = true;
+
+      });
+
+      /*if (!clickable)*/ window.addEventListener("touchend", event => {
+
+        var rect = context.canvas.getBoundingClientRect();
+
+        pointer.x = (event.targetTouches[0].clientX - rect.left) / map_scale;
+        pointer.y = (event.targetTouches[0].clientY - rect.top) / map_scale;
+        pointer.down = true;
+
+      });
 
     </script>
 
