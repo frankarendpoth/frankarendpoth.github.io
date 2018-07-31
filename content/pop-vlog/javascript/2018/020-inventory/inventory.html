@@ -40,8 +40,7 @@
 
         collidePoint(point) {
 
-          if (point.x < this.x || point.x > this.x + this.w ||
-              point.y < this.y || point.y > this.y + this.h) return false;
+          if (point.x < this.x || point.x > this.x + this.w || point.y < this.y || point.y > this.y + this.h) return false;
 
           return true;
 
@@ -49,8 +48,7 @@
 
         collideRect(sprite) {
           
-          if (this.x > sprite.x + sprite.w || this.x + this.w < sprite.x ||
-              this.y > sprite.y + sprite.h || this.y + this.h < sprite.y) return false;
+          if (this.x > sprite.x + sprite.w || this.x + this.w < sprite.x || this.y > sprite.y + sprite.h || this.y + this.h < sprite.y) return false;
 
           return true;
               
@@ -162,31 +160,13 @@
                    new Sprite(Math.random() * 240, 100, 80, 32, tile_size, tile_size),
                    new Sprite(Math.random() * 240, 100, 96, 32, tile_size, tile_size)];
 
-      var pointer = { x:0, y:0, down:false };
+      var pointer = { x:100, y:0, down:false };
 
       function loop(time_step) {
 
         window.requestAnimationFrame(loop);// perpetuate the loop
 
-        screen_h = document.documentElement.clientHeight - 16;// Get screen height and width
-        screen_w = document.documentElement.clientWidth - 16;
-        
-        if (screen_w / screen_h < map_ratio) { // fit map to screen
-
-            context.canvas.width = screen_w;
-            context.canvas.height = screen_w / map_ratio;
-
-        } else {
-
-            context.canvas.width = screen_h * map_ratio;
-            context.canvas.height = screen_h;
-
-        }
-
-        context.imageSmoothingEnabled = false;
-
-        map_scale = context.canvas.height / (map_rows * tile_size);
-
+        // Click inventory
         if (pointer.down && inventory.items.length > 0 && inventory.collidePoint(pointer)) {
           
           let index = Math.floor((pointer.x - inventory.x) / (inventory.w / inventory.columns));
@@ -196,8 +176,6 @@
           let item = inventory.dropItem(index, player.x, player.y);
 
           if (item) items.unshift(item);
-
-          pointer.down = false;
 
         }
 
@@ -212,13 +190,14 @@
 
         }
 
+        // update player
         player.vx = (pointer.x - player.x - tile_size * 0.5) * 0.025;
         player.updatePosition(map_gravity, map_friction, map_floor);
 
         /* Draw the player */
         buffer.drawImage(tile_set, player.sx, player.sy, player.w, player.h, Math.round(player.x), Math.round(player.y), player.w, player.h);
 
-        var front_item_index = undefined;
+        var front_item_index = undefined;// Index of item at very front of screen 
          /* Draw the items */
         for (let index = items.length - 1; index > -1; -- index) {
 
@@ -226,7 +205,7 @@
 
           if (item.y + item.h >= map_floor && item.collideRect(player) && pointer.down && item.collidePoint(pointer)) {
               
-            front_item_index = index;  
+            front_item_index = index;// store the frontmost item index
 
           }
 
@@ -236,6 +215,7 @@
 
         }
 
+        // If there is an item selected, add it to the inventory
         if (front_item_index != undefined && inventory.addItem(items[front_item_index])) items.splice(front_item_index, 1); 
 
         /* Draw the inventory */
@@ -265,8 +245,7 @@
       tile_set.addEventListener("load", (event) => { loop(); });
       tile_set.src = "inventory.png";
 
-      var clickable = false;
-
+      // IOS may not recognize click events on window or canvas elements.
       window.addEventListener("click", event => {
 
         var rect = context.canvas.getBoundingClientRect();
@@ -275,11 +254,10 @@
         pointer.y = (event.clientY - rect.top) / map_scale;
         pointer.down = true;
 
-        clickable = true;
-
       });
 
-      /*if (!clickable)*/ window.addEventListener("touchend", event => {
+      // touchend event handler should cover ios, but now we have two listeners active on Android...
+      window.addEventListener("touchend", event => {
 
         var rect = context.canvas.getBoundingClientRect();
 
@@ -288,6 +266,33 @@
         pointer.down = true;
 
       });
+
+      function resize(event) {
+
+        screen_h = document.documentElement.clientHeight - 16;// Get screen height and width
+        screen_w = document.documentElement.clientWidth - 16;
+        
+        if (screen_w / screen_h < map_ratio) { // fit map to screen
+
+            context.canvas.width = screen_w;
+            context.canvas.height = screen_w / map_ratio;
+
+        } else {
+
+            context.canvas.width = screen_h * map_ratio;
+            context.canvas.height = screen_h;
+
+        }
+
+        context.imageSmoothingEnabled = false;
+
+        map_scale = context.canvas.height / (map_rows * tile_size);
+
+      }
+
+      window.addEventListener("resize", resize);
+
+      resize();
 
     </script>
 
