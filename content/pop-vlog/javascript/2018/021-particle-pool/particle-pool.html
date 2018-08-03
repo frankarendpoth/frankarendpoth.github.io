@@ -140,7 +140,7 @@
 
           particle.updatePosition();
 
-          if (particle.a <=0) pool.push(particles.splice(index, 1)[0]);
+          if (particle.a <= 0) pool.push(particles.splice(index, 1)[0]);
 
           context.beginPath();
           context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
