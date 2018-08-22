@@ -21,6 +21,9 @@
     "018-rectangle-collision",
     "019-tile-animation",
     "020-inventory",
-    "021-particle-pool"]
+    "021-particle-pool",
+    "022-vector-math",
+    "023-polygon-rotation",
+    "024-gjk"]
 
 }
