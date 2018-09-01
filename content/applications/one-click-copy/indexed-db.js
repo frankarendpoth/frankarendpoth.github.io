@@ -18,7 +18,11 @@ class IndexedDB {
   }
 
   /* Delete the object in the currently open database with the specified key from the specified object store. */
-  delete(key_path, key, store_name) {
+  delete(object, store_name) {
+
+    var json_object = JSON.stringify(object);
+
+    alert(json_object);
 
     this.database.transaction([store_name], "readwrite").objectStore(store_name).openCursor().onsuccess = (event) => {
      
@@ -26,7 +30,12 @@ class IndexedDB {
 
       if (cursor) {
 
-        if (cursor.value[key_path] == key) cursor.delete();
+        if (JSON.stringify(cursor.value) == json_object) { // This is a slow way to test.
+          
+          cursor.delete();
+          return;
+
+        }
 
         cursor.continue();
 
@@ -77,7 +86,9 @@ class IndexedDB {
 
   }
 
-  update(key_path, key, store_name, object) {
+  update(old_object, new_object, store_name) {
+
+    var json_object = JSON.stringify(old_object);
 
     this.database.transaction([store_name], "readwrite").objectStore(store_name).openCursor().onsuccess = (event) => {
      
@@ -85,7 +96,12 @@ class IndexedDB {
 
       if (cursor) {
 
-        if (cursor.value[key_path] == key) cursor.update(object);
+        if (JSON.stringify(cursor.value) == json_object) { // This compares A LOT of text...
+          
+          cursor.update(new_object);
+          return;
+
+        }
 
         cursor.continue();
 

@@ -4,9 +4,11 @@
 
   --text-field-background-color:#ffffff;
 
+  border-radius:      8px;
   display:            grid;
   grid-row-gap:       8px;
-  grid-template-rows: min-content min-content auto;
+  grid-template-rows: min-content minmax(2.5em, min-content) auto;
+  padding:            8px;
 
 }
 
@@ -14,25 +16,40 @@
 
 #edit-board .options {
 
-  align-content:center;
-  display:grid;
-  grid-template-columns:auto auto auto auto;
-  justify-content:space-around;
+  align-content:         center;
+  display:               grid;
+  grid-template-columns: auto auto auto auto auto;
+  justify-content:       stretch;
 
 }
 
 #edit-board .options .title {
 
-  color:#ffffff;
-  font-size:1.5em;
+  align-self:  center;
+  color:       #ffffff;
+  display:     grid;
+  font-size:   1.5em;
+  white-space: nowrap;
 
 }
 
 #edit-board .text-field {
 
-  border-radius:8px;
-  background-color:var(--text-field-background-color);
-  padding:4px;
+  border-radius:    8px;
+  background-color: var(--text-field-background-color);
+  padding:          4px;
+
+}
+
+#edit-board .name {
+  
+  font-size: 2.5em;
+
+}
+
+#edit-board .body {
+
+  font-size:1.25em;
 
 }
 

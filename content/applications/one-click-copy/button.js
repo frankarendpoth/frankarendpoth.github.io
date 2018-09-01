@@ -10,6 +10,7 @@ class Button {
     this.element = document.createElement("div");
     this.element.setAttribute("class", "button");
     this.element.innerText = name;
+    this.element.style.backgroundColor = color;
     this.element.parent    = this;// This is bad.
 
   }

@@ -10,6 +10,8 @@ var elements = {
 
 var board          = new Board(elements.click_board); // The currently open board.
 var buttons        = new Array(); // The array of button objects.
+var colors         = ["#1b0d28", "#4b0a86", "#622699", "#6c20b2", "#7912d8"];
+var colors_index   = 0;
 var current_button = undefined; // The button being edited.
 var indexed_db     = new IndexedDB("one-click-copy");
 
@@ -17,11 +19,25 @@ var indexed_db     = new IndexedDB("one-click-copy");
  //// EVENT HANDLERS ////
 ////////////////////////
 
-function clickAddButton(event) { openEditBoard(); }
+function clickAddButton(event) { event.preventDefault();  
+  
+  openEditBoard();
 
-function clickBackButton(event) { board.switch(elements.click_board); }
+}
 
-function clickDeleteButton(event) {
+function clickBackButton(event) { event.preventDefault();
+  
+  board.switch(elements.click_board);
+
+}
+
+function clickColorButton(event) { event.preventDefault();
+
+  board.element.style.backgroundColor = getANiceColor();
+
+}
+
+function clickDeleteButton(event) { event.preventDefault();
 
   if (!confirm("Are you sure? This cannot be undone.")) return;
 
@@ -30,7 +46,7 @@ function clickDeleteButton(event) {
     buttons.splice(buttons.indexOf(current_button));
     elements.click_board.removeChild(current_button.element);
 
-    indexed_db.delete("name", current_button.name, "buttons");
+    indexed_db.delete(current_button.toDatabaseEntry(), "buttons");
 
     current_button = undefined;
 
@@ -40,28 +56,31 @@ function clickDeleteButton(event) {
         
 }
 
-function clickSaveButton(event) {
+function clickSaveButton(event) { event.preventDefault();
 
-  var name = board.element.querySelector(".name").innerText;
-  var body = board.element.querySelector(".body").innerText;
+  var name  = board.element.querySelector(".name").innerText;
+  var body  = board.element.querySelector(".body").innerText;
+  var color = board.element.style.backgroundColor;
 
   if (current_button) { // We are editing a button we intentionally selected.
 
     if (confirm("Are you sure you want to overwrite this button?")) {
 
-      let old_name = current_button.name;
+      let old_current_button = current_button.toDatabaseEntry();
 
-      current_button.name = name;
-      current_button.body = body;
+      current_button.name  = name;
+      current_button.body  = body;
+      current_button.color = color;
       current_button.element.innerText = name;
+      current_button.element.style.backgroundColor = color;
 
-      indexed_db.update("name", old_name, "buttons", current_button.toDatabaseEntry());
+      indexed_db.update(old_current_button, current_button.toDatabaseEntry(), "buttons");
 
     }
 
   } else { // We are creating a new button.
 
-    button = createButton(name, body, "#ff0000");
+    button = createButton(name, body, color);
 
     indexed_db.add(button.toDatabaseEntry(), "buttons");
 
@@ -71,7 +90,7 @@ function clickSaveButton(event) {
 
 }
 
-function clickTemplateButton(event) {
+function clickTemplateButton(event) { event.preventDefault();
 
   var input = document.createElement("textarea");
   
@@ -85,13 +104,17 @@ function clickTemplateButton(event) {
 
 }
 
-function contextMenuTemplateButton(event) {
+function contextMenuTemplateButton(event) { event.preventDefault();
 
-  event.preventDefault();
+  // I'd like an option to move the buttons left and right.
 
 }
 
-function dblClickTemplateButton(event) { openEditBoard(this.parent); }
+function dblClickTemplateButton(event) { event.preventDefault();
+  
+  openEditBoard(this.parent);
+
+}
 
   //////////////////////////
  //// USEFUL FUNCTIONS ////
@@ -113,15 +136,13 @@ function createButton(name, body, color) {
 
 }
 
-function findButton(name) {
+function getANiceColor() {
 
-  for (let index = buttons.length - 1; index > -1; -- index) {
+  colors_index ++;
 
-    let button = buttons[index];
+  if (colors_index > colors.length - 1) colors_index = 0;
 
-    if (button.name == name) return button;
-
-  } return undefined; // If we can't find a matching button, we return undefined.
+  return colors[colors_index];
 
 }
 
@@ -137,7 +158,14 @@ function openEditBoard(button = undefined) {
     name.innerText = button.name;
     body.innerText = button.body;
 
-  } else name.innerText = body.innerText = "";
+    elements.edit_board.style.backgroundColor = button.color;
+
+  } else {
+    
+    name.innerText = body.innerText = "";
+    elements.edit_board.style.backgroundColor = getANiceColor();
+
+  }
 
   board.switch(elements.edit_board);
 
@@ -175,7 +203,11 @@ indexed_db.initialize((database) => {// If the database is initialized, load up 
 
 });
 
-document.getElementById("add-button").addEventListener("click", clickAddButton);
-document.getElementById("back-button").addEventListener("click", clickBackButton);
+document.getElementById("add-button").addEventListener("click",    clickAddButton);
+document.getElementById("color-button").addEventListener("click",  clickColorButton);
+document.getElementById("back-button").addEventListener("click",   clickBackButton);
 document.getElementById("delete-button").addEventListener("click", clickDeleteButton);
-document.getElementById("save-button").addEventListener("click", clickSaveButton);
+document.getElementById("save-button").addEventListener("click",   clickSaveButton);
+
+document.body.style.backgroundColor = colors[0];
+elements.edit_board.style.backgroundColor = colors[0];
