@@ -1,1 +1,6 @@
-{ "directories": ["tile-map-editor"] }
+{ "directories": [
+
+	"tile-map-editor",
+	"one-click-copy"
+	
+] }

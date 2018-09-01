@@ -1,0 +1,39 @@
+/* Frank Poth 08/31/2018 */
+
+#edit-board {
+
+  --text-field-background-color:#ffffff;
+
+  display:            grid;
+  grid-row-gap:       8px;
+  grid-template-rows: min-content min-content auto;
+
+}
+
+#edit-board[data-visible=false] { display:none !important; }
+
+#edit-board .options {
+
+  align-content:center;
+  display:grid;
+  grid-template-columns:auto auto auto auto;
+  justify-content:space-around;
+
+}
+
+#edit-board .options .title {
+
+  color:#ffffff;
+  font-size:1.5em;
+
+}
+
+#edit-board .text-field {
+
+  border-radius:8px;
+  background-color:var(--text-field-background-color);
+  padding:4px;
+
+}
+
+#edit-board .text-field:focus { outline: none; }

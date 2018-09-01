@@ -1,0 +1,27 @@
+/* Frank Poth 08/31/2018 */
+
+.button {
+
+  align-content:center;
+  align-items:center;
+  align-self:center;
+  border-radius:8px;
+  background-color:var(--button-up);
+  color:#ffffff;
+  cursor:pointer;
+  display:grid;
+  font-weight:bolder;
+  height:auto;
+  justify-content:center;
+  justify-items:center;
+  justify-self:center;
+  min-width:32px;
+  min-height:32px;
+  padding:4px 8px;
+  text-align:center;
+  user-select:none;
+  width:auto;
+
+}
+
+.button:hover { background-color:var(--button-down); }

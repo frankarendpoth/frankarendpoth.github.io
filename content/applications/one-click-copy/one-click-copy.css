@@ -1,0 +1,35 @@
+/* Frank Poth 08/31/2018 */
+
+:root {
+
+  --background-color:#000000;
+  --button-up:       #404040;
+  --button-down:     #606060;
+
+}
+
+* {
+
+  box-sizing:  border-box;
+  margin:      0;
+  padding:     0;
+  user-select: none;
+
+}
+
+
+
+html, body {
+  
+  height: 100%;
+  width:  100%;
+
+}
+
+body {
+  
+  background-color:var(--background-color);
+  display:grid;
+  padding:8px;
+
+}
