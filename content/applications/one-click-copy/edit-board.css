@@ -23,6 +23,12 @@
 
 }
 
+#edit-board .options .button {
+
+  justify-self:stretch !important;
+
+}
+
 #edit-board .options .title {
 
   align-self:  center;
@@ -41,6 +47,8 @@
 
 }
 
+#edit-board .text-field:focus { outline: none; }
+
 #edit-board .name {
   
   font-size: 2.5em;
@@ -52,5 +60,3 @@
   font-size:1.25em;
 
 }
-
-#edit-board .text-field:focus { outline: none; }

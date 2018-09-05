@@ -22,8 +22,6 @@ class IndexedDB {
 
     var json_object = JSON.stringify(object);
 
-    alert(json_object);
-
     this.database.transaction([store_name], "readwrite").objectStore(store_name).openCursor().onsuccess = (event) => {
      
       var cursor = event.target.result;

@@ -211,3 +211,5 @@ document.getElementById("save-button").addEventListener("click",   clickSaveButt
 
 document.body.style.backgroundColor = colors[0];
 elements.edit_board.style.backgroundColor = colors[0];
+
+alert("One Click Copy is a fast way to copy your email templates. To start, click the + button and make a new template. To edit an existing template, Double-Click its button.");
