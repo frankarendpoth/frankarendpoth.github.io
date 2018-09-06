@@ -13,7 +13,7 @@
   cursor:          pointer;
   display:         grid;
   font-size:       1.5em;
-  font-weight:     bolder;
+  font-weight:     800;
   justify-content: center;
   justify-items:   center;
   justify-self:    center;
@@ -33,4 +33,4 @@
   border-color: #ffffff;
   border-style: solid;
 
- }
+}

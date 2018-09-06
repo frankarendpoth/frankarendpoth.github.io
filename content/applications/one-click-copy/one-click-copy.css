@@ -1,13 +1,5 @@
 /* Frank Poth 08/31/2018 */
 
-:root {
-
-  --background-color:#000000;
-  --button-up:       #404040;
-  --button-down:     #606060;
-
-}
-
 * {
 
   box-sizing:  border-box;
@@ -28,7 +20,7 @@ html, body {
 
 body {
   
-  background-color:var(--background-color);
+  background-color:#202020;
   display:grid;
   padding:8px;
 

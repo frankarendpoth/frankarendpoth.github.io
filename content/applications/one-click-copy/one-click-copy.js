@@ -3,15 +3,14 @@
 /* Here are some elements that I will need frequent access to. */
 var elements = {
   
-  click_board: document.getElementById("click-board"),
-  edit_board:  document.getElementById("edit-board"),
+  click_board:        document.getElementById("click-board"),
+  color_board:        document.getElementById("color-board"),
+  edit_board:         document.getElementById("edit-board")
 
 }
 
 var board          = new Board(elements.click_board); // The currently open board.
 var buttons        = new Array(); // The array of button objects.
-var colors         = ["#1b0d28", "#4b0a86", "#622699", "#6c20b2", "#7912d8"];
-var colors_index   = 0;
 var current_button = undefined; // The button being edited.
 var indexed_db     = new IndexedDB("one-click-copy");
 
@@ -33,7 +32,14 @@ function clickBackButton(event) { event.preventDefault();
 
 function clickColorButton(event) { event.preventDefault();
 
-  board.element.style.backgroundColor = getANiceColor();
+  elements.color_board.style.backgroundColor = board.element.style.backgroundColor;
+  board.switch(elements.color_board);
+
+}
+
+function clickColorBoard(event) { event.preventDefault();
+
+  board.switch(elements.edit_board);
 
 }
 
@@ -116,6 +122,22 @@ function dblClickTemplateButton(event) { event.preventDefault();
 
 }
 
+function mouseMoveColorBoard(event) { event.preventDefault();
+
+  var rectangle = board.element.getBoundingClientRect();
+
+  var x = event.clientX - rectangle.left - rectangle.width * 0.5;
+  var y = event.clientY - rectangle.top - rectangle.height * 0.5;
+  var max_distance = rectangle.width < rectangle.height ? rectangle.width * 0.5 : rectangle.height * 0.5;
+  var angle = Math.floor(Math.atan2(y, x) * 180 / Math.PI + 180);
+  var distance = Math.floor((Math.sqrt(x * x + y * y) / max_distance) * 100);
+
+  if (distance > 100) distance = 100;
+
+  elements.edit_board.style.backgroundColor = board.element.style.backgroundColor = "hsl(" + angle + "," + distance + "%,50%)";
+
+}
+
   //////////////////////////
  //// USEFUL FUNCTIONS ////
 //////////////////////////
@@ -136,16 +158,6 @@ function createButton(name, body, color) {
 
 }
 
-function getANiceColor() {
-
-  colors_index ++;
-
-  if (colors_index > colors.length - 1) colors_index = 0;
-
-  return colors[colors_index];
-
-}
-
 function openEditBoard(button = undefined) {
 
   var name = elements.edit_board.querySelector(".name");
@@ -163,7 +175,6 @@ function openEditBoard(button = undefined) {
   } else {
     
     name.innerText = body.innerText = "";
-    elements.edit_board.style.backgroundColor = getANiceColor();
 
   }
 
@@ -209,7 +220,7 @@ document.getElementById("back-button").addEventListener("click",   clickBackButt
 document.getElementById("delete-button").addEventListener("click", clickDeleteButton);
 document.getElementById("save-button").addEventListener("click",   clickSaveButton);
 
-document.body.style.backgroundColor = colors[0];
-elements.edit_board.style.backgroundColor = colors[0];
+elements.color_board.addEventListener("click",     clickColorBoard);
+elements.color_board.addEventListener("mousemove", mouseMoveColorBoard);
 
 alert("One Click Copy is a fast way to copy your email templates. To start, click the + button and make a new template. To edit an existing template, Double-Click its button.");
