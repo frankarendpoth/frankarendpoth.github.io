@@ -1,0 +1,17 @@
+/* Frank Poth 09/07/2018 - 09/07/2018 */
+
+.directory-button {
+
+  border-color: transparent;
+  border-style: solid;
+  border-width: 2px;
+  color:        #ffffff;
+
+}
+
+.directory-button:hover {
+
+  border-color: #ffffff;
+  cursor:       pointer;
+
+}

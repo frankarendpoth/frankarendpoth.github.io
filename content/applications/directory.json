@@ -1,6 +1,7 @@
 { "directories": [
 
 	"tile-map-editor",
-	"one-click-copy"
+	"one-click-copy",
+	"one-click-copy-v2"
 	
 ] }

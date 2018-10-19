@@ -25,6 +25,7 @@
 
     <div>
 
+      <a data-function = "angle">Angle</a>
       <a data-function = "crossProduct">Cross Product</a>
       <a data-function = "dotProduct">Dot Product</a>
       <a data-function = "length">Length</a>
@@ -184,13 +185,29 @@
        //// Vector Math Functions ////
       ///////////////////////////////
 
+      function angle(vector0, vector1) {
+
+        var dot_product    = vector0.x * vector1.x + vector0.y * vector1.y;
+        var cross_product  = vector0.x * vector1.y + vector0.y * vector1.x;
+        
+        var vector0_length = Math.sqrt(vector0.x * vector0.x + vector0.y * vector0.y);
+        var vector1_length = Math.sqrt(vector1.x * vector1.x + vector1.y * vector1.y);
+        
+        var angle          = Math.acos(dot_product / (vector0_length * vector1_length)) * 180 / Math.PI;
+
+        angle              = Math.atan2(Math.abs(cross_product), dot_product) * 180 / Math.PI;
+
+        if (cross_product > 0) angle = 360 - angle;
+
+        output.innerHTML = "The angle is: " + angle + "<br><br>Angle = acos(dot_product / (v0.length * v1.length)) * 180 / PI<br><br>or<br><br>Angle = atan2(abs(cross_product), dot_product) * 180 / PI<br><br>optional:<br><br>if (cross_product < 0) Angle = 360 - Angle";
+
+      }
+
       function crossProduct(vector0, vector1) {
 
         var cross_product = vector0.x * vector1.y - vector0.y * vector1.x;
 
         output.innerHTML = "The cross product is: " + cross_product + "<br><br>Cross Product = v0.x * v1.y - v0.y * v1.x";
-
-        return cross_product;
 
       }
 
@@ -199,8 +216,6 @@
         var dot_product = vector0.x * vector1.x + vector0.y * vector1.y;
 
         output.innerHTML = "The dot product is: " + dot_product + "<br><br>Dot Product = v0.x * v1.x + v0.y * v1.y";
-
-        return dot_product;
 
       }
 
@@ -370,8 +385,8 @@
 
         context.fillStyle = "#ffffff";
         context.font = "12px Arial";
-        context.fillText("( " + vector0.x + ", " + vector0.y + " )", triangle0.x + vector0.x, triangle0.y + vector0.y);
-        context.fillText("( " + vector1.x + ", " + vector1.y + " )", triangle1.x + vector1.x, triangle1.y + vector1.y);
+        context.fillText("v0 ( " + vector0.x + ", " + vector0.y + " )", triangle0.x + vector0.x, triangle0.y + vector0.y);
+        context.fillText("v1 ( " + vector1.x + ", " + vector1.y + " )", triangle1.x + vector1.x, triangle1.y + vector1.y);
 
       }
 
