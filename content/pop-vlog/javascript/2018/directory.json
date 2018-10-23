@@ -23,6 +23,7 @@
     "020-inventory",
     "021-particle-pool",
     "022-vector-math",
+    "023-hitbox",
     "023-polygon-rotation",
     "024-gjk"]
 

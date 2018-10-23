@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+        
+    <meta name = "description" content = "Interactive example of player vs player hitbox collision with full JavaScript source code.">
+    <meta name = "viewport" content = "width=device-width">
+    
+    <style>
+      * { box-sizing:border-box; margin:0; overflow:hidden; padding:0; pointer-events:none; }
+      body, html { height:100%; width:100%; }
+      body { background-color:#202830; display:grid; }
+      canvas { align-self:center; justify-self:center; }
+    </style>
+    
+    <title>Vector Math</title>
+    
+  </head>
+  
+  <body>
+
+    <canvas id = "canvas"></canvas>
+
+    <script type = "text/javascript">
+        
+      class Rectangle {
+
+        constructor(x, y, w, h) {
+
+          this.x = x; this.y = y;
+          this.w = w; this.h = h;
+
+        }
+
+        getBottom() { return this.y + this.h; }
+        getLeft()   { return this.x; }
+        getRight()  { return this.x + this.w; }
+        getTop()    { return this.y; }
+
+        getOldBottom() { return this.oy + this.h; }
+        getOldLeft()   { return this.ox; }
+        getOldRight()  { return this.ox + this.w; }
+        getOldTop()    { return this.oy; }
+
+        setBottom(y) { this.y = y - this.h; }
+        setLeft(x)   { this.x = x; }
+        setRight(x)  { this.x = x - this.w; }
+        setTop(y)    { this.y = y; }
+
+        setOldBottom(oy) { this.oy = oy - this.h; }
+        setOldLeft(ox)   { this.ox = ox; }
+        setOldRight(ox)  { this.ox = ox - this.w; }
+        setOldTop(oy)    { this.oy = oy; }
+
+      }
+
+      class Platform extends Rectangle {
+
+        constructor(x, y, w, h) {
+
+          super(x, y, w, h);
+
+          this.d = Math.random() * Math.PI * 2;
+          this.r = Math.random() * Math.PI * 2;
+
+        }
+
+        collideBoundaries(left, right, top, bottom) {
+
+          if (this.getLeft() < left) {
+
+            this.d = Math.atan2(Math.sin(this.d), Math.cos(this.d) * -1);
+            this.setLeft(left);
+
+          } else if (this.getRight() > right) {
+
+            this.d = Math.atan2(Math.sin(this.d), Math.cos(this.d) * -1);
+            this.setRight(right);
+
+          }
+
+          if (this.getTop() < top) {
+
+            this.d = Math.atan2(Math.sin(this.d) * -1, Math.cos(this.d));
+            this.setTop(top);
+
+          } else if (this.getBottom() > bottom) {
+
+            this.d = Math.atan2(Math.sin(this.d) * -1, Math.cos(this.d));
+            this.setBottom(bottom);
+
+          }
+
+        }
+
+        update() {
+
+          this.ox = this.x;
+          this.oy = this.y;
+
+          this.x += Math.cos(this.d);
+          this.y += Math.sin(this.d);
+
+          this.r += 0.05;
+          this.y += Math.sin(this.r);
+          
+        }
+
+      }
+
+      class Player extends Rectangle {
+
+        constructor(x, y, w, h) {
+
+          super(x, y, w, h);
+
+          this.ox = x; this.oy = y;
+          this.vx = this.vy = 0;
+
+          this.jumping = true;
+
+        }
+
+        collideRectangle(rectangle) {
+
+          if (this.getLeft() > rectangle.getRight() ||
+            this.getRight()  < rectangle.getLeft()  ||
+            this.getBottom() < rectangle.getTop()   ||
+            this.getTop()    > rectangle.getBottom()) return false;
+
+          if (this.getLeft() < rectangle.getRight() && this.getOldLeft() >= rectangle.getOldRight()) {
+
+            this.setLeft(rectangle.getRight());
+            this.vx = 0; return;
+
+          } else if (this.getRight() > rectangle.getLeft() && this.getOldRight() <= rectangle.getOldLeft()) {
+
+            this.setRight(rectangle.getLeft());
+            this.vx = 0; return;
+
+          }
+
+          if (this.getTop() < rectangle.getBottom() && this.getOldTop() >= rectangle.getOldBottom()) {
+
+            this.setTop(rectangle.getBottom());
+            this.vy = 2;
+
+          } else if (this.getBottom() > rectangle.getTop() && this.getOldBottom() <= rectangle.getOldTop()) {
+
+            this.setBottom(rectangle.getTop());
+            this.vy = 0;
+            this.jumping = false;
+
+          }
+
+        }
+
+        update(g, f) {
+
+          this.ox = this.x;
+          this.oy = this.y;
+
+          this.vy += g;
+
+          this.vx *= f;
+          this.vy *= f;
+
+          this.x += this.vx;
+          this.y += this.vy;
+
+        }
+
+      }
+
+      var context = document.getElementById("canvas").getContext("2d");
+
+      var gravity = 1;
+      var friction = 0.9;
+
+      var player   = new Player(context.canvas.width * 0.25, 0, 32, 32, "#0080f0");
+      var platforms = [];
+
+      var pointer = { x:player.x, down:false };
+      
+      function getFloor() {
+
+        return context.canvas.height * 0.9;
+
+      }
+
+      function generatePlatform() {
+
+        platforms.push(new Platform(context.canvas.width * 0.5, context.canvas.height * 0.5, Math.random() * 180 + 32, Math.random() * 32 + 32));
+
+      }
+
+      function collideFloor(player) {
+
+        var floor = getFloor();
+
+        if (player.getBottom() > floor) {
+
+          player.setBottom(floor);
+          player.vy      = 0;
+          player.jumping = false;
+
+        }
+
+      }
+
+      function loop(time_stamp) {
+
+        update();
+        render();
+
+        window.requestAnimationFrame(loop);
+
+      }
+
+      function render() {
+
+        context.fillStyle = "#000000";
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+        context.fillStyle = "#808080";
+        context.fillRect(0, getFloor(), context.canvas.width, 2);
+
+        context.fillStyle = "#0080f0";
+        context.fillRect(player.x, player.y, player.w, player.h);
+
+        context.fillStyle = "#f08000";
+        
+        for (let index = platforms.length - 1; index > -1; -- index) {
+
+          let platform = platforms[index];
+          
+          context.fillRect(platform.x, platform.y, platform.w, platform.h);
+
+        }
+
+      }
+
+      function update() {
+
+        player.vx += (pointer.x - player.x - player.w * 0.5) * 0.01;
+
+        if (pointer.down && !player.jumping) {
+
+          player.jumping = true;
+          player.vy -= 32;
+
+        }
+
+        for (let index = platforms.length - 1; index > -1; -- index) {
+
+          let platform = platforms[index];
+
+          platform.update();
+
+          platform.collideBoundaries(0, context.canvas.width, 0, getFloor());
+
+        }
+
+        player.update(gravity, friction);
+
+        collideFloor(player);
+
+        for (let index = platforms.length - 1; index > -1; -- index) {
+
+          let platform = platforms[index];
+
+          player.collideRectangle(platform);
+
+        }
+
+      }
+
+        /////////////////////////
+       //// EVENT LISTENERS ////
+      /////////////////////////
+
+      function mouseDownUp(event) { event.preventDefault();
+      
+        pointer.down = event.type == "mousedown" ? true : false;
+      
+      }
+
+      function mouseMove(event) { event.preventDefault();
+
+        pointer.x = event.clientX - context.canvas.getBoundingClientRect().left;
+
+      }
+
+      function resize(event) {
+
+        context.canvas.height = document.documentElement.clientHeight - 32;
+        context.canvas.width  = document.documentElement.clientWidth  - 32;
+
+      }
+
+        ////////////////////
+       //// INITIALIZE ////
+      ////////////////////
+
+      resize();
+
+      window.addEventListener("mousedown", mouseDownUp);
+      window.addEventListener("mousemove", mouseMove);
+      window.addEventListener("mouseup",   mouseDownUp);
+      window.addEventListener("resize",    resize);
+
+      for (let count = 0; count < 10; count ++) {
+
+        generatePlatform();
+
+      }
+
+      loop();
+        
+    </script>
+
+  </body>
+
+</html>
