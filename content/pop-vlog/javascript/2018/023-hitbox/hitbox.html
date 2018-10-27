@@ -11,6 +11,7 @@
       * { box-sizing:border-box; margin:0; overflow:hidden; padding:0; pointer-events:none; }
       body, html { height:100%; width:100%; }
       body { background-color:#202830; display:grid; }
+      a { color:#ffffff; cursor:pointer; font-size:1.5em; pointer-events:all; position:fixed; top:16px; left:16px; }
       canvas { align-self:center; justify-self:center; }
     </style>
     
@@ -20,7 +21,9 @@
   
   <body>
 
-    <canvas id = "canvas"></canvas>
+    <a>freeze</a>
+
+    <canvas></canvas>
 
     <script type = "text/javascript">
         
@@ -28,8 +31,10 @@
 
         constructor(x, y, w, h) {
 
-          this.x = x; this.y = y;
-          this.w = w; this.h = h;
+          this.x  = x; this.y  = y;
+          this.ox = x; this.oy = y;
+          this.w  = w; this.h  = h;
+          this.vx =    this.vy = 0;
 
         }
 
@@ -48,21 +53,18 @@
         setRight(x)  { this.x = x - this.w; }
         setTop(y)    { this.y = y; }
 
-        setOldBottom(oy) { this.oy = oy - this.h; }
-        setOldLeft(ox)   { this.ox = ox; }
-        setOldRight(ox)  { this.ox = ox - this.w; }
-        setOldTop(oy)    { this.oy = oy; }
-
       }
 
       class Platform extends Rectangle {
 
         constructor(x, y, w, h) {
 
-          super(x, y, w, h);
+          super(x, y, w, h);0;
 
           this.d = Math.random() * Math.PI * 2;
           this.r = Math.random() * Math.PI * 2;
+
+          this.frozen = false;
 
         }
 
@@ -71,23 +73,27 @@
           if (this.getLeft() < left) {
 
             this.d = Math.atan2(Math.sin(this.d), Math.cos(this.d) * -1);
+            this.vx *= -1;
             this.setLeft(left);
 
           } else if (this.getRight() > right) {
 
             this.d = Math.atan2(Math.sin(this.d), Math.cos(this.d) * -1);
+            this.vx *= -1;
             this.setRight(right);
 
           }
 
-          if (this.getTop() < top) {
+          if (this.getTop() <= top) {
 
             this.d = Math.atan2(Math.sin(this.d) * -1, Math.cos(this.d));
+            this.vy *= -1;
             this.setTop(top);
 
           } else if (this.getBottom() > bottom) {
 
             this.d = Math.atan2(Math.sin(this.d) * -1, Math.cos(this.d));
+            this.vy *= -1;
             this.setBottom(bottom);
 
           }
@@ -96,14 +102,21 @@
 
         update() {
 
+          if (!this.frozen) {
+            
+            this.vx = Math.cos(this.d);
+            this.vy = Math.sin(this.d);
+
+            this.r += 0.05;
+            this.vy += Math.sin(this.r);
+
+          }
+
           this.ox = this.x;
           this.oy = this.y;
 
-          this.x += Math.cos(this.d);
-          this.y += Math.sin(this.d);
-
-          this.r += 0.05;
-          this.y += Math.sin(this.r);
+          this.x += this.vx;
+          this.y += this.vy;
           
         }
 
@@ -115,65 +128,62 @@
 
           super(x, y, w, h);
 
-          this.ox = x; this.oy = y;
-          this.vx = this.vy = 0;
-
           this.jumping = true;
 
         }
 
         collideRectangle(rectangle) {
 
-          if (this.getLeft() > rectangle.getRight() ||
+          if (this.getLeft() > rectangle.getRight() || // test for lack of collision
             this.getRight()  < rectangle.getLeft()  ||
             this.getBottom() < rectangle.getTop()   ||
-            this.getTop()    > rectangle.getBottom()) return false;
+            this.getTop()    > rectangle.getBottom()) return; // No collision, return early.
 
           if (this.getLeft() < rectangle.getRight() && this.getOldLeft() >= rectangle.getOldRight()) {
 
-            this.setLeft(rectangle.getRight());
-            this.vx = 0; return;
+            this.setLeft(rectangle.getRight() + 0.01); // Add a small amount to avoid rounding errors.
+            this.vx = 0; return; // Return early to avoid the y axis checks
 
           } else if (this.getRight() > rectangle.getLeft() && this.getOldRight() <= rectangle.getOldLeft()) {
 
-            this.setRight(rectangle.getLeft());
-            this.vx = 0; return;
+            this.setRight(rectangle.getLeft() - 0.01);
+            this.vx = 0; return; // Return early to avoid the y axis checks
 
           }
 
           if (this.getTop() < rectangle.getBottom() && this.getOldTop() >= rectangle.getOldBottom()) {
 
-            this.setTop(rectangle.getBottom());
-            this.vy = 2;
+            this.setTop(rectangle.getBottom() + 0.01);
+            this.vy = rectangle.vy; // Keep the player from sticking to the bottom of a downward moving platform.
 
           } else if (this.getBottom() > rectangle.getTop() && this.getOldBottom() <= rectangle.getOldTop()) {
 
-            this.setBottom(rectangle.getTop());
+            this.setBottom(rectangle.getTop() - 0.01);
             this.vy = 0;
-            this.jumping = false;
+            this.jumping = false; // Allow the player to jump off of the top of a platform.
 
           }
 
         }
 
-        update(g, f) {
-
-          this.ox = this.x;
-          this.oy = this.y;
+        update(g, f) { // gravity and friction
 
           this.vy += g;
 
           this.vx *= f;
           this.vy *= f;
 
-          this.x += this.vx;
+          this.ox = this.x; // Always set this right before setting the current position.
+          this.oy = this.y;
+
+          this.x += this.vx; // Always update position last.
           this.y += this.vy;
 
         }
 
       }
 
-      var context = document.getElementById("canvas").getContext("2d");
+      var context = document.querySelector("canvas").getContext("2d");
 
       var gravity = 1;
       var friction = 0.9;
@@ -220,17 +230,17 @@
 
       function render() {
 
-        context.fillStyle = "#000000";
+        context.fillStyle = "#101820";
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
-        context.fillStyle = "#808080";
+        context.fillStyle = "#202830";
         context.fillRect(0, getFloor(), context.canvas.width, 2);
 
         context.fillStyle = "#0080f0";
         context.fillRect(player.x, player.y, player.w, player.h);
-
-        context.fillStyle = "#f08000";
         
+        context.fillStyle = "#f08000";
+
         for (let index = platforms.length - 1; index > -1; -- index) {
 
           let platform = platforms[index];
@@ -252,23 +262,17 @@
 
         }
 
-        for (let index = platforms.length - 1; index > -1; -- index) {
-
-          let platform = platforms[index];
-
-          platform.update();
-
-          platform.collideBoundaries(0, context.canvas.width, 0, getFloor());
-
-        }
-
         player.update(gravity, friction);
 
         collideFloor(player);
 
         for (let index = platforms.length - 1; index > -1; -- index) {
 
-          let platform = platforms[index];
+          let platform = platforms[index]; 
+
+          platform.update();
+
+          platform.collideBoundaries(0, context.canvas.width, 0, getFloor());
 
           player.collideRectangle(platform);
 
@@ -309,6 +313,22 @@
       window.addEventListener("mousemove", mouseMove);
       window.addEventListener("mouseup",   mouseDownUp);
       window.addEventListener("resize",    resize);
+
+      document.querySelector("a").addEventListener("click", (event) => {
+
+        event.preventDefault();
+        
+        for (let index = platforms.length - 1; index > -1; -- index) {
+
+          let platform = platforms[index];
+
+          platform.frozen = !platform.frozen;
+
+          if (platform.frozen) platform.vx = platform.vy = 0;
+
+        }
+
+      });
 
       for (let count = 0; count < 10; count ++) {
 
