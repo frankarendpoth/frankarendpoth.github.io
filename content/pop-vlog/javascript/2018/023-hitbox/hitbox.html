@@ -5,17 +5,17 @@
   <head>
         
     <meta name = "description" content = "Interactive example of player vs player hitbox collision with full JavaScript source code.">
-    <meta name = "viewport" content = "width=device-width">
+    <meta name = "viewport" content = "width=device-width user-scalable=fixed">
     
     <style>
-      * { box-sizing:border-box; margin:0; overflow:hidden; padding:0; pointer-events:none; }
+      * { box-sizing:border-box; margin:0; overflow:hidden; padding:0; pointer-events:none; user-select:none; }
       body, html { height:100%; width:100%; }
       body { background-color:#202830; display:grid; }
-      a { color:#ffffff; cursor:pointer; font-size:1.5em; pointer-events:all; position:fixed; top:16px; left:16px; }
+      a { border-radius:16px; border-style:solid; border-width:4px; border-color:#202830; color:#202830; cursor:pointer; font-size:1.5em; font-weight:800; padding:8px; pointer-events:all; position:fixed; top:24px; left:24px; }
       canvas { align-self:center; justify-self:center; }
     </style>
     
-    <title>Vector Math</title>
+    <title>Hitbox</title>
     
   </head>
   
@@ -26,75 +26,73 @@
     <canvas></canvas>
 
     <script type = "text/javascript">
-        
+
+      /* You will notice tunneling in this example program. The player falling through platforms and being able to jump through platforms laid out a certain way is the result of tunneling brought on by the nature of the collision detection logic itself as well as sorting order's effect on which blocks are tested for collision first. When you see a "glitch" it's actually working fine. There are simply some limitations to this collision method. That being said, this example isn't ideal for this collision logic. Generally it is best for 1 on 1 collisions between players or you could use it for a static world that was laid out specifically with tunnelling in mind. */
+
+      /* This is the base class for both the platforms and the player. It keeps track of its current and old position precisely by each corner point to avoid rounding errors. I found that if I just kept track of the top left corner and calculated right and bottom by adding width and height, I would sometimes get inaccurate results. The old positions are never calculated. They are explicitly set to equal whatever the current position is on each frame. This is important for accuracy. */
       class Rectangle {
 
-        constructor(x, y, w, h) {
+        constructor(l, t, w, h) { // left, top, width, height
 
-          this.x  = x; this.y  = y;
-          this.ox = x; this.oy = y;
-          this.w  = w; this.h  = h;
-          this.vx =    this.vy = 0;
+          this.l = this.ol = l; // left and old left
+          this.r = this.or = l + w; // right and old right
+          this.t = this.ot = t; // top and old top
+          this.b = this.ob = t + h; // bottom and old bottom
+          this.w = w; // width
+          this.h = h; // height
+          this.vx = this.vy = 0; // velocity x and y
 
         }
 
-        getBottom() { return this.y + this.h; }
-        getLeft()   { return this.x; }
-        getRight()  { return this.x + this.w; }
-        getTop()    { return this.y; }
-
-        getOldBottom() { return this.oy + this.h; }
-        getOldLeft()   { return this.ox; }
-        getOldRight()  { return this.ox + this.w; }
-        getOldTop()    { return this.oy; }
-
-        setBottom(y) { this.y = y - this.h; }
-        setLeft(x)   { this.x = x; }
-        setRight(x)  { this.x = x - this.w; }
-        setTop(y)    { this.y = y; }
+        /* We can do calculations when we are setting the current position because the current position is new. Avoiding rounding errors isn't as important here. It is important when saving the current position to the old position, however, because the values must not change for the sake of accuracy. */
+        setBottom(b) { this.b = b; this.t = b - this.h; }
+        setLeft(l)   { this.l = l; this.r = l + this.w; }
+        setRight(r)  { this.r = r; this.l = r - this.w; }
+        setTop(t)    { this.t = t; this.b = t + this.h; }
 
       }
 
+      /* Ideally you would not use this method for collision with platforms since tunnelling can occur around the edges. This is best used for player vs player hitbox collision where the occasional tunneling isn't going to cause the player to fall to his death in a notably unfair fashion, but, that being said, reducing the speed of the player will greatly reduce tunneling, and this collision technique is very stable so long as everything is moving relatively slowly (not ideal for bullets). */ 
       class Platform extends Rectangle {
 
-        constructor(x, y, w, h) {
+        constructor(l, t, w, h) {
 
-          super(x, y, w, h);0;
+          super(l, t, w, h);
 
-          this.d = Math.random() * Math.PI * 2;
-          this.r = Math.random() * Math.PI * 2;
+          this.d = Math.random() * Math.PI * 2; // initial movement direction
+          this.rotation = Math.random() * Math.PI * 2; // rotation for sine wave movement
 
           this.frozen = false;
 
         }
 
-        collideBoundaries(left, right, top, bottom) {
+        collideBoundaries(l, r, t, b) { // collide with the walls
 
-          if (this.getLeft() < left) {
-
-            this.d = Math.atan2(Math.sin(this.d), Math.cos(this.d) * -1);
-            this.vx *= -1;
-            this.setLeft(left);
-
-          } else if (this.getRight() > right) {
+          if (this.l < l) {
 
             this.d = Math.atan2(Math.sin(this.d), Math.cos(this.d) * -1);
             this.vx *= -1;
-            this.setRight(right);
+            this.setLeft(l);
+
+          } else if (this.r > r) {
+
+            this.d = Math.atan2(Math.sin(this.d), Math.cos(this.d) * -1);
+            this.vx *= -1;
+            this.setRight(r);
 
           }
 
-          if (this.getTop() <= top) {
+          if (this.t <= t) {
 
             this.d = Math.atan2(Math.sin(this.d) * -1, Math.cos(this.d));
             this.vy *= -1;
-            this.setTop(top);
+            this.setTop(t);
 
-          } else if (this.getBottom() > bottom) {
+          } else if (this.b > b) {
 
             this.d = Math.atan2(Math.sin(this.d) * -1, Math.cos(this.d));
             this.vy *= -1;
-            this.setBottom(bottom);
+            this.setBottom(b);
 
           }
 
@@ -104,19 +102,23 @@
 
           if (!this.frozen) {
             
-            this.vx = Math.cos(this.d);
+            this.vx = Math.cos(this.d); // move in direction
             this.vy = Math.sin(this.d);
 
-            this.r += 0.05;
-            this.vy += Math.sin(this.r);
+            this.rotation += 0.05;
+            this.vy += Math.sin(this.rotation); // sine wave motion
 
           }
 
-          this.ox = this.x;
-          this.oy = this.y;
+          this.ob = this.b; // update the old positions to the current positions
+          this.ol = this.l;
+          this.or = this.r;
+          this.ot = this.t;
 
-          this.x += this.vx;
-          this.y += this.vy;
+          this.l += this.vx; // update the current positions to the new positions
+          this.t += this.vy;
+          this.r = this.l + this.w;
+          this.b = this.t + this.h;
           
         }
 
@@ -124,9 +126,9 @@
 
       class Player extends Rectangle {
 
-        constructor(x, y, w, h) {
+        constructor(l, t, w, h) {
 
-          super(x, y, w, h);
+          super(l, t, w, h);
 
           this.jumping = true;
 
@@ -134,33 +136,29 @@
 
         collideRectangle(rectangle) {
 
-          if (this.getLeft() > rectangle.getRight() || // test for lack of collision
-            this.getRight()  < rectangle.getLeft()  ||
-            this.getBottom() < rectangle.getTop()   ||
-            this.getTop()    > rectangle.getBottom()) return; // No collision, return early.
+          if (this.b < rectangle.t || this.t > rectangle.b || this.l > rectangle.r || this.r < rectangle.l) return;
 
-          if (this.getLeft() < rectangle.getRight() && this.getOldLeft() >= rectangle.getOldRight()) {
+          /* You can only collide with one side at a time, so "else if" is just fine. You don't need to separate the checks for x and y. Only one check can be true, so only one needs to be done. Once it's found, the other's don't need to be done. */
+          if (this.b >= rectangle.t && this.ob < rectangle.ot) {
 
-            this.setLeft(rectangle.getRight() + 0.01); // Add a small amount to avoid rounding errors.
-            this.vx = 0; return; // Return early to avoid the y axis checks
+            this.setBottom(rectangle.t - 0.1);
+            this.vy = rectangle.vy; // the platform moves the player with it after collision...
+            this.jumping = false;
 
-          } else if (this.getRight() > rectangle.getLeft() && this.getOldRight() <= rectangle.getOldLeft()) {
+          } else if (this.t <= rectangle.b && this.ot > rectangle.ob) {
 
-            this.setRight(rectangle.getLeft() - 0.01);
-            this.vx = 0; return; // Return early to avoid the y axis checks
+            this.setTop(rectangle.b + 0.1);
+            this.vy = rectangle.vy; // ... regardless of what side the player collides with
 
-          }
+          } else if (this.r >= rectangle.l && this.or < rectangle.ol) {
 
-          if (this.getTop() < rectangle.getBottom() && this.getOldTop() >= rectangle.getOldBottom()) {
+            this.setRight(rectangle.l - 0.1);
+            this.vx = rectangle.vx;
 
-            this.setTop(rectangle.getBottom() + 0.01);
-            this.vy = rectangle.vy; // Keep the player from sticking to the bottom of a downward moving platform.
+          } else if (this.l <= rectangle.r && this.ol > rectangle.or) {
 
-          } else if (this.getBottom() > rectangle.getTop() && this.getOldBottom() <= rectangle.getOldTop()) {
-
-            this.setBottom(rectangle.getTop() - 0.01);
-            this.vy = 0;
-            this.jumping = false; // Allow the player to jump off of the top of a platform.
+            this.setLeft(rectangle.r + 0.1);
+            this.vx = rectangle.vx;
 
           }
 
@@ -168,16 +166,20 @@
 
         update(g, f) { // gravity and friction
 
-          this.vy += g;
+          this.vy += g; // you can make updates to velocity before or after the position update
 
-          this.vx *= f;
+          this.vx *= f; // I choose before so there isn't one frame of inactivity on the first cycle
           this.vy *= f;
 
-          this.ox = this.x; // Always set this right before setting the current position.
-          this.oy = this.y;
+          this.ob = this.b; // update the old positions to the current positions
+          this.ol = this.l;
+          this.or = this.r;
+          this.ot = this.t;
 
-          this.x += this.vx; // Always update position last.
-          this.y += this.vy;
+          this.l += this.vx; // update the current positions to the new positions
+          this.t += this.vy;
+          this.r = this.l + this.w;
+          this.b = this.t + this.h;
 
         }
 
@@ -191,7 +193,7 @@
       var player   = new Player(context.canvas.width * 0.25, 0, 32, 32, "#0080f0");
       var platforms = [];
 
-      var pointer = { x:player.x, down:false };
+      var pointer = { x:player.l, down:false };
       
       function getFloor() {
 
@@ -199,17 +201,11 @@
 
       }
 
-      function generatePlatform() {
-
-        platforms.push(new Platform(context.canvas.width * 0.5, context.canvas.height * 0.5, Math.random() * 180 + 32, Math.random() * 32 + 32));
-
-      }
-
       function collideFloor(player) {
 
         var floor = getFloor();
 
-        if (player.getBottom() > floor) {
+        if (player.b > floor) {
 
           player.setBottom(floor);
           player.vy      = 0;
@@ -230,22 +226,23 @@
 
       function render() {
 
-        context.fillStyle = "#101820";
+        context.fillStyle = "#f0d8c0";
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
         context.fillStyle = "#202830";
-        context.fillRect(0, getFloor(), context.canvas.width, 2);
+        context.fillRect(0, getFloor(), context.canvas.width, 8);
 
         context.fillStyle = "#0080f0";
-        context.fillRect(player.x, player.y, player.w, player.h);
-        
-        context.fillStyle = "#f08000";
+        context.fillRect(player.l, player.t, player.w, player.h);
+
+        context.font = "20px Arial";
 
         for (let index = platforms.length - 1; index > -1; -- index) {
 
           let platform = platforms[index];
-          
-          context.fillRect(platform.x, platform.y, platform.w, platform.h);
+
+          context.fillStyle = "#f08000";
+          context.fillRect(platform.l, platform.t, platform.w, platform.h);
 
         }
 
@@ -253,12 +250,13 @@
 
       function update() {
 
-        player.vx += (pointer.x - player.x - player.w * 0.5) * 0.01;
+        player.vx += (pointer.x - player.l - player.w * 0.5) * 0.01;
 
         if (pointer.down && !player.jumping) {
 
           player.jumping = true;
-          player.vy -= 32;
+          player.vy -= player.h + 1;
+          pointer.down = false;
 
         }
 
@@ -296,6 +294,20 @@
 
       }
 
+      function touchEndStart(event) { event.preventDefault();
+      
+        pointer.down = event.type == "touchstart" ? true : false;
+
+        if (pointer.down) pointer.x = event.targetTouches[0].clientX - context.canvas.getBoundingClientRect().left;
+      
+      }
+
+      function touchMove(event) { event.preventDefault();
+      
+        pointer.x = event.targetTouches[0].clientX - context.canvas.getBoundingClientRect().left;
+      
+      }
+
       function resize(event) {
 
         context.canvas.height = document.documentElement.clientHeight - 32;
@@ -309,10 +321,13 @@
 
       resize();
 
-      window.addEventListener("mousedown", mouseDownUp);
-      window.addEventListener("mousemove", mouseMove);
-      window.addEventListener("mouseup",   mouseDownUp);
-      window.addEventListener("resize",    resize);
+      window.addEventListener("mousedown",  mouseDownUp);
+      window.addEventListener("mousemove",  mouseMove);
+      window.addEventListener("mouseup",    mouseDownUp);
+      window.addEventListener("touchend",   touchEndStart);
+      window.addEventListener("touchmove",  touchMove);
+      window.addEventListener("touchstart", touchEndStart);
+      window.addEventListener("resize",     resize);
 
       document.querySelector("a").addEventListener("click", (event) => {
 
@@ -330,11 +345,25 @@
 
       });
 
-      for (let count = 0; count < 10; count ++) {
+      (() => {
 
-        generatePlatform();
+        var w = context.canvas.width;
+        var h = context.canvas.height;
 
-      }
+        var columns = Math.floor(w / 128);
+        var rows    = Math.floor(h / 128);
+
+        for (let column = columns; column > 0; column --) {
+
+          for (let row = rows; row > 0; row --) {
+
+            platforms.push(new Platform(column * 128 - 64, row * 128 - 64, Math.random() * (w / columns), Math.random() * (h / rows) * 0.5 + 1));
+
+          }
+
+        }
+
+      })();
 
       loop();
         
