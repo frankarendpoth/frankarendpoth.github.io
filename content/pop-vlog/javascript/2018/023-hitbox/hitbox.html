@@ -5,7 +5,7 @@
   <head>
         
     <meta name = "description" content = "Interactive example of player vs player hitbox collision with full JavaScript source code.">
-    <meta name = "viewport" content = "width=device-width user-scalable=fixed">
+    <meta name = "viewport" content = "width=device-width user-scalable=no">
     
     <style>
       * { box-sizing:border-box; margin:0; overflow:hidden; padding:0; pointer-events:none; user-select:none; }
@@ -321,17 +321,16 @@
 
       resize();
 
-      window.addEventListener("mousedown",  mouseDownUp);
+      // consolidate event listeners that use the same event handler (probably overkill)
+      ["mousedown", "mouseup"].map(type => window.addEventListener(type, mouseDownUp));
+      ["touchend", "touchstart"].map(type => window.addEventListener(type, touchEndStart));
+
       window.addEventListener("mousemove",  mouseMove);
-      window.addEventListener("mouseup",    mouseDownUp);
-      window.addEventListener("touchend",   touchEndStart);
       window.addEventListener("touchmove",  touchMove);
-      window.addEventListener("touchstart", touchEndStart);
       window.addEventListener("resize",     resize);
+      window.addEventListener("contextmenu", (event) => { event.preventDefault(); });
 
-      document.querySelector("a").addEventListener("click", (event) => {
-
-        event.preventDefault();
+      ["click", "touchstart"].map(type => document.querySelector("a").addEventListener(type, (event) => { event.preventDefault();
         
         for (let index = platforms.length - 1; index > -1; -- index) {
 
@@ -343,9 +342,9 @@
 
         }
 
-      });
+      }));
 
-      (() => {
+      (() => { // change scope to keep these variables out of the global scope
 
         var w = context.canvas.width;
         var h = context.canvas.height;
