@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+
+<html>
+
+  <head>
+
+    <meta name = "description" content = "An interactive, open source polygon example.">
+    <meta name = "viewport" content = "width=device-width, user-scalable=no">
+
+    <title>JS Polygon Example</title>
+
+    <style>
+
+      * { box-sizing:border-box; margin:0; overflow:hidden; padding:0; pointer-events:none; }
+
+      body, html { height:100%; width:100%; }
+
+      body { background-color:#202830; display:grid; }
+
+      canvas { align-self:center; display:grid; justify-self:center; }
+    
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+    
+        /////////////////
+       //// CLASSES ////
+      /////////////////
+
+      class Point2D {
+
+        constructor(x, y) {
+
+          this.x = x; this.y = y;
+
+        }
+
+      }
+
+      class Polygon2D {
+
+        constructor(x, y, ...vertices) {
+          
+          this.position = new Point2D(x, y);
+          this.rotation = 0;
+          this.scale = 1;
+          this.vertices = new Array();
+
+          for (let index = vertices.length - 2; index > -1; index -= 2) {
+
+            this.vertices[index * 0.5] = new Point2D(vertices[index], vertices[index + 1]);
+
+          }
+        
+        }
+
+        /* Move the polygon by its reference point to the specified location. This entails getting the vector between the reference point and the specified point and then moving each point in the polygon by that vector and finally setting the reference point or position to equal the specified point. */
+        setPosition(x, y) {
+
+          var vector_x = x - this.position.x;
+          var vector_y = y - this.position.y;
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let vertex = this.vertices[index];
+            
+            vertex.x += vector_x;
+            vertex.y += vector_y;
+
+          }
+
+          this.position.x += vector_x;
+          this.position.y += vector_y;
+
+        }
+
+        setRotation(rotation) {
+
+          var radians = rotation - this.rotation;
+          var unit_x = Math.cos(radians);
+          var unit_y = Math.sin(radians);
+
+          console.log(unit_x + ", " + unit_y);
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let vertex = this.vertices[index];
+            
+            let vector_x = vertex.x - this.position.x;
+            let vector_y = vertex.y - this.position.y;
+
+            vertex.x = vector_x * unit_x - vector_y * unit_y + this.position.x;
+            vertex.y = vector_x * unit_y + vector_y * unit_x + this.position.y;
+
+          }
+
+          this.rotation = rotation;
+
+        }
+
+        /* Scale the polygon to the specified size. First get the ratio between the desired scalar value and the current scale of the polygon, then get the vector between the reference point and each point in the polygon. Then set each point in the polygon equal to the reference point plus the vector multiplied by the ratio between scalar values. Finally, set the current scale to the specified scale. */
+        setScale(scale) {
+
+          var ratio = scale / this.scale;
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let vertex = this.vertices[index];
+
+            let vector_x = vertex.x - this.position.x;
+            let vector_y = vertex.y - this.position.y;
+
+            vertex.x = this.position.x + vector_x * ratio;
+            vertex.y = this.position.y + vector_y * ratio;
+
+          }
+
+          this.scale = scale;
+
+        }
+
+      }
+
+        ///////////////////
+       //// VARIABLES ////
+      ///////////////////
+
+      var context = document.querySelector("canvas").getContext("2d", { alpha:false });
+
+      var polygon = new Polygon2D(0, 0, -1, -1, 0, -2, 1, -1, 1, 1, 0, 2, -1, 1);
+
+      polygon.setScale(20);
+
+        ///////////////////
+       //// FUNCTIONS ////
+      ///////////////////
+
+      function drawPolygon2D(polygon2d, color) {
+
+        var vertex = polygon2d.vertices[0];
+
+        context.beginPath();
+        context.moveTo(vertex.x, vertex.y);
+
+        for (let index = polygon2d.vertices.length - 1; index > 0; -- index) {
+
+          vertex = polygon2d.vertices[index];
+          context.lineTo(vertex.x, vertex.y);
+
+        }
+
+        context.fillStyle = color;
+        context.fill();
+
+      }
+
+      function loop(time_stamp) {
+
+        window.requestAnimationFrame(loop);
+
+        context.fillStyle = "#000000";
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+        polygon.setRotation(polygon.rotation - 0.01);
+
+        drawPolygon2D(polygon, "#0080f0");
+
+      }
+
+        /////////////////////////
+       //// EVENT LISTENERS ////
+      /////////////////////////
+
+      function resize(event) {
+
+        context.canvas.height = document.documentElement.clientHeight - 16;
+        context.canvas.width = document.documentElement.clientWidth - 16;
+
+        polygon.setPosition(context.canvas.width * 0.5, context.canvas.height * 0.5);
+
+        context.imageSmoothingEnabled = false;
+
+      }
+
+        ////////////////////
+       //// INITIALIZE ////
+      ////////////////////
+
+      window.addEventListener("resize", resize);
+
+      resize();
+      loop();
+
+    </script>
+
+  </body>
+
+</html>
