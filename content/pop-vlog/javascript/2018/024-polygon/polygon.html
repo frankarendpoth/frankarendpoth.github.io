@@ -50,7 +50,7 @@
           this.position = new Point2D(x, y);
           this.rotation = 0;
           this.scale = 1;
-          this.vertices = new Array();
+          this.vertices = new Array(); // points in the polygon
 
           for (let index = vertices.length - 2; index > -1; index -= 2) {
 
@@ -80,23 +80,22 @@
 
         }
 
+        /* Rotate the polygon to the specified value. First we get the difference between the current rotation and the desired rotation, then we get the unit sized cartesian coordinates of our rotation vector, then we loop through each vertex, we move each vertex back to the origin, we rotate by the unit vector multiplied by the length of the vector from the origin to the vertex and then we translate back to the original position. Finally we set the current rotation equal to the desired location. */
         setRotation(rotation) {
 
           var radians = rotation - this.rotation;
-          var unit_x = Math.cos(radians);
+          var unit_x = Math.cos(radians); // Check out a unit circle to better understand this.
           var unit_y = Math.sin(radians);
-
-          console.log(unit_x + ", " + unit_y);
 
           for (let index = this.vertices.length - 1; index > -1; -- index) {
 
             let vertex = this.vertices[index];
             
-            let vector_x = vertex.x - this.position.x;
+            let vector_x = vertex.x - this.position.x; // Translate the vertex to the origin.
             let vector_y = vertex.y - this.position.y;
 
             vertex.x = vector_x * unit_x - vector_y * unit_y + this.position.x;
-            vertex.y = vector_x * unit_y + vector_y * unit_x + this.position.y;
+            vertex.y = vector_x * unit_y + vector_y * unit_x + this.position.y; // 
 
           }
 
@@ -116,8 +115,8 @@
             let vector_x = vertex.x - this.position.x;
             let vector_y = vertex.y - this.position.y;
 
-            vertex.x = this.position.x + vector_x * ratio;
-            vertex.y = this.position.y + vector_y * ratio;
+            vertex.x = vector_x * ratio + this.position.x;
+            vertex.y = vector_y * ratio + this.position.y;
 
           }
 
@@ -135,7 +134,7 @@
 
       var polygon = new Polygon2D(0, 0, -1, -1, 0, -2, 1, -1, 1, 1, 0, 2, -1, 1);
 
-      polygon.setScale(20);
+      polygon.setScale(40); // 40 fits on my phone nicely
 
         ///////////////////
        //// FUNCTIONS ////
@@ -164,7 +163,7 @@
 
         window.requestAnimationFrame(loop);
 
-        context.fillStyle = "#000000";
+        context.fillStyle = "#c0f0d8";
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
         polygon.setRotation(polygon.rotation - 0.01);
