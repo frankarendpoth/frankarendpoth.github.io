@@ -25,6 +25,7 @@
     "022-vector-math",
     "023-hitbox",
     "024-polygon",
+    "025-bouncing-polygons",
     "023-polygon-rotation",
     "024-gjk"]
 

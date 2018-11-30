@@ -1,0 +1,261 @@
+<!DOCTYPE HTML>
+
+<html>
+
+  <head>
+
+    <meta name = "description" content = "Get the bounding rectangle of an arbitrary polygon.">
+    <meta name = "viewport" content = "width=device-width, user-scalable=no">
+
+    <title>Bouncing Polygons</title>
+
+    <style>
+
+      * { box-sizing:border-box; margin:0; overflow:hidden; padding:0; pointer-events:none; }
+
+      body, html { height:100%; width:100%; }
+
+      body { background-color:#202830; display:grid; }
+
+      canvas { align-self:center; display:grid; justify-self:center; }
+    
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+    
+        /////////////////
+       //// CLASSES ////
+      /////////////////
+
+      class Point2D {
+
+        constructor(x, y) {
+
+          this.x = x; this.y = y;
+
+        }
+
+      }
+
+      class Polygon2D {
+
+        constructor(x, y, ...vertices) {
+          
+          this.position = new Point2D(x, y);
+          this.rotation = 0;
+          this.scale = 1;
+          this.vertices = new Array(); // points in the polygon
+
+          for (let index = vertices.length - 2; index > -1; index -= 2) {
+
+            this.vertices[index * 0.5] = new Point2D(vertices[index], vertices[index + 1]);
+
+          }
+        
+        }
+
+        getMaximumX(vector_x, vector_y) {
+
+          var vertex      = this.vertices[0];
+          var dot_product = vertex.x * vector_x + vertex.y * vector_y;
+          var maximum_x   = vertex.x;
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let vertex = this.vertices[index];
+
+            let test_dot_product = vertex.x * vector_x + vertex.y * vector_y;
+
+            if (test_dot_product > dot_product) {
+
+              dot_product = test_dot_product;
+              maximum_x   = vertex.x;
+
+            }
+
+          }
+
+          return maximum_x;
+
+        }
+
+        getMaximumY(vector_x, vector_y) {
+
+          var vertex      = this.vertices[0];
+          var dot_product = vertex.x * vector_x + vertex.y * vector_y;
+          var maximum_y   = vertex.y;
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let vertex = this.vertices[index];
+
+            let test_dot_product = vertex.x * vector_x + vertex.y * vector_y;
+
+            if (test_dot_product > dot_product) {
+
+              dot_product = test_dot_product;
+              maximum_y   = vertex.y;
+
+            }
+
+          }
+
+          return maximum_y;
+
+        }
+
+        setPosition(x, y) {
+
+          var vector_x = x - this.position.x;
+          var vector_y = y - this.position.y;
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let vertex = this.vertices[index];
+            
+            vertex.x += vector_x;
+            vertex.y += vector_y;
+
+          }
+
+          this.position.x += vector_x;
+          this.position.y += vector_y;
+
+        }
+
+        setRotation(rotation) {
+
+          var radians = rotation - this.rotation;
+          var unit_x = Math.cos(radians);
+          var unit_y = Math.sin(radians);
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let vertex = this.vertices[index];
+            
+            let vector_x = vertex.x - this.position.x;
+            let vector_y = vertex.y - this.position.y;
+
+            vertex.x = vector_x * unit_x - vector_y * unit_y + this.position.x;
+            vertex.y = vector_x * unit_y + vector_y * unit_x + this.position.y;
+
+          }
+
+          this.rotation = rotation;
+
+        }
+
+        setScale(scale) {
+
+          var ratio = scale / this.scale;
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let vertex = this.vertices[index];
+
+            let vector_x = vertex.x - this.position.x;
+            let vector_y = vertex.y - this.position.y;
+
+            vertex.x = vector_x * ratio + this.position.x;
+            vertex.y = vector_y * ratio + this.position.y;
+
+          }
+
+          this.scale = scale;
+
+        }
+
+      }
+
+        ///////////////////
+       //// VARIABLES ////
+      ///////////////////
+
+      var context = document.querySelector("canvas").getContext("2d", { alpha:false });
+
+      polygons = [new Polygon2D(0, 0, -1, -1, 1, -1, 1, 1, -1, 1),
+                  new Polygon2D(0, 0, 0, -1, 1, 1, -1, 1)];
+
+        ///////////////////
+       //// FUNCTIONS ////
+      ///////////////////
+
+      function drawPolygon2D(polygon2d, color) {
+
+        var vertex = polygon2d.vertices[0];
+
+        context.beginPath();
+        context.moveTo(vertex.x, vertex.y);
+
+        for (let index = polygon2d.vertices.length - 1; index > 0; -- index) {
+
+          vertex = polygon2d.vertices[index];
+          context.lineTo(vertex.x, vertex.y);
+
+        }
+
+        context.fillStyle = color;
+        context.fill();
+
+      }
+
+      function loop(time_stamp) {
+
+        window.requestAnimationFrame(loop);
+
+        context.fillStyle = "#c0f0d8";
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+        for (let index = polygons.length - 1; index > -1; -- index) {
+
+          let polygon = polygons[index];
+
+          drawPolygon2D(polygon, "#0080f0");
+
+        }
+
+      }
+
+        /////////////////////////
+       //// EVENT LISTENERS ////
+      /////////////////////////
+
+      function resize(event) {
+
+        context.canvas.height = document.documentElement.clientHeight - 16;
+        context.canvas.width = document.documentElement.clientWidth - 16;
+
+        context.imageSmoothingEnabled = false;
+
+      }
+
+        ////////////////////
+       //// INITIALIZE ////
+      ////////////////////
+
+      window.addEventListener("resize", resize);
+
+      resize();
+
+      for (let index = polygons.length - 1; index > -1; -- index) {
+
+        let polygon = polygons[index];
+
+        polygon.setPosition(context.canvas.width * 0.5, context.canvas.height * 0.5);
+        polygon.setScale(Math.floor(Math.random() * 40) + 20);
+
+      }
+
+      loop();
+
+    </script>
+
+  </body>
+
+</html>
