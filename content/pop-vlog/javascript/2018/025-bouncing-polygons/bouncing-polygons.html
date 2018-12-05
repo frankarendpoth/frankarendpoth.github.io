@@ -52,12 +52,49 @@
           this.scale = 1;
           this.vertices = new Array(); // points in the polygon
 
+          this.direction = Math.random() * Math.PI * 2;
+          this.speed     = Math.random() * 2 + 1;
+          this.rotational_velocity = Math.random() * 0.05 - 0.025;
+
           for (let index = vertices.length - 2; index > -1; index -= 2) {
 
             this.vertices[index * 0.5] = new Point2D(vertices[index], vertices[index + 1]);
 
           }
         
+        }
+
+        collideBoundary(left, right, top, bottom) {
+
+          var polygon_left   = this.getMaximumX(-1, 0);
+          var polygon_right  = this.getMaximumX( 1, 0);
+          var polygon_top    = this.getMaximumY( 0,-1);
+          var polygon_bottom = this.getMaximumY( 0, 1);
+
+          if (polygon_left < left) {
+
+            this.setPosition(left + this.position.x - polygon_left, this.position.y);
+            this.direction = Math.atan2(Math.sin(this.direction), Math.cos(this.direction) * -1);
+
+          } else if (polygon_right > right) {
+
+            this.setPosition(right - polygon_right + this.position.x, this.position.y);
+            this.direction = Math.atan2(Math.sin(this.direction), Math.cos(this.direction) * -1);
+
+          }
+
+          if (polygon_top < top) {
+
+            this.setPosition(this.position.x, top + this.position.y - polygon_top);
+            this.direction = Math.atan2(Math.sin(this.direction) * -1, Math.cos(this.direction));
+
+          } else if (polygon_bottom > bottom) {
+
+            this.setPosition(this.position.x, bottom - polygon_bottom + this.position.y);
+            this.direction = Math.atan2(Math.sin(this.direction) * -1, Math.cos(this.direction));
+
+          }
+
         }
 
         getMaximumX(vector_x, vector_y) {
@@ -171,6 +208,12 @@
 
         }
 
+        update() {
+
+          this.setPosition(this.position.x + Math.cos(this.direction) * this.speed, this.position.y + Math.sin(this.direction) * this.speed);
+
+        }
+
       }
 
         ///////////////////
@@ -179,8 +222,10 @@
 
       var context = document.querySelector("canvas").getContext("2d", { alpha:false });
 
-      polygons = [new Polygon2D(0, 0, -1, -1, 1, -1, 1, 1, -1, 1),
-                  new Polygon2D(0, 0, 0, -1, 1, 1, -1, 1)];
+      polygons = [new Polygon2D(0, 0, -1, 0, -0.5, -0.75, 0.5, -0.75, 1, 0, 0.5, 0.75, -0.5, 0.75),
+                  new Polygon2D(0, -0.25, -1, -0.5, 0, -1.5, 1, -0.5, 0.75, 0.75, -0.75, 0.75),
+                  new Polygon2D(0, 0, -1, -1, 1, -1, 1, 1, -1, 1),
+                  new Polygon2D(0, 0.25, 0, -1, 1, 1, -1, 1)];
 
         ///////////////////
        //// FUNCTIONS ////
@@ -216,7 +261,12 @@
 
           let polygon = polygons[index];
 
-          drawPolygon2D(polygon, "#0080f0");
+          polygon.update();
+          polygon.setRotation(polygon.rotation + polygon.rotational_velocity);
+
+          polygon.collideBoundary(0, context.canvas.width, 0, context.canvas.height);
+
+          drawPolygon2D(polygon, "rgba(0,128,256,0.75)");
 
         }
 
@@ -248,7 +298,7 @@
         let polygon = polygons[index];
 
         polygon.setPosition(context.canvas.width * 0.5, context.canvas.height * 0.5);
-        polygon.setScale(Math.floor(Math.random() * 40) + 20);
+        polygon.setScale(Math.floor(Math.random() * 30) + 20);
 
       }
 
