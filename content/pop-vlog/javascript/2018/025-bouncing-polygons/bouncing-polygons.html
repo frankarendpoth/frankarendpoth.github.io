@@ -41,6 +41,12 @@
 
         }
 
+        setPosition(x, y) {
+
+          this.x = x; this.y = y;
+
+        }
+
       }
 
       class Polygon2D {
@@ -64,48 +70,75 @@
         
         }
 
-        collideBoundary(left, right, top, bottom) {
+        /* Get the y value of the point in the polygon that is farthest down on the y axis. */
+        getBottom() {
 
-          var polygon_left   = this.getMaximumX(-1, 0);
-          var polygon_right  = this.getMaximumX( 1, 0);
-          var polygon_top    = this.getMaximumY( 0,-1);
-          var polygon_bottom = this.getMaximumY( 0, 1);
+          var vertex = this.vertices[0];
+          var bottom = vertex.y;
 
-          if (polygon_left < left) {
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
 
-            this.setPosition(left + this.position.x - polygon_left, this.position.y);
-            this.direction = Math.atan2(Math.sin(this.direction), Math.cos(this.direction) * -1);
+            vertex = this.vertices[index];
 
-          } else if (polygon_right > right) {
+            if (vertex.y > bottom) bottom = vertex.y;
 
-            this.setPosition(right - polygon_right + this.position.x, this.position.y);
-            this.direction = Math.atan2(Math.sin(this.direction), Math.cos(this.direction) * -1);
-
-          }
-
-          if (polygon_top < top) {
-
-            this.setPosition(this.position.x, top + this.position.y - polygon_top);
-            this.direction = Math.atan2(Math.sin(this.direction) * -1, Math.cos(this.direction));
-
-          } else if (polygon_bottom > bottom) {
-
-            this.setPosition(this.position.x, bottom - polygon_bottom + this.position.y);
-            this.direction = Math.atan2(Math.sin(this.direction) * -1, Math.cos(this.direction));
-
-          }
+          } return bottom;
 
         }
 
+        /* Get the x value of the point in the polygon that is farthest left on the x axis. */
+        getLeft() {
+
+          var vertex = this.vertices[0];
+          var left   = vertex.x;
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            vertex = this.vertices[index];
+
+            if (vertex.x < left) left = vertex.x;
+
+          } return left;
+
+        }
+
+        /* Get the point in the polygon that is farthest along the given vector. */
+        getMaximumPoint(vector_x, vector_y) {
+
+          var vertex        = this.vertices[0]; // Start with one of the vertices
+          var dot_product   = vertex.x * vector_x + vertex.y * vector_y; // Dot product is used to determine how far along the vector this point is. The bigger dot product is, the farther along the vector the point is.
+          var maximum_point = new Point2D(vertex.x, vertex.y); // Since we have only checked one point so far, we can assume it is the farthest along the vector.
+
+          // loop through all points except for the one we already checked.
+          for (let index = this.vertices.length - 1; index > 0; -- index) {
+
+            vertex = this.vertices[index];
+
+            let test_dot_product = vertex.x * vector_x + vertex.y * vector_y;
+
+            // if the test dot product is bigger than the one for the last point we checked, we know this point is farther along the vector.
+            if (test_dot_product > dot_product) {
+
+              dot_product = test_dot_product; // set up for next iteration
+              maximum_point.x = vertex.x; // set up our new maximum point
+              maximum_point.y = vertex.y;
+
+            }
+
+          } return maximum_point;
+
+        }
+
+        /* Get the x value of the point that is farthest along the given vector. */
         getMaximumX(vector_x, vector_y) {
 
           var vertex      = this.vertices[0];
           var dot_product = vertex.x * vector_x + vertex.y * vector_y;
           var maximum_x   = vertex.x;
 
-          for (let index = this.vertices.length - 1; index > -1; -- index) {
+          for (let index = this.vertices.length - 1; index > 0; -- index) {
 
-            let vertex = this.vertices[index];
+            vertex = this.vertices[index];
 
             let test_dot_product = vertex.x * vector_x + vertex.y * vector_y;
 
@@ -116,21 +149,20 @@
 
             }
 
-          }
-
-          return maximum_x;
+          } return maximum_x;
 
         }
 
+        /* Get the y value of the point that is farthest along the given vector. */
         getMaximumY(vector_x, vector_y) {
 
           var vertex      = this.vertices[0];
           var dot_product = vertex.x * vector_x + vertex.y * vector_y;
           var maximum_y   = vertex.y;
 
-          for (let index = this.vertices.length - 1; index > -1; -- index) {
+          for (let index = this.vertices.length - 1; index > 0; -- index) {
 
-            let vertex = this.vertices[index];
+            vertex = this.vertices[index];
 
             let test_dot_product = vertex.x * vector_x + vertex.y * vector_y;
 
@@ -141,9 +173,39 @@
 
             }
 
-          }
+          } return maximum_y;
 
-          return maximum_y;
+        }
+
+        /* Get the x value of the point in the polygon that is farthest right on the x axis. */
+        getRight() {
+
+          var vertex = this.vertices[0];
+          var right  = vertex.x;
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            vertex = this.vertices[index];
+
+            if (vertex.x > right) right = vertex.x;
+
+          } return right;
+
+        }
+
+        /* Get the y value of the point in the polygon that is farthest up on the y axis. */
+        getTop() {
+
+          var vertex = this.vertices[0];
+          var top    = vertex.y;
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            vertex = this.vertices[index];
+
+            if (vertex.y < top) top = vertex.y;
+
+          } return top;
 
         }
 
@@ -163,6 +225,23 @@
 
           this.position.x += vector_x;
           this.position.y += vector_y;
+
+        }
+
+        /* This just adds x and y to every point in the polygon as well as to its position. It's the equivalent of a slide function. */
+        setPositionPlus(x, y) {
+
+          for (let index = this.vertices.length - 1; index > -1; -- index) {
+
+            let vertex = this.vertices[index];
+
+            vertex.x += x;
+            vertex.y += y;
+
+          }
+
+          this.position.x += x;
+          this.position.y += y;
 
         }
 
@@ -210,7 +289,7 @@
 
         update() {
 
-          this.setPosition(this.position.x + Math.cos(this.direction) * this.speed, this.position.y + Math.sin(this.direction) * this.speed);
+          this.setPositionPlus(Math.cos(this.direction) * this.speed, Math.sin(this.direction) * this.speed);
 
         }
 
@@ -222,14 +301,70 @@
 
       var context = document.querySelector("canvas").getContext("2d", { alpha:false });
 
-      polygons = [new Polygon2D(0, 0, -1, 0, -0.5, -0.75, 0.5, -0.75, 1, 0, 0.5, 0.75, -0.5, 0.75),
+      var polygons = [new Polygon2D(0, 0, -1, 0, -0.5, -0.75, 0.5, -0.75, 1, 0, 0.5, 0.75, -0.5, 0.75),
                   new Polygon2D(0, -0.25, -1, -0.5, 0, -1.5, 1, -0.5, 0.75, 0.75, -0.75, 0.75),
                   new Polygon2D(0, 0, -1, -1, 1, -1, 1, 1, -1, 1),
                   new Polygon2D(0, 0.25, 0, -1, 1, 1, -1, 1)];
 
+      /* Everyone knows the big poly. */
+      var big_poly = new Polygon2D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      var big_poly_top = undefined;
+      var big_poly_tilt_direction = 1;
+      var big_poly_normal = new Point2D(0, -1);
+
         ///////////////////
        //// FUNCTIONS ////
       ///////////////////
+
+      function collideBigPoly(polygon) {
+
+        var maximum_point = polygon.getMaximumPoint(big_poly_normal.x, big_poly_normal.y);
+
+        var b = big_poly.vertices[0].y;
+        var m = (big_poly.vertices[1].y - big_poly.vertices[0].y) / (big_poly.vertices[1].x - big_poly.vertices[0].x);
+        var x = maximum_point.x;;
+
+        if (maximum_point.y > m * x + b) {
+
+          polygon.setPositionPlus(0, (m * x + b) - maximum_point.y);
+          polygon.direction = Math.atan2(Math.sin(polygon.direction) * -1, Math.cos(polygon.direction));
+
+        }
+
+      }
+
+      function collideRectangularContainer(polygon, left, right, top, bottom) {
+
+        var polygon_left   = polygon.getLeft();
+        var polygon_right  = polygon.getRight();
+        var polygon_top    = polygon.getTop();
+        var polygon_bottom = polygon.getBottom();
+
+        if (polygon_left < left) {
+
+          polygon.setPositionPlus(left - polygon_left, 0);
+          polygon.direction = Math.atan2(Math.sin(polygon.direction), Math.cos(polygon.direction) * -1);
+
+        } else if (polygon_right > right) {
+
+          polygon.setPositionPlus(right - polygon_right, 0);
+          polygon.direction = Math.atan2(Math.sin(polygon.direction), Math.cos(polygon.direction) * -1);
+
+        }
+
+        if (polygon_top < top) {
+
+          polygon.setPositionPlus(0, top - polygon_top);
+          polygon.direction = Math.atan2(Math.sin(polygon.direction) * -1, Math.cos(polygon.direction));
+
+        } else if (polygon_bottom > bottom) {
+
+          polygon.setPositionPlus(0, bottom - polygon_bottom);
+          polygon.direction = Math.atan2(Math.sin(polygon.direction) * -1, Math.cos(polygon.direction));
+
+        }
+
+      }
 
       function drawPolygon2D(polygon2d, color) {
 
@@ -257,6 +392,21 @@
         context.fillStyle = "#c0f0d8";
         context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
+        big_poly.vertices[0].y += big_poly_tilt_direction * 0.2;
+        big_poly.vertices[1].y = big_poly_top - (big_poly.vertices[0].y - big_poly_top);
+
+        if (big_poly.vertices[0].y > context.canvas.height - 1) {
+
+          big_poly_tilt_direction = -1;
+
+        } else if (big_poly.vertices[0].y < big_poly_top - (context.canvas.height - big_poly_top) + 1) {
+
+          big_poly_tilt_direction = 1;
+
+        }
+
+        big_poly_normal.setPosition(-big_poly.vertices[1].y + big_poly.vertices[0].y, big_poly.vertices[1].x - big_poly.vertices[0].x);
+
         for (let index = polygons.length - 1; index > -1; -- index) {
 
           let polygon = polygons[index];
@@ -264,11 +414,21 @@
           polygon.update();
           polygon.setRotation(polygon.rotation + polygon.rotational_velocity);
 
-          polygon.collideBoundary(0, context.canvas.width, 0, context.canvas.height);
+          collideRectangularContainer(polygon, 0, context.canvas.width, 0, context.canvas.height);
+
+          collideBigPoly(polygon);
 
           drawPolygon2D(polygon, "rgba(0,128,256,0.75)");
 
         }
+
+        drawPolygon2D(big_poly, "rgba(0,128,256,0.75");
+
+        context.beginPath();
+        context.moveTo(context.canvas.width * 0.5, big_poly_top);
+        context.lineTo(context.canvas.width * 0.5 + big_poly_normal.x, big_poly_top + big_poly_normal.y);
+        context.strokeStyle = "#c0f0d8";
+        context.stroke();
 
       }
 
@@ -282,6 +442,13 @@
         context.canvas.width = document.documentElement.clientWidth - 16;
 
         context.imageSmoothingEnabled = false;
+
+        big_poly_top = context.canvas.height * 0.8;
+
+        big_poly.vertices[0].y = big_poly_top;
+        big_poly.vertices[1].x = context.canvas.width;
+        big_poly.vertices[2].setPosition(context.canvas.width, context.canvas.height);
+        big_poly.vertices[3].y = context.canvas.height;
 
       }
 
