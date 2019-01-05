@@ -1,0 +1,21 @@
+/********************************************/
+/* phatbounce.css. Frank Poth. 09/11/2015. */
+/******************************************/
+
+#canvas {
+	left: 0px;
+	margin: 0;
+	overflow:hidden;
+	padding: 0;
+	position: fixed;
+	top: 0px;
+}
+
+body, html {
+	background-color: #000000;
+	height: 100%;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+	width: 100%;
+}

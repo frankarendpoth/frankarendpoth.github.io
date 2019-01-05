@@ -58,7 +58,7 @@ header #slogan h5, h4, h3 {
 
 main {
 
-  background-color:#ffffff;
+  background-color:#202830;
   display:grid;
   min-height:calc(100% - var(--header-height));
 
