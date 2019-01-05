@@ -26,6 +26,7 @@
     "023-hitbox",
     "024-polygon",
     "025-bouncing-polygons",
+    "026-minkowski-difference",
     "023-polygon-rotation",
     "024-gjk"]
 

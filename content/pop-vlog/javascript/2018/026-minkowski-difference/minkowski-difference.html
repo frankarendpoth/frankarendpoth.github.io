@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta name = "description" content = "Get The Minkowski Difference between Arbitrary Convex Shapes.">
+    <meta name = "viewport" content = "width=device-width, user-scalable=no">
+
+    <title>Minkowski Difference</title>
+
+    <style>
+
+      * { box-sizing:border-box; margin:0; overflow:hidden; padding:0; pointer-events:none; }
+
+      body, html { height:100%; width:100%; }
+
+      body { background-color:#202830; display:grid; }
+
+      div {
+
+        display:grid;
+        grid-template-columns:auto auto auto;
+        left:16px;
+        position:fixed;
+        right:16px;
+        top:16px;
+
+      }
+
+      a {
+
+        align-self:center;
+        background-color:#202830;
+        border-radius:16px;
+        color:#ffffff;
+        cursor:pointer;
+        font-size:1.5em;
+        font-weight:700;
+        justify-self:center;
+        padding:8px 32px;
+        pointer-events:auto;
+        text-align:center;
+
+
+      }
+
+      canvas { align-self:center; display:grid; justify-self:center; }
+    
+    </style>
+
+  </head>
+
+  <body>
+
+    <div>
+      <a>circle</a>
+      <a>polygon</a>
+      <a>rectangle</a>
+    </div>
+
+    <canvas></canvas>
+
+    <script type = "text/javascript">
+
+        /////////////////
+       //// CLASSES ////
+      /////////////////
+
+      class Point2D {
+
+        constructor(x, y) {
+
+          this.x = x; this.y = y;
+
+        }
+
+        setPosition(x, y) {
+
+          this.x = x; this.y = y;
+
+        }
+
+        setPositionPlus(x, y) {
+
+          this.x += x;
+          this.y += y;
+
+        }
+
+      }
+      
+      class Circle2D {
+
+        constructor(x, y, radius) {
+
+          this.position = new Point2D(x, y);
+          this.radius = radius;
+          this.color = "rgba(0, 0, 0, 0.5)";
+
+        }
+
+        static createMinkowskiDifferenceShape(circle_a, circle_b) {
+
+          return new Circle2D(circle_a.position.x - circle_b.position.x, circle_a.position.y - circle_b.position.y, circle_a.radius + circle_b.radius);
+
+        }
+
+        draw(context, offset) {
+
+          context.beginPath();
+          context.arc(this.position.x + offset.x, this.position.y + offset.y, this.radius, 0, Math.PI * 2, false);
+          context.fillStyle = this.color;
+          context.fill();
+
+        }
+
+        setPosition(x, y) {
+
+          this.position.setPosition(x, y);
+
+        }
+
+      }
+
+      class Polygon2D {
+
+        constructor(x, y, ...vertices) {
+          
+          this.position = new Point2D(x, y);
+          this.vertices = new Array();
+          this.color = "rgba(0, 0, 0, 0.5)";
+
+          for (let index = vertices.length - 2; index > -1; index -= 2) {
+
+            this.vertices[index * 0.5] = new Point2D(vertices[index] + x, vertices[index + 1] + y);
+
+          }
+
+        }
+
+        static createMinkowskiDifferenceShape(polygon_a, polygon_b) {
+
+          var vertices = new Array();
+          
+          for (var vertex_a of polygon_a.vertices) {
+
+            for (var vertex_b of polygon_b.vertices) {
+
+              vertices.push(vertex_a.x - vertex_b.x, vertex_a.y - vertex_b.y);
+
+            }
+
+          }
+
+          return new Polygon2D(0, 0, ...vertices);
+
+        }
+
+        draw(context, offset) {
+
+          var vertex = this.vertices[0];
+
+          context.beginPath();
+          context.fillStyle = this.color;
+          context.moveTo(vertex.x + offset.x, vertex.y + offset.y);
+
+          for (var vertex of this.vertices) {
+            
+            context.lineTo(vertex.x + offset.x, vertex.y + offset.y);
+            
+          }
+          
+          context.closePath();
+          context.fill();
+
+        }
+
+        setPosition(x, y) {
+
+          var vector_x = x - this.position.x;
+          var vector_y = y - this.position.y;
+
+          for (var vertex of this.vertices) {
+
+            vertex.setPositionPlus(vector_x, vector_y);
+
+          }
+
+          this.position.setPositionPlus(vector_x, vector_y);
+
+        }
+
+      }
+
+      class Rectangle2D {
+
+        constructor(x, y, width, height) {
+
+          this.position = new Point2D(x, y);
+          this.width = width; this.height = height;
+          this.color = "rgba(0, 0, 0, 0.5)";
+
+        }
+
+        static createMinkowskiDifferenceShape(rectangle_a, rectangle_b) {
+
+          var x = rectangle_a.position.x - rectangle_b.position.x - rectangle_b.width;
+          var y = rectangle_a.position.y - rectangle_b.position.y - rectangle_b.height;
+
+          return new Rectangle2D(x, y, rectangle_a.width + rectangle_b.width, rectangle_a.height + rectangle_b.height);
+
+        }
+
+        draw(context, offset) {
+
+          context.beginPath();
+          context.rect(this.position.x + offset.x, this.position.y + offset.y, this.width, this.height);
+          context.fillStyle = this.color;
+          context.fill();
+
+        }
+
+        setPosition(x, y) {
+
+          this.position.setPosition(x, y);
+
+        }
+
+      }
+
+        ///////////////////////////
+       //// APPLICATION LOGIC ////
+      ///////////////////////////
+
+      var context = document.querySelector("canvas").getContext("2d");
+      var offset = new Point2D(undefined, undefined); // Offset of the on screen origin
+      var pointer = {
+
+        x:0, y:0
+
+      };
+
+      var circles = [
+
+        new Circle2D(100, 100, 100),
+        new Circle2D(200, 200, 100)
+
+      ];
+
+      var rectangles = [
+
+        new Rectangle2D(100, 120, 100, 70),
+        new Rectangle2D(150, 175, 80, 50)
+
+      ];
+
+      var polygons = [
+        
+        new Polygon2D(100, 100, -100, 50, 0, -100, 100, 0, 0, 100),
+        new Polygon2D(100, 100, -100, 0, 0, -100, 100, 0, 0, 100)
+
+      ];
+
+      var shapes = circles;
+
+      function cycle(time_stamp) {
+
+        window.requestAnimationFrame(cycle);
+
+        update();
+        render();
+
+      }
+
+      function render() {
+
+        // Fill the entire background
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+        // Draw the x and y axes
+        context.beginPath();
+        context.strokeStyle = "#202830";
+        context.moveTo(offset.x, 0);
+        context.lineTo(offset.x, context.canvas.height);
+        context.stroke();
+        context.moveTo(0, offset.y);
+        context.lineTo(context.canvas.width, offset.y);
+        context.stroke();
+
+        // Draw the shapes
+        for (var shape of shapes) {
+
+          shape.draw(context, offset);
+
+        }
+
+        shape.setPosition(pointer.x, pointer.y);
+
+        var minkowski_difference_shape = shape.constructor.createMinkowskiDifferenceShape(shape, shapes[0]);
+
+        minkowski_difference_shape.draw(context, offset);
+   
+      }
+
+      function update() {
+
+
+      }
+
+        ////////////////////////
+       //// EVENT HANDLERS ////
+      ////////////////////////
+
+      function clickA(event) { event.preventDefault();
+
+        switch(this.innerText) {
+
+          case "circle":    shapes = circles;    break;
+          case "polygon":   shapes = polygons;   break;
+          case "rectangle": shapes = rectangles;
+
+        }
+
+        shapes[0].setPosition(Math.floor(Math.random() * context.canvas.width * 0.5), Math.floor(Math.random() * context.canvas.height * 0.5));
+
+      }
+
+      // Get the position of the pointer and don't forget to add the offset.
+      function mouseMove(event) { event.preventDefault();
+
+        var rectangle = context.canvas.getBoundingClientRect();
+
+        pointer.x = event.clientX - rectangle.left - offset.x;
+        pointer.y = event.clientY - rectangle.top  - offset.y;
+
+      }
+
+      function resize(event) {
+
+        context.canvas.width  = document.documentElement.clientWidth - 16;
+        context.canvas.height = document.documentElement.clientHeight - 16;
+
+        context.canvas.imageSmoothingEnabled = false;
+
+        offset.x = Math.round(context.canvas.width * 0.5);
+        offset.y = Math.round(context.canvas.height * 0.5);
+
+      }
+
+        ////////////////////
+       //// INITIALIZE ////
+      ////////////////////
+
+      document.querySelectorAll("a").forEach((a) => {
+
+        a.addEventListener("click", clickA);
+
+      }); // Add the click event listener to each a element.
+
+      window.addEventListener("resize", resize);
+
+      window.addEventListener("mousemove", mouseMove);
+
+      resize(); // Make the canvas fit the screen
+
+      cycle(); // Start the application loop
+
+    </script>
+
+  </body>
+
+</html>
