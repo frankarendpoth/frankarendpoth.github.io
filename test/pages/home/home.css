@@ -4,7 +4,7 @@
   justify-content:left;
   background-color:#202830;
   color:#ffffff;
-  display:grid;
+  display:grid !important;
   grid-template-rows:auto auto auto;
 
 }
