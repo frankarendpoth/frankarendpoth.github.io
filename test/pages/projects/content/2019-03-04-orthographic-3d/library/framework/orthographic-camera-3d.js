@@ -1,13 +1,20 @@
 class OrthographicCamera3D extends Point3D {
 
-  constructor(x, y, z, w, h) {
+  constructor(x, y, z, w, h, canvas) {
 
     super(x, y, z);
 
-    this.rotation = new Vector3D(Math.PI * 0.25, Math.PI * 0.25, 0);
+    this.rotation = new Vector3D(-Math.PI * 0.25, Math.PI * 0.25, 0);
+
+    this.ratio = w / h;
 
     this.width  = w;
     this.height = h;
+
+    this.context = canvas.getContext("2d", { alpha:false });
+
+    canvas.width  = w;
+    canvas.height = h;
 
   }
 
@@ -20,7 +27,7 @@ class OrthographicCamera3D extends Point3D {
 
     var c = Vector3D.crossProduct(v1, v2);
 
-    if (Vector3D.dotProduct(c, OrthographicCamera3D.normal) < 0) return false;
+    if (Vector3D.dotProduct(c, OrthographicCamera3D.normal) <= 0) return false;
     
     return true;
 
@@ -35,28 +42,19 @@ class OrthographicCamera3D extends Point3D {
 
   }
 
-  projectPoints(points) {
+  resizeCanvas(width, height, scale, image_smoothing_enabled = false) {
 
-    var projected_points = new Array(points.length);
+    var ratio = width / height;
 
-    for (var i = points.length - 1; i > -1; -- i) {
+    this.scale = scale;
 
-      var p = Point3D.clone(points[i]);
+    if (this.ratio < ratio) width = height * this.ratio;
+    else height = width / this.ratio;
+    
+    this.height = this.context.canvas.height = height;
+    this.width  = this.context.canvas.width  = width;
 
-      p.translate(-this.x, -this.y, -this.z);
-
-      Point3D.rotateY(p, this.rotation.y);
-      Point3D.rotateX(p, this.rotation.x);
-      //Point3D.rotateY(p, this.rotation.y);
-      //Point3D.rotateZ(p, this.rotation.z);
-
-      //p.translate(this.x, this.y, this.z);
-
-      projected_points[i] = p;
-
-    }
-
-    return projected_points;
+    this.context.imageSmoothingEnabled = image_smoothing_enabled;
 
   }
 

@@ -6,6 +6,10 @@ class Block extends Polygon3D {
     super(x, y, z, [-hw, -hh, -hd], [hw, -hh, -hd], [hw, -hh, hd], [-hw, -hh, hd],
                    [-hw,  hh, -hd], [hw,  hh, -hd], [hw,  hh, hd], [-hw,  hh, hd]);
 
+    this.width  = hw * 2;
+    this.height = hh * 2;
+    this.depth  = hd * 2;
+
   }
 
   faceVertices(index) {
@@ -31,4 +35,4 @@ Block.faces = [[0, 1, 2, 3],  // top
                [3, 2, 6, 7],  // front
                [0, 4, 5, 1]]; // back
 
-Block.colors = ["rgba(0, 255, 0, 0.5)", "rgba(0, 0, 192, 0.5)", "rgba(0, 0, 0, 0.5)", "rgba(192, 0, 0, 0.5)", "rgba(255, 255, 255, 0.5)", "rgba(192, 0, 192, 0.5)"];
+Block.colors = ["rgba(0, 255, 0, 0.8)", "rgba(0, 0, 192, 0.8)", "rgba(0, 0, 0, 0.8)", "rgba(192, 0, 0, 0.8)", "rgba(255, 255, 255, 0.8)", "rgba(192, 0, 192, 0.8)"];

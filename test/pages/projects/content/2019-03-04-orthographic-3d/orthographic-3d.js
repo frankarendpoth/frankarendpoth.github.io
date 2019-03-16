@@ -10,10 +10,7 @@
     if (controller.u.active) camera.translateZ(-1);
     if (controller.d.active) camera.translateZ(1);
     if (controller.l.active) camera.translateX(-1);
-    if (controller.r.active) engine.stop();//camera.translateX(1);
-
-    //block.rotateX(0.01);
-    //block.rotateY(0.01);
+    if (controller.r.active) camera.translateX(1);
 
   }
 
@@ -23,41 +20,49 @@
 
     output.innerText += "\nRotation:\nx: " + Math.floor(camera.rotation.x * 180 / Math.PI) + "\ny: " + Math.floor(camera.rotation.y * 180 / Math.PI) + "\nz: " + Math.floor(camera.rotation.z * 180 / Math.PI);
 
-    display.buffer.fillStyle = "#c9e9f6";
-    display.buffer.fillRect(0, 0, display.buffer_w, display.buffer_h);
+    camera.context.fillStyle = "#c9e9f6";
+    camera.context.fillRect(0, 0, camera.width, camera.height);
 
-    for (var f = Block.faces.length - 1; f > -1; -- f) {
+    for (var c = world.columns - 1; c > -1; -- c) {
 
-      var face = new Face3D(block.faceVertices(f));
+      for (var r = world.rows - 1; r > -1; -- r) {
 
-      camera.projectFace(face);
+        for (var f = Block.faces.length - 1; f > -1; -- f) {
 
-      if (camera.backFace(face)) continue;
+          var face = new Face3D(block.faceVertices(f));
 
-      var point = face.vertices[0];
-
-      point.translate(camera.width * 0.5, camera.height * 0.5, 0);
-
-      display.buffer.beginPath();
-      display.buffer.moveTo(point.x, point.y);
-
-      for (var p = face.vertices.length - 1; p > 0; -- p) {
-
-        point = face.vertices[p];
-
-        point.translate(camera.width * 0.5, camera.height * 0.5, 0);
-
-        display.buffer.lineTo(point.x, point.y);
+          face.translate(c * block.width, 0, -r * block.depth);
+    
+          camera.projectFace(face);
+    
+          if (camera.backFace(face)) continue;
+    
+          var point = face.vertices[0];
+    
+          point.translate(camera.width * 0.5, camera.height * 0.5, 0);
+    
+          camera.context.beginPath();
+          camera.context.moveTo(point.x, point.y);
+    
+          for (var p = face.vertices.length - 1; p > 0; -- p) {
+    
+            point = face.vertices[p];
+    
+            point.translate(camera.width * 0.5, camera.height * 0.5, 0);
+    
+            camera.context.lineTo(point.x, point.y);
+    
+          }
+    
+          camera.context.closePath();
+          camera.context.fillStyle = Block.colors[f];
+          camera.context.fill();
+    
+        }
 
       }
 
-      display.buffer.closePath();
-      display.buffer.fillStyle = Block.colors[f];
-      display.buffer.fill();
-
     }
-
-    display.render();
 
   }
 
@@ -74,7 +79,9 @@
       case 65: controller.A.processInput(state); break;
       case 68: controller.D.processInput(state); break;
       case 83: controller.S.processInput(state); break;
-      case 87: controller.W.processInput(state);
+      case 87: controller.W.processInput(state); break;
+
+      case 13: engine.stop();
 
     }
 
@@ -85,7 +92,7 @@
 
     var de = document.documentElement;
 
-    display.resizeCanvas(de.clientWidth, de.clientHeight);
+    camera.resizeCanvas(de.clientWidth, de.clientHeight);
 
   }
 
@@ -102,20 +109,21 @@
 
   };
 
-  var camera  = new OrthographicCamera3D(0, 0, 0, 100, 100);
+  var camera  = new OrthographicCamera3D(96, 0, -96, 100, 100, document.querySelector("canvas"));
 
-  var display = new Display(document.querySelector("canvas"));
   var engine  = new Engine(update, render);
 
   var output  = document.querySelector("p");
 
-  var block = new Block(0, 0, 0, 8, 8, 8);
+  var block = new Block(0, 0, 0, 32, 32, 32);
+
+  var world = new World(4, 4);
 
   window.addEventListener("keydown", keyUpDown);
   window.addEventListener("keyup"  , keyUpDown);
   window.addEventListener("resize" , resize);
 
-  display.resizeBuffer(camera.width, camera.height);
+  camera.resizeCanvas(camera.width, camera.height);
   resize();
 
   engine.start();
