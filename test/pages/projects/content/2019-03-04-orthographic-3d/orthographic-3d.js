@@ -7,19 +7,10 @@
     if (controller.A.active) camera.rotation.y -= 0.01;
     if (controller.D.active) camera.rotation.y += 0.01;
 
-    if (controller.u.active) {
-      
-      camera.translateX(Math.cos(camera.rotation.x));
-      camera.translateZ(Math.sin(camera.rotation.x));
-
-    }
-
-    if (controller.d.active) {
-
-      camera.translateX(-Math.cos(camera.rotation.x));
-      camera.translateZ(-Math.sin(camera.rotation.x));
-
-    }
+    if (controller.u.active) camera.translateZ(-1);
+    if (controller.d.active) camera.translateZ(1);
+    if (controller.l.active) camera.translateX(-1);
+    if (controller.r.active) engine.stop();//camera.translateX(1);
 
     //block.rotateX(0.01);
     //block.rotateY(0.01);
@@ -37,20 +28,22 @@
 
     for (var f = Block.faces.length - 1; f > -1; -- f) {
 
-      if (camera.backFace(block.faceVertices(f))) continue;
+      var face = new Face3D(block.faceVertices(f));
 
-      var face = camera.projectPoints(block.faceVertices(f));
+      camera.projectFace(face);
 
-      var point = face[0];
+      if (camera.backFace(face)) continue;
+
+      var point = face.vertices[0];
 
       point.translate(camera.width * 0.5, camera.height * 0.5, 0);
 
       display.buffer.beginPath();
       display.buffer.moveTo(point.x, point.y);
 
-      for (var p = face.length - 1; p > 0; -- p) {
+      for (var p = face.vertices.length - 1; p > 0; -- p) {
 
-        point = face[p];
+        point = face.vertices[p];
 
         point.translate(camera.width * 0.5, camera.height * 0.5, 0);
 

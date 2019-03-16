@@ -4,25 +4,34 @@ class OrthographicCamera3D extends Point3D {
 
     super(x, y, z);
 
-    this.rotation = new Vector3D(-Math.PI * 0.5, 0, 0);
+    this.rotation = new Vector3D(Math.PI * 0.25, Math.PI * 0.25, 0);
 
     this.width  = w;
     this.height = h;
 
   }
 
-  backFace(points) {
+  backFace(face) {
 
-    var p0 = points[0];
+    var p0 = face.vertices[0];
 
-    var v1 = Vector3D.difference(points[1], p0);
-    var v2 = Vector3D.difference(points[2], p0);
+    var v1 = Vector3D.difference(face.vertices[1], p0);
+    var v2 = Vector3D.difference(face.vertices[2], p0);
 
     var c = Vector3D.crossProduct(v1, v2);
 
-    if (Vector3D.dotProduct(c, OrthographicCamera3D.normal) > 0) return false;
+    if (Vector3D.dotProduct(c, OrthographicCamera3D.normal) < 0) return false;
     
     return true;
+
+  }
+
+  projectFace(face) {
+
+    face.translate(-this.x, -this.y, -this.z);
+
+    face.rotateX(this.rotation.x);
+    face.rotateY(this.rotation.y);
 
   }
 
@@ -34,49 +43,20 @@ class OrthographicCamera3D extends Point3D {
 
       var p = Point3D.clone(points[i]);
 
-      var v = Vector3D.difference(p, this);
+      p.translate(-this.x, -this.y, -this.z);
 
-      var dot1 = Vector3D.dotProduct(v, OrthographicCamera3D.normal);
-      var dot2 = Vector3D.dotProduct(OrthographicCamera3D.normal, OrthographicCamera3D.normal);
-
-      var f = dot1 / dot2;
-
-      var proj = new Vector3D(this.x + f * OrthographicCamera3D.normal.x, this.y + f * OrthographicCamera3D.normal.y, this.z + f * OrthographicCamera3D.normal.z);
-
-
-      var v2 = Vector3D.difference(v, proj);
-
-      var final = new Point3D(this.x + v2.x, this.y + v2.y, this.z + v2.z);
-
-      projected_points[i] = final;
-
-    }
-
-    this.rotatePointsX(projected_points, this.rotation.x);
-
-    return projected_points;
-
-  }
-
-  rotatePointsX(points, a) {
-
-    var c = Math.cos(a);
-    var s = Math.sin(a);
-
-    for (var i = points.length - 1; i > -1; -- i) {
-
-      var p = points[i]; // selected point
-
-      //p.translate(-this.x, -this.y, -this.z);
-
-      var y = p.y * c - p.z * s;
-      p.z   = p.y * s + p.z * c;
-
-      p.y = y;
+      Point3D.rotateY(p, this.rotation.y);
+      Point3D.rotateX(p, this.rotation.x);
+      //Point3D.rotateY(p, this.rotation.y);
+      //Point3D.rotateZ(p, this.rotation.z);
 
       //p.translate(this.x, this.y, this.z);
 
+      projected_points[i] = p;
+
     }
+
+    return projected_points;
 
   }
 
