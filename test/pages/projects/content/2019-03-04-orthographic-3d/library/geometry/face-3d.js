@@ -8,6 +8,52 @@ class Face3D {
 
   }
 
+  averageZ() {
+
+    var z = this.vertices[0].z;
+
+    for (var i = this.vertices.length - 1; i > 0; -- i) z += this.vertices[i].z;
+
+    return z / this.vertices.length;
+
+  }
+
+  maximumPoint(v) {
+
+    var mp = this.vertices[0];
+    var d  = Vector3D.dotProduct(v, mp);
+
+    for (var i = this.vertices.length - 1; i > 0; -- i) {
+
+      var tp = this.vertices[i];
+      var td = Vector3D.dotProduct(v, tp);
+
+      if (td > d) { d = td; mp = tp; }
+
+    }
+
+    return mp.clone();
+
+  }
+
+  minimumPoint(v) {
+
+    var mp = this.vertices[0];
+    var d  = Vector3D.dotProduct(v, mp);
+
+    for (var i = this.vertices.length - 1; i > 0; -- i) {
+
+      var tp = this.vertices[i];
+      var td = Vector3D.dotProduct(v, tp);
+
+      if (td < d) { d = td; mp = tp; }
+
+    }
+
+    return mp.clone();
+
+  }
+
   rotateX(a) {
 
     var c = Math.cos(a);

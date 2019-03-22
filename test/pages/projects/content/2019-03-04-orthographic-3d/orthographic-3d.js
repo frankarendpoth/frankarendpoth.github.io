@@ -23,44 +23,63 @@
     camera.context.fillStyle = "#c9e9f6";
     camera.context.fillRect(0, 0, camera.width, camera.height);
 
+    var faces  = new Array();
+    var colors = new Array();
+
     for (var c = world.columns - 1; c > -1; -- c) {
 
       for (var r = world.rows - 1; r > -1; -- r) {
 
         for (var f = Block.faces.length - 1; f > -1; -- f) {
 
+          var block = world.blocks[r * world.columns + c];
+
           var face = new Face3D(block.faceVertices(f));
 
-          face.translate(c * block.width, 0, -r * block.depth);
+          //face.translate(c * block.width, 0, -r * block.depth);
     
           camera.projectFace(face);
     
           if (camera.backFace(face)) continue;
     
-          var point = face.vertices[0];
-    
-          point.translate(camera.width * 0.5, camera.height * 0.5, 0);
-    
-          camera.context.beginPath();
-          camera.context.moveTo(point.x, point.y);
-    
-          for (var p = face.vertices.length - 1; p > 0; -- p) {
-    
-            point = face.vertices[p];
-    
-            point.translate(camera.width * 0.5, camera.height * 0.5, 0);
-    
-            camera.context.lineTo(point.x, point.y);
-    
-          }
-    
-          camera.context.closePath();
-          camera.context.fillStyle = Block.colors[f];
-          camera.context.fill();
+          faces.push(face);
+          face.z = -face.averageZ();//face.minimumPoint(OrthographicCamera3D.normal).z;
+          face.c = Block.colors[f];
+
+          colors.push(Block.colors[f]);
     
         }
 
       }
+
+    }
+
+    faces.sort((a, b) => { return a.z - b.z; });
+
+    for (var i = faces.length - 1; i > -1; -- i) {
+
+      face = faces[i];
+
+      var point = face.vertices[0];
+    
+      point.translate(camera.width * 0.5, camera.height * 0.5, 0);
+
+      camera.context.beginPath();
+      camera.context.moveTo(point.x, point.y);
+
+      for (var p = face.vertices.length - 1; p > 0; -- p) {
+
+        point = face.vertices[p];
+
+        point.translate(camera.width * 0.5, camera.height * 0.5, 0);
+
+        camera.context.lineTo(point.x, point.y);
+
+      }
+
+      camera.context.closePath();
+      camera.context.fillStyle = face.c;
+      camera.context.fill();
 
     }
 
@@ -109,15 +128,13 @@
 
   };
 
-  var camera  = new OrthographicCamera3D(96, 0, -96, 100, 100, document.querySelector("canvas"));
+  var camera  = new OrthographicCamera3D(224, 0, -224, 100, 100, document.querySelector("canvas"));
 
   var engine  = new Engine(update, render);
 
   var output  = document.querySelector("p");
 
-  var block = new Block(0, 0, 0, 32, 32, 32);
-
-  var world = new World(4, 4);
+  var world = new World(8, 8);
 
   window.addEventListener("keydown", keyUpDown);
   window.addEventListener("keyup"  , keyUpDown);
@@ -129,3 +146,17 @@
   engine.start();
 
 })();
+
+var a = [];
+
+for (var i = 0; i < 100; i ++) {
+
+  var n = Math.floor(Math.random() * 100 - 50);
+
+  a.push(n);
+
+}
+
+a.sort((a, b) => { return a - b; });
+
+console.log(a.toString());
