@@ -6,3 +6,16 @@
   display:block !important;
 
 }
+
+#projects a {
+
+  background-color:#c06020;
+  border-radius:8px;
+  color:#ffffff;
+  display:inline-grid;
+  font-size:1.25em;
+  padding:4px;
+
+}
+
+#projects a:hover { background-color:#f08040; }

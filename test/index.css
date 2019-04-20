@@ -14,7 +14,7 @@ body {
 
 }
 
-a { cursor:pointer; pointer-events:auto; }
+a { cursor:pointer; pointer-events:auto; text-decoration:none; }
 
 header {
 
