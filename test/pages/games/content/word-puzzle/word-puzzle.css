@@ -1,4 +1,4 @@
-* { box-sizing:border-box; margin:0; outline:none; overflow:hidden; padding:0; user-select:none; }
+* { box-sizing:border-box; margin:0px; outline:none; overflow:hidden; padding:0px; user-select:none; }
 
 body, html { height:100%; width:100%; }
 
@@ -13,7 +13,7 @@ body {
   justify-items:center;
   padding:4px;
   row-gap:4px;
-  transition:15s;
+  transition: background-color 15s;
 
 }
 
