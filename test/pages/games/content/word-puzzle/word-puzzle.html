@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta name = "description" content = "A hangman type game by Frank Poth">
+    <meta name = "theme-color" content = "#202830">
+    <meta name = "viewport"    content = "width=device-width">
+
+    <title>Word Puzzle</title>
+
+    <link href = "manifest.webmanifest", rel = "manifest" type = "application/manifest+json">
+
+    <link href = "https://fonts.googleapis.com/css?family=Zilla+Slab&display=swap" rel = "stylesheet">
+
+    <link href = "word-puzzle.css" rel = "stylesheet" type = "text/css">
+
+  </head>
+
+  <body>
+
+    <div class = "scene">
+
+      <h1 class = "scene-title"></h1>
+
+      <p class = "scene-output"></p>
+
+      <div class = "button scene-button"></div>
+
+      <h1 class = "scene-strikes"></h1>
+
+    </div>
+
+    <div class = "interface">
+
+      <div class = "button interface-button" style = "grid-area:a81">Q</div>
+      <div class = "button interface-button" style = "grid-area:a87">W</div>
+      <div class = "button interface-button" style = "grid-area:a69">E</div>
+      <div class = "button interface-button" style = "grid-area:a82">R</div>
+      <div class = "button interface-button" style = "grid-area:a84">T</div>
+      <div class = "button interface-button" style = "grid-area:a89">Y</div>
+      <div class = "button interface-button" style = "grid-area:a85">U</div>
+      <div class = "button interface-button" style = "grid-area:a73">I</div>
+      <div class = "button interface-button" style = "grid-area:a79">O</div>
+      <div class = "button interface-button" style = "grid-area:a80">P</div>
+      <div class = "button interface-button" style = "grid-area:a65">A</div>
+      <div class = "button interface-button" style = "grid-area:a83">S</div>
+      <div class = "button interface-button" style = "grid-area:a68">D</div>
+      <div class = "button interface-button" style = "grid-area:a70">F</div>
+      <div class = "button interface-button" style = "grid-area:a71">G</div>
+      <div class = "button interface-button" style = "grid-area:a72">H</div>
+      <div class = "button interface-button" style = "grid-area:a74">J</div>
+      <div class = "button interface-button" style = "grid-area:a75">K</div>
+      <div class = "button interface-button" style = "grid-area:a76">L</div>
+      <div class = "button interface-button" style = "grid-area:a90">Z</div>
+      <div class = "button interface-button" style = "grid-area:a88">X</div>
+      <div class = "button interface-button" style = "grid-area:a67">C</div>
+      <div class = "button interface-button" style = "grid-area:a86">V</div>
+      <div class = "button interface-button" style = "grid-area:a66">B</div>
+      <div class = "button interface-button" style = "grid-area:a78">N</div>
+      <div class = "button interface-button" style = "grid-area:a77">M</div>
+      <div class = "button interface-button special" style = "grid-area:a33">!</div>
+      <div class = "button interface-button special" style = "grid-area:a63">?</div>
+      <div class = "button interface-button special" style = "grid-area:a8" >BACKSPACE</div>
+      <div class = "button interface-button special" style = "grid-area:a32">SPACE</div>
+      <div class = "button interface-button special" style = "grid-area:a44">,</div>
+      <div class = "button interface-button special" style = "grid-area:a46">.</div>
+      <div class = "button interface-button special" style = "grid-area:a39">'</div>
+
+    </div>
+
+    <script type = "text/javascript">
+
+      console.log("Version 2");
+    
+      if ("serviceWorker" in navigator) {
+
+        window.addEventListener("load", () => {
+
+          navigator.serviceWorker.register("worker.js").then(registration => {
+
+            console.log("Successfully Registered Service Worker");
+
+          }).catch(error => {
+
+            alert("could not register service worker: " + error);
+
+          });
+
+        });
+
+        window.addEventListener("beforeunload", (event) => {
+
+          console.log("//////////////////////////////////////// Page Unloading ////////////////////////////////////////");
+
+          /*navigator.serviceWorker.getRegistrations().then(registrations => {
+
+            for(let registration of registrations) registration.unregister();
+
+          });*/
+
+        });
+
+      }
+    
+    </script>
+
+    <script src = "word-puzzle.js"></script>
+
+  </body>
+
+</html>

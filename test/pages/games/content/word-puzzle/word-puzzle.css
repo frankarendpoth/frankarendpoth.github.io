@@ -1,0 +1,124 @@
+* { box-sizing:border-box; margin:0; outline:none; overflow:hidden; padding:0; user-select:none; }
+
+body, html { height:100%; width:100%; }
+
+body {
+
+  align-items:space-between;
+  background-color:#202830;
+  display:grid;
+  font-family: 'Zilla Slab', serif;
+  grid-template-areas:"scene" "interface";
+  grid-template-rows:2fr 1fr;
+  justify-items:center;
+  padding:4px;
+  row-gap:4px;
+  transition:15s;
+
+}
+
+.button {
+
+  align-items:center;
+  background-color:rgba(255, 255, 255, 0.2);
+  border:none;
+  border-radius:8px;
+  box-shadow:0px 4px rgba(0, 0, 0, 0.5);
+  color:#ffffff;
+  cursor:pointer;
+  display:grid;
+  font-weight:1000;
+  justify-items:center;
+  margin:0 0 4px 0;
+  text-align:center;
+
+}
+
+.button:hover {
+
+  background-color:rgba(0, 0, 0, 0.5);
+  box-shadow:0px 0px rgba(0, 0, 0, 0.5);
+  margin:4px 0 0 0;
+  overflow:visible;
+  position:relative;
+
+}
+
+.button:hover::before {
+
+  background-color:rgba(0, 0, 0, 0);
+  content:"";
+  height:100%;
+  left:0px;
+  position:absolute;
+  top:-4px;
+  width:100%;
+
+}
+
+.interface {
+
+  display:grid;
+  grid-area:interface;
+
+  grid-template-areas:"a81 a87 a69 a82 a84 a89 a85 a73 a79 a80" "a65 a83 a68 a70 a71 a72 a74 a75 a76 a33" "a44 a90 a88 a67 a86 a66 a78 a77 a46 a63" "a8 a8 a8 a8 a8 a32 a32 a32 a32 a39";
+
+  grid-template-columns:repeat(10, 1fr);
+  grid-template-rows:repeat(4, 1fr);
+  column-gap:4px;
+  padding-bottom:4px;
+  row-gap:4px;
+  transition:all 2s;
+  width:100%;
+
+}
+
+.scene {
+
+  align-items:center;
+  display:grid;
+  grid-template-areas:"title" "output" "buttonORstrikes";
+  grid-template-columns:1fr;
+  grid-template-rows:1fr 1fr 1fr;
+  justify-items:center;
+  width:100%;
+
+}
+
+.scene-button {
+
+  font-size:4.0em;
+  grid-area:buttonORstrikes;
+  padding:8px;
+  transition: 0.4s;
+
+}
+
+.scene-output {
+
+  color:#ffffff;
+  font-size:1.5em;
+  grid-area:output;
+  text-align:center;
+  white-space:pre-wrap;
+  word-wrap:normal;
+
+}
+
+.scene-strikes {
+
+  color:#ffffff;
+  display:none;
+  grid-area:buttonORstrikes;
+
+}
+
+.scene-title {
+
+  color:#ffffff;
+  font-size:2.5em;
+  grid-area:title;
+  text-align:center;
+  width:100%;
+
+}

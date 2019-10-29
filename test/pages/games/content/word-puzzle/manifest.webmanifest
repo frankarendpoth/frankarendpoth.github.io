@@ -1,0 +1,26 @@
+{
+
+  "background_color":"#202830",
+  "categories":["games", "game"],
+  "description":"A hangman type game written by Frank Poth.",
+  "display":"fullscreen",
+  "icons":[{
+
+    "sizes":"32x32",
+    "src":"word-puzzle-icon-32x32.png",
+    "type":"image/png"
+
+  }, {
+
+    "sizes":"128x128",
+    "src":"word-puzzle-icon-128x128.png",
+    "type":"image/png"
+
+  }],
+  "name":"Word Puzzle",
+  "orientation":"portrait",
+  "short_name":"Word Puzzle",
+  "start_url":"word-puzzle.html",
+  "theme_color":"#202830"
+
+}
