@@ -34,6 +34,8 @@ body {
 
 }
 
+.button:focus, .button:focus-visible, .button:focus-within { outline:none; }
+
 .button:hover {
 
   background-color:rgba(0, 0, 0, 0.5);
