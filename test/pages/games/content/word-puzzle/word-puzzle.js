@@ -146,11 +146,17 @@
 
   function clickInterfaceButton(event) {
 
+    event.preventDefault();
+    event.stopPropagation();
+
     scene.clickInterfaceButton(this);
 
   }
 
   function clickSceneButton(event) {
+
+    event.preventDefault();
+    event.stopPropagation();
 
     scene.clickSceneButton();
 
@@ -263,6 +269,8 @@
     changeScene("create_a_puzzle");
 
     html.scene_button.addEventListener("click", clickSceneButton);
+
+    window.addEventListener("touchstart", touchStartWindow);
   
     loop();
 
@@ -275,6 +283,8 @@
     return true;
 
   }
+
+  function touchStartWindow(event) { event.preventDefault(); event.stopPropagation(); }
 
   setup();
 
