@@ -34,7 +34,13 @@ body {
 
 }
 
-.button:focus, .button:focus-visible, .button:focus-within { outline:none; }
+.button:focus, .button:focus-visible {
+
+  outline-color:rgba(0, 0, 0, 0);
+  outline-style:none;
+  outline-width:0px;
+
+}
 
 .button:hover {
 
