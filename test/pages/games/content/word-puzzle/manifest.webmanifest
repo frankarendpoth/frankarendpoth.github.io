@@ -16,6 +16,12 @@
     "src":"word-puzzle-icon-128x128.png",
     "type":"image/png"
 
+  }, {
+
+    "sizes":"192x192",
+    "src":"word-puzzle-icon-192x192.png",
+    "type":"image/png"
+
   }],
   "name":"Word Puzzle",
   "orientation":"portrait",
