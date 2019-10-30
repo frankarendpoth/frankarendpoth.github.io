@@ -147,14 +147,16 @@
   function clickInterface(event) {
     
     event.preventDefault();
+    event.stopPropagation();
 
-    if (event.target.className === "button interface-button") scene.clickInterfaceButton(event.target);
+    if (event.target.className === "button interface-button" || event.target.className === "button interface-button special") scene.clickInterfaceButton(event.target);
 
   }
 
   function clickSceneButton(event) {
 
     event.preventDefault();
+    event.stopPropagation();
 
     scene.clickSceneButton();
 
@@ -197,9 +199,9 @@
 
     var output = "";
 
-    for (var index = max_strikes - strikes; index > 0; -- index) output += " O ";
+    for (var index = max_strikes - strikes; index > 0; -- index) output += "O";
 
-    for (index = strikes; index > 0; -- index) output = " X " + output;
+    for (index = strikes; index > 0; -- index) output = "X" + output;
 
     return output;
 
