@@ -1,4 +1,4 @@
-const CACHE_NAME     = "word-puzzle-2";
+const CACHE_NAME     = "word-puzzle-3";
 const FILES_TO_CACHE = ["manifest.webmanifest", "word-puzzle.css", "word-puzzle.html", "word-puzzle.js"];
 
 self.addEventListener("activate", event => {

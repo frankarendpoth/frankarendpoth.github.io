@@ -22,7 +22,7 @@
         switch(button.innerText) {
     
           case "BACKSPACE" : html.scene_output.innerText  = output.slice(0, output.length -1); break;
-          case "SPACE"     : html.scene_output.innerText  = output + " "; break;
+          case "SPACE"     : html.scene_output.innerText  = output + "  "; break;
           default          : html.scene_output.innerText += button.innerText;
     
         }
@@ -144,19 +144,17 @@
 
   }
 
-  function clickInterfaceButton(event) {
-
+  function clickInterface(event) {
+    
     event.preventDefault();
-    event.stopPropagation();
 
-    scene.clickInterfaceButton(this);
+    scene.clickInterfaceButton(event.target);
 
   }
 
   function clickSceneButton(event) {
 
     event.preventDefault();
-    event.stopPropagation();
 
     scene.clickSceneButton();
 
@@ -262,13 +260,11 @@
 
   function setup() {
 
-    var interface_buttons = document.querySelectorAll(".interface-button");
-
-    for (var index = interface_buttons.length - 1; index > -1; -- index) interface_buttons[index].addEventListener("click", clickInterfaceButton);
-
-    changeScene("create_a_puzzle");
+    document.querySelector(".interface").addEventListener("click", clickInterface);
 
     html.scene_button.addEventListener("click", clickSceneButton);
+
+    changeScene("create_a_puzzle");
   
     loop();
 
