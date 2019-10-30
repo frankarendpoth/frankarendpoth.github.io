@@ -7,7 +7,7 @@ body {
   align-items:space-between;
   background-color:#202830;
   display:grid;
-  font-family: 'Zilla Slab', serif;
+  font-family: "Zilla Slab", serif;
   grid-template-areas:"scene" "interface";
   grid-template-rows:2fr 1fr;
   justify-items:center;
@@ -128,5 +128,12 @@ body {
   grid-area:title;
   text-align:center;
   width:100%;
+
+}
+
+@font-face {
+
+  font-family: "Zilla Slab";
+  src: url("zilla-slab-font/ZillaSlab-Regular.ttf");
 
 }

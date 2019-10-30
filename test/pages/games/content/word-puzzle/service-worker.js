@@ -1,5 +1,5 @@
-const CACHE_NAME     = "word-puzzle-3";
-const FILES_TO_CACHE = ["manifest.webmanifest", "word-puzzle.css", "word-puzzle.html", "word-puzzle.js"];
+const CACHE_NAME     = "word-puzzle-4";
+const FILES_TO_CACHE = ["manifest.webmanifest", "word-puzzle.css", "word-puzzle.html", "word-puzzle.js", "zilla-slab-font/ZillaSlab-Regular.ttf"];
 
 self.addEventListener("activate", event => {
 
