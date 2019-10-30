@@ -76,17 +76,7 @@
     
       if ("serviceWorker" in navigator) {
 
-        navigator.serviceWorker.register("service-worker.js").then(registration => {
-
-          console.log("Successfully Registered Service Worker");
-
-        });
-
-        window.addEventListener("beforeunload", (event) => {
-
-          console.log("//////////////////////////////////////// Page Unloading ////////////////////////////////////////");
-
-        });
+        navigator.serviceWorker.register("service-worker.js");
 
       }
     
