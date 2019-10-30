@@ -22,7 +22,7 @@
         switch(button.innerText) {
     
           case "BACKSPACE" : html.scene_output.innerText  = output.slice(0, output.length -1); break;
-          case "SPACE"     : html.scene_output.innerText  = output + "  "; break;
+          case "SPACE"     : html.scene_output.innerText  = output + " "; break;
           default          : html.scene_output.innerText += button.innerText;
     
         }
