@@ -148,7 +148,7 @@
     
     event.preventDefault();
 
-    scene.clickInterfaceButton(event.target);
+    if (event.target.className === "button interface-button") scene.clickInterfaceButton(event.target);
 
   }
 
