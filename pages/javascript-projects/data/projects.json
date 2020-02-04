@@ -1,0 +1,37 @@
+[
+  {
+    "name":"Scroll Scale",
+    "description":"Scroll and Scale a Tile Map Simultaneously",
+    "path":"scroll-scale/scroll-scale.html"
+  },
+  {
+    "name":"No Name Yet",
+    "description":"A game I'm working on.",
+    "path":"no-name/no-name.html"
+  },
+  {
+    "name":"Rasterizer",
+    "description":"Plots pixels manually using JavaScript.",
+    "path":"rasterizer/rasterizer.html"
+  },
+  {
+    "name":"Orthographic 3D",
+    "description":"An attempt at making an orthographic 3D Height Map.",
+    "path":"orthographic-3d/orthographic-3d.html"
+  },
+  {
+    "name":"Simplex Noise",
+    "description":"Testing \"infinite\" simplex-noise generation.",
+    "path":"simplex-noise/simplex-noise.html"
+  },
+  {
+    "name":"Noise",
+    "description":"Testing noise generation for height maps.",
+    "path":"noise/noise.html"
+  },
+  {
+    "name":"Isometric Tile",
+    "description":"This is a cool pseudo 3D tile map that will use a lot of memory to run.",
+    "path":"isometric-tile/main.html"
+  }
+]

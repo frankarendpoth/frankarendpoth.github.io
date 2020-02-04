@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta name = "viewport" content = "width=device-width">
+
+    <title>TEST</title>
+
+    <link href = "index.css"  rel = "stylesheet" type = "text/css">
+
+    <link id = "main-css" href = "" rel = "stylesheet" type = "text/css">
+
+    <script src = "library/ajax-kit.js" type = "text/javascript"></script>
+    <script src = "library/doc-kit.js" type = "text/javascript"></script>
+
+    <script src = "library/fs-kit.js" type = "text/javascript"></script>
+
+    <script src = "index.js" type = "text/javascript"></script>
+
+  </head>
+
+  <body>
+
+    <header>
+
+    </header>
+
+    <nav>
+
+      <a onclick = "requestContent('pages/home/home.html');">Home</a>
+      <a onclick = "requestContent('pages/projects/projects.html');">Projects</a>
+      <a onclick = "requestContent('pages/games/games.html');">Games</a>
+      <a onclick = "requestContent('pages/poth-on-programming/poth-on-programming.html');">PoP Vlog</a>
+
+    </nav>
+
+    <main>
+
+      <script type = "text/javascript">AJAXKit.import("pages/home/home.html");</script>
+
+    </main>
+
+    <footer>
+
+      <h1>footer</h1>
+
+    </footer>
+
+  </body>
+
+</html>

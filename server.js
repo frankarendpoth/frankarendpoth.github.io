@@ -8,7 +8,7 @@
   var fs, https, mimetypes, options, path, server;
 
   fs = require("fs"); // file system
-  https = require("https"); // creates an https server
+  http = require("http"); // creates an http server
   path = require("path"); // used for working with url paths
 
   // used to create response headers
@@ -27,14 +27,7 @@
 
   };
 
-  options = {
-
-    pfx: fs.readFileSync("ssl/crt.pfx"),
-    passphrase: "password"
-
-  };
-
-  server = https.createServer(options, function(request, response) {
+  server = http.createServer((request, response) => {
 
     console.log(request.url);
 

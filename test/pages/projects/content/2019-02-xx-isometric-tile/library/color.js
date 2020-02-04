@@ -1,8 +1,0 @@
-class Color {
-
-  constructor() {
-
-    
-  }
-
-}
