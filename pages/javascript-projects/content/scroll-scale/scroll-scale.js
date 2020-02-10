@@ -31,6 +31,13 @@
 
   }
 
+  function mouseMove(event) { event.preventDefault();
+  
+    MOUSE.x = event.clientX;
+    MOUSE.y = event.clientY;
+  
+  }
+
   function requestImage(url, callback) {
 
     return new Promise(resolve => {
@@ -56,19 +63,17 @@
     if (event) event.preventDefault();
 
     VIEWPORT.resize(document.documentElement.clientWidth, document.documentElement.clientHeight);
-    //VIEWPORT.setScale(2);
     RENDERER.resize(VIEWPORT.width, VIEWPORT.height);
-    //RENDERER.setScale(VIEWPORT.scale);
 
   }
 
   ENGINE.render = function() {
-
-    RENDERER.clear("#042436");
-
+    
+    RENDERER.clear("#000000");
     RENDERER.renderMap();
+    RENDERER.renderDot();
 
-    RENDERER.renderDot(DOT.x, DOT.y);
+    //RENDERER.highlightMouse();
 
   };
 
@@ -78,18 +83,9 @@
     if (CONTROLLER.left.active)  DOT.x --;
     if (CONTROLLER.right.active) DOT.x ++;
     if (CONTROLLER.up.active)    DOT.y --;
-    if (CONTROLLER.d.active) {
 
-      VIEWPORT.setScale(VIEWPORT.scale - 0.02);
-      RENDERER.setScale(VIEWPORT.scale);
-
-    }
-    if (CONTROLLER.f.active) {
-
-      VIEWPORT.setScale(VIEWPORT.scale + 0.02);
-      RENDERER.setScale(VIEWPORT.scale);
-
-    }
+    if (CONTROLLER.d.active)     VIEWPORT.setScale(VIEWPORT.scale - 0.05);
+    if (CONTROLLER.f.active)     VIEWPORT.setScale(VIEWPORT.scale + 0.05);
 
     VIEWPORT.scrollTo(DOT.x, DOT.y);
 
@@ -99,6 +95,7 @@
 
   window.addEventListener("keydown", keyDown);
   window.addEventListener("keyup", keyUp);
+  window.addEventListener("mousemove", mouseMove);
   window.addEventListener("resize", resize);
 
   TILES.push(new Tile(0), new Tile(8), new Tile(16), new Tile(24), new Tile(32));

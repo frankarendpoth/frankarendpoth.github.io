@@ -8,9 +8,12 @@ export const Page = {
     
     callback(`<style>${this.style}</style>
 <style>${Link.style}</style>
-<span class = "title">Test Title!</span>
+<br>
+<span class = "title">This site is under major construction. For Poth On Programming, click the link below!</span>
+<br><br>
 <div>
   ${Link.getHTML('PothOnProgramming', 'Click here to visit the PothOnProgramming website.', 'https://pothonprogramming.github.io')}
+  <br>
   ${Link.getHTML('JavaScript Projects', 'Click here to see some of my JavaScript projects.', '#/pages/javascript-projects/javascript-projects.js')}
 </div>`);
 
@@ -18,7 +21,7 @@ export const Page = {
 
   style:`.title {
 
-    color:#ff0000;
+    color:#000000;
 
   }
   
