@@ -1,5 +1,20 @@
 [
   {
+    "name":"Texture Bleeding",
+    "description":"Showcases texture bleeding in a scaled tile map",
+    "path":"texture-bleeding/texture-bleeding.html"
+  },
+  {
+    "name":"Scroll CSS Scale",
+    "description":"Scroll and scale a tile map simultaneously, but using CSS for the scaling",
+    "path":"scroll-css-scale/scroll-css-scale.html"
+  },
+  {
+    "name":"WebGL Test",
+    "description":"Testing out WebGL2",
+    "path":"web-gl-test/web-gl-test.html"
+  },
+  {
     "name":"Scroll Scale",
     "description":"Scroll and Scale a Tile Map Simultaneously",
     "path":"scroll-scale/scroll-scale.html"

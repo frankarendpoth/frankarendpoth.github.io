@@ -1,5 +1,3 @@
-alert("Use the arrow keys to move. Use D and F to zoom. Notice that when scaling you can occasionally see some tearing between the tiles. The tearing is due to a sampling issue where colors from adjacent tiles bleed into the final scaled image. There is no good way to fix this if you're using setTransform to scale images. The most reasonable solution I have found to this is to draw all your images to a buffer and then scale the whole thing. Another solution would be to pad individual images with border color. Another solution is to have each sprite image in its own file, thus preventing unwanted sampling. You might notice there is no tearing on the tops and bottoms of tiles; this is because the sprite sheet is a single row and only the tiles' sides touch.");
-
 (() => {
 
   function keyDown(event) { event.preventDefault();

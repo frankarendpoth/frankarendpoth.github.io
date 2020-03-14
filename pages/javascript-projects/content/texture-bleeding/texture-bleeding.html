@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta charset = "utf-8">
+    <meta name = "author"      content = "Frank Poth">
+    <meta name = "description" content = "Texture bleeding occurrs when blitting regions from the source image to the scaled canvas.">
+    <meta name = "viewport"    content = "height=device-height,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+    <title>Texture Bleeding</title>
+
+    <style>
+    
+      * { box-sizing:border-box; margin:0; overflow:hidden; padding:0; user-select:none; }
+
+      body, html { background-color:#202830; color:#ffffff; height:100%; width:100%; }
+
+      body { align-items:center; display:grid; justify-items:center; }
+
+      p { max-width:640px; }
+
+      div { border:#ffffff 2px solid; bottom:4px; cursor:pointer; padding:8px; position:fixed; right:4px }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <div>Smoothing Disabled</div>
+    <p>Use the arrow keys to scroll and the D and F keys to scale. The source image is represented on the top left. Notice the vertical and horizontal lines that appear between tiles as you scroll and scale. They are the color of the tile's neighbor in the source image. This may be due to color sampling that occurs during scaling. Click the toggle to set imageSmoothingEnabled on the drawing context.</p>
+
+    <canvas></canvas>
+
+    <script>
+
+      /* This is the tile map. Each value is a frame index in the FRAMES array. Each frame tells drawImage where to blit the source from */
+      const MAP = [0,0,0,1,1,1,1,2,2,2,
+                   0,1,0,1,2,2,1,2,3,2,
+                   0,0,0,1,1,1,1,2,2,2,
+                   3,3,3,4,4,4,4,5,5,5,
+                   3,4,3,4,5,5,4,5,6,5,
+                   3,4,3,4,5,5,4,5,6,5,
+                   3,3,3,4,4,4,4,5,5,5,
+                   6,6,6,7,7,7,7,8,8,8,
+                   6,7,6,7,8,8,7,8,0,8,
+                   6,6,6,7,7,7,7,8,8,8];
+
+      const TILE_SIZE = 8; // Each tile is 8x8 pixels
+
+      const MAP_HEIGHT = 80; // The map is 80 pixels tall by 80 pixels wide
+      const MAP_WIDTH  = 80;
+
+      /* Each frame represents the source x, y coordinates of a tile in the source image. They are indexed according to the map values */
+      const FRAMES = [{ x:0,  y:0 }, // map value = 0
+                      { x:8,  y:0 }, // map value = 1
+                      { x:16, y:0 }, // map value = 2
+                      { x:0,  y:8 }, // etc.
+                      { x:8,  y:8 },
+                      { x:16, y:8},
+                      { x:0,  y:16},
+                      { x:8,  y:16},
+                      { x:16, y:16}];
+
+      /* These represent the state of the keyboard keys being used. false is up and true is down */
+      const KEYS = {
+
+        down:false,
+        left:false,
+        right:false,
+        scale_down:false, // the D key
+        scale_up:false,   // the F key
+        up:false
+        
+      }
+
+      /* This is the scroll offset. You can also think of it as the position of the red dot in the map. */
+      const OFFSET = { x:MAP_WIDTH * 0.5, y:MAP_HEIGHT * 0.5 }; // It starts out centered in the map.
+
+      const MAX_SCALE = 75; // Max scale is 75 times larger than the actual image size.
+      const MIN_SCALE = 0;  // Texture bleeding seems to only occur on upscale, but min scale is 0 in case you want to try it.
+      
+      var scale = 4.71; // some arbitrary number that will hopefully cause the issue in your browser
+
+      /* Get the canvas drawing context. */
+      var context = document.querySelector('canvas').getContext('2d', { alpha:false, desynchronized:true });
+
+      /* The toggle button is the div */
+      var toggle = document.querySelector('div');
+
+      /* The source image is a 24x24 square with 9 tile images of various colors in it. */
+      var base_64_image_source = 'data:image/png;base64,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';
+
+      var source_image = new Image(); // This will be the source image
+
+      /* The keyboard event handler */
+      function keyDownUp(event) {
+
+        var state = event.type == 'keydown' ? true : false;
+
+        switch(event.keyCode) {
+
+          case 37: KEYS.left       = state; break;
+          case 38: KEYS.up         = state; break;
+          case 39: KEYS.right      = state; break;
+          case 40: KEYS.down       = state; break;
+          case 68: KEYS.scale_down = state; break;
+          case 70: KEYS.scale_up   = state;
+
+        }
+
+      }
+
+      /* This is the update and rendering loop. It handles input and draws the images. */
+      function loop() {
+
+        window.requestAnimationFrame(loop); // Perpetuate the loop
+
+        /* Prepare to move and scale the image with the keyboard input */
+        if (KEYS.left)       OFFSET.x -= 0.5;
+        if (KEYS.right)      OFFSET.x += 0.5;
+        if (KEYS.up)         OFFSET.y -= 0.5;
+        if (KEYS.down)       OFFSET.y += 0.5;
+        if (KEYS.scale_down) scale -= 0.5 * scale / MAX_SCALE;
+        if (KEYS.scale_up)   scale += 0.5 * scale / MAX_SCALE;
+
+        /* Keep the scale size within a defined range */
+             if (scale > MAX_SCALE) scale = MAX_SCALE;
+        else if (scale < MIN_SCALE) scale = MIN_SCALE;
+
+        /* Clear the canvas to gray. */
+        context.setTransform(1, 0, 0, 1, 0, 0);                              // Set the transform back to the identity matrix
+        context.fillStyle = "#202830";                                       // Set the fill color to gray
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height); // fill the entire canvas
+
+        /* Set the transform scale and offset to prepare for drawing the tiles and the red dot. The center of the canvas will be the focus point. */
+        context.setTransform(scale, 0, 0, scale, -OFFSET.x * scale + context.canvas.width * 0.5, -OFFSET.y * scale + context.canvas.height * 0.5);
+
+        var map_index = 0; // Track the tile index in the map. This increases once per draw loop.
+
+        /* Loop through all tile positions in actual coordinate space so no additional calculations based on grid index are needed. */
+        for (var y = 0; y < MAP_HEIGHT; y += TILE_SIZE) { // y first so we draw rows from top to bottom
+
+          for (var x = 0; x < MAP_WIDTH; x += TILE_SIZE) {
+
+            var frame = FRAMES[MAP[map_index]]; // The frame is the source location of the tile in the source_image.
+
+            context.drawImage(source_image, frame.x, frame.y, TILE_SIZE, TILE_SIZE, x, y, TILE_SIZE, TILE_SIZE);
+
+            map_index ++;
+
+          }
+
+        }
+
+        /* Draw the red dot in the center of the screen. */
+        context.fillStyle = "#ff0000";
+        context.fillRect(OFFSET.x - 0.5, OFFSET.y - 0.5, 1, 1); // center on the dot
+
+        var smoothing = context.imageSmoothingEnabled; // Get the current smoothing value because we are going to ignore it briefly.
+
+        /* Draw the source image in the top left corner for reference. */
+        context.setTransform(4, 0, 0, 4, 0, 0); // Zoom in on it so it's visible. 
+        context.imageSmoothingEnabled = false;  // Set smoothing to false so we get a crisp source image representation (the real source image is not scaled at all).
+        context.drawImage(source_image, 0, 0, source_image.width, source_image.height, 0, 0, source_image.width, source_image.height);
+        context.imageSmoothingEnabled = smoothing; // Set smoothing back the way it was according to the toggle choice.
+
+      }
+
+      /* Turn image smoothing on and off when you press the toggle. */
+      function toggleSmoothing(event) {
+
+        context.imageSmoothingEnabled = !context.imageSmoothingEnabled;
+
+        if (context.imageSmoothingEnabled) toggle.innerText = 'Smoothing Enabled'; // Make sure the button has appropriate text in it.
+        else                               toggle.innerText = 'Smoothing Disabled';
+
+      }
+
+      /* The main loop will start after the source image is loaded to ensure there is something to draw. */  
+      source_image.addEventListener('load', (event) => {
+
+        window.requestAnimationFrame(loop); // Start the loop
+      
+      }, { once:true });
+
+      /* Add the toggle smoothing click handler to the div. */
+      toggle.addEventListener('click', toggleSmoothing);
+
+      /* Add keyboard input */
+      window.addEventListener('keydown', keyDownUp);
+      window.addEventListener('keyup',   keyDownUp);
+
+      /* Resize the canvas. */
+      context.canvas.width  = 480;
+      context.canvas.height = 480;
+
+      toggleSmoothing(); // Set imageSmoothingEnabled
+
+      /* Load the source image from the base64 string. */
+      source_image.setAttribute('src', base_64_image_source);
+
+    </script>
+
+  </body>
+
+</html>
