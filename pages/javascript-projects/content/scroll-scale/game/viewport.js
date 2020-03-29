@@ -24,8 +24,8 @@ const VIEWPORT = {
 
   setHeight(height) {
 
-         if (height < 48)  height = 48;
-    else if (height > 256) height = 256;
+    if      (height < 48)  height = 48;
+    else if (height > 720) height = 720;
 
     this.height      = height;
     this.half_height = height / 2;
@@ -37,8 +37,8 @@ const VIEWPORT = {
 
   setWidth(width) {
 
-         if (width < 48)  width = 48;
-    else if (width > 256) width = 256;
+    if      (width < 48)  width = 48;
+    else if (width > 720) width = 720;
 
     this.width      = width;
     this.half_width = width / 2;

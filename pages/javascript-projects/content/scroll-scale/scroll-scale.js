@@ -1,4 +1,4 @@
-alert("Use the arrow keys to move. Use D and F to zoom. Notice that when scaling you can occasionally see some tearing between the tiles. The tearing is due to a sampling issue where colors from adjacent tiles bleed into the final scaled image. There is no good way to fix this if you're using setTransform to scale images. The most reasonable solution I have found to this is to draw all your images to a buffer and then scale the whole thing. Another solution would be to pad individual images with border color. Another solution is to have each sprite image in its own file, thus preventing unwanted sampling. You might notice there is no tearing on the tops and bottoms of tiles; this is because the sprite sheet is a single row and only the tiles' sides touch.");
+alert("Use the arrow keys to move. Use D and F to zoom. This example showcases smooth, simultaneous scrolling and scaling. It may lag when you zoom out all the way.");
 
 (() => {
 
@@ -13,7 +13,6 @@ alert("Use the arrow keys to move. Use D and F to zoom. Notice that when scaling
       case 68: CONTROLLER.d.trigger(true);     break;
       case 70: CONTROLLER.f.trigger(true);     break;
       
-
     }
 
   }
@@ -90,10 +89,10 @@ alert("Use the arrow keys to move. Use D and F to zoom. Notice that when scaling
     if (CONTROLLER.right.active) DOT.x += 2;
     if (CONTROLLER.up.active)    DOT.y -= 2;
 
-    if (CONTROLLER.d.active) VIEWPORT.setWidth(VIEWPORT.width + 1);
-    if (CONTROLLER.f.active) VIEWPORT.setWidth(VIEWPORT.width - 1);
+    if (CONTROLLER.d.active) VIEWPORT.setWidth(VIEWPORT.width + 4);
+    if (CONTROLLER.f.active) VIEWPORT.setWidth(VIEWPORT.width - 4);
 
-    RENDERER.scale = /*Number(Number(*/RENDERER.context.canvas.width / VIEWPORT.width;/*).toFixed(6));*/
+    RENDERER.scale = RENDERER.context.canvas.width / VIEWPORT.width;
 
     VIEWPORT.scrollTo(DOT.x, DOT.y);
 

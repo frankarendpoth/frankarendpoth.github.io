@@ -5,9 +5,9 @@ const MOUSE = {
   x:0,
   y:0,
 
-  getMapX() { return this.x / VIEWPORT.scale; },
+  getMapX() { return this.x / SCALE; },
 
-  getMapY() { return this.y / VIEWPORT.scale; }
+  getMapY() { return this.y / SCALE; }
 
 };
 

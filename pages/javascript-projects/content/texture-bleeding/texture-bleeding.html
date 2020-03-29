@@ -20,7 +20,11 @@
 
       p { max-width:640px; }
 
-      div { border:#ffffff 2px solid; bottom:4px; cursor:pointer; padding:8px; position:fixed; right:4px }
+      div { border:#ffffff 2px solid; cursor:pointer; padding:8px; position:fixed; }
+
+      #drawing-toggle { bottom:4px; left:4px; }
+
+      #smoothing-toggle { bottom:4px; right:4px; }
 
     </style>
 
@@ -28,8 +32,9 @@
 
   <body>
 
-    <div>Smoothing Disabled</div>
-    <p>Use the arrow keys to scroll and the D and F keys to scale. The source image is represented on the top left. Notice the vertical and horizontal lines that appear between tiles as you scroll and scale. They are the color of the tile's neighbor in the source image. This may be due to color sampling that occurs during scaling. Click the toggle to set imageSmoothingEnabled on the drawing context.</p>
+    <div id = "drawing-toggle">Floated Coordinates</div>
+    <div id = "smoothing-toggle">Smoothing Disabled</div>
+    <p>Use the arrow keys to scroll and the D and F keys to scale. The source image is represented on the top left. Notice the vertical and horizontal lines that appear between tiles as you scroll and scale. They are the color of the tile's neighbor in the source image. This is due to color sampling that occurs during scaling. Click the toggles to see the different effects.</p>
 
     <canvas></canvas>
 
@@ -49,8 +54,11 @@
 
       const TILE_SIZE = 8; // Each tile is 8x8 pixels
 
-      const MAP_HEIGHT = 80; // The map is 80 pixels tall by 80 pixels wide
+      const MAP_HEIGHT = 80;
       const MAP_WIDTH  = 80;
+
+      const MAP_COLUMNS = 10;
+      const MAP_ROWS    = 10;
 
       /* Each frame represents the source x, y coordinates of a tile in the source image. They are indexed according to the map values */
       const FRAMES = [{ x:0,  y:0 }, // map value = 0
@@ -86,8 +94,10 @@
       /* Get the canvas drawing context. */
       var context = document.querySelector('canvas').getContext('2d', { alpha:false, desynchronized:true });
 
-      /* The toggle button is the div */
-      var toggle = document.querySelector('div');
+      var drawing_toggle   = document.getElementById('drawing-toggle');
+      var smoothing_toggle = document.getElementById('smoothing-toggle');
+
+      var draw_method = drawFloated;
 
       /* The source image is a 24x24 square with 9 tile images of various colors in it. */
       var base_64_image_source = 'data:image/png;base64,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';
@@ -109,6 +119,70 @@
           case 70: KEYS.scale_up   = state;
 
         }
+
+      }
+
+      function drawFloated() {
+
+        /* Set the transform scale and offset to prepare for drawing the tiles and the red dot. The center of the canvas will be the focus point. */
+        context.setTransform(scale, 0, 0, scale, -OFFSET.x * scale + context.canvas.width * 0.5, -OFFSET.y * scale + context.canvas.height * 0.5);
+
+        var map_index = 0; // Track the tile index in the map. This increases once per draw loop.
+
+        /* Loop through all tile positions in actual coordinate space so no additional calculations based on grid index are needed. */
+        for (var y = 0; y < MAP_HEIGHT; y += TILE_SIZE) { // y first so we draw rows from top to bottom
+
+          for (var x = 0; x < MAP_HEIGHT; x += TILE_SIZE) {
+
+            var frame = FRAMES[MAP[map_index]]; // The frame is the source location of the tile in the source_image.
+
+            context.drawImage(source_image, frame.x, frame.y, TILE_SIZE, TILE_SIZE, x, y, TILE_SIZE, TILE_SIZE);
+
+            map_index ++;
+
+          }
+
+        }
+
+        /* Draw the red dot in the center of the screen. */
+        context.fillStyle = "#ff0000";
+        context.fillRect(OFFSET.x, OFFSET.y, 1, 1); // center on the dot
+
+      }
+
+      function drawRounded() {
+
+        var offset_x = -OFFSET.x * scale + context.canvas.width  * 0.5;
+        var offset_y = -OFFSET.y * scale + context.canvas.height * 0.5;
+
+        var map_height = (MAP_HEIGHT * scale)|0; // Similar to Math.trunc(MAP_HEIGHT * scale);
+        var map_width  = (MAP_WIDTH  * scale)|0;
+        var tile_size  = TILE_SIZE * scale;
+
+        var rendered_tile_size = (tile_size + 1)|0; // Similar to Math.ceil(tile_size);
+
+        var map_index = 0; // Track the tile index in the map. This increases once per draw loop.
+
+        /* Loop through all tile positions in actual coordinate space so no additional calculations based on grid index are needed. */
+        for (var y = 0; y < map_height; y += tile_size) { // y first so we draw rows from top to bottom
+
+          for (var x = 0; x < map_width; x += tile_size) {
+
+            var frame = FRAMES[MAP[map_index]]; // The frame is the source location of the tile in the source_image.
+
+            // We have to keep the dx, dy truncation inside the loop to ensure the highest level of accuracy possible. 
+            context.drawImage(source_image, frame.x, frame.y, TILE_SIZE, TILE_SIZE, (offset_x + x)|0, (offset_y + y)|0, rendered_tile_size, rendered_tile_size);
+
+            map_index ++;
+
+          }
+
+        }
+
+        var rendered_dot_size = (scale)|0; // Similar to Math.ceil(scale);
+
+        /* Draw the red dot in the center of the screen. */
+        context.drawImage(source_image, 8, 16, 1, 1, (context.canvas.width * 0.5)|0, (context.canvas.height * 0.5)|0, rendered_dot_size, rendered_dot_size); // center on the dot
 
       }
 
@@ -134,29 +208,7 @@
         context.fillStyle = "#202830";                                       // Set the fill color to gray
         context.fillRect(0, 0, context.canvas.width, context.canvas.height); // fill the entire canvas
 
-        /* Set the transform scale and offset to prepare for drawing the tiles and the red dot. The center of the canvas will be the focus point. */
-        context.setTransform(scale, 0, 0, scale, -OFFSET.x * scale + context.canvas.width * 0.5, -OFFSET.y * scale + context.canvas.height * 0.5);
-
-        var map_index = 0; // Track the tile index in the map. This increases once per draw loop.
-
-        /* Loop through all tile positions in actual coordinate space so no additional calculations based on grid index are needed. */
-        for (var y = 0; y < MAP_HEIGHT; y += TILE_SIZE) { // y first so we draw rows from top to bottom
-
-          for (var x = 0; x < MAP_WIDTH; x += TILE_SIZE) {
-
-            var frame = FRAMES[MAP[map_index]]; // The frame is the source location of the tile in the source_image.
-
-            context.drawImage(source_image, frame.x, frame.y, TILE_SIZE, TILE_SIZE, x, y, TILE_SIZE, TILE_SIZE);
-
-            map_index ++;
-
-          }
-
-        }
-
-        /* Draw the red dot in the center of the screen. */
-        context.fillStyle = "#ff0000";
-        context.fillRect(OFFSET.x - 0.5, OFFSET.y - 0.5, 1, 1); // center on the dot
+        draw_method();
 
         var smoothing = context.imageSmoothingEnabled; // Get the current smoothing value because we are going to ignore it briefly.
 
@@ -164,7 +216,23 @@
         context.setTransform(4, 0, 0, 4, 0, 0); // Zoom in on it so it's visible. 
         context.imageSmoothingEnabled = false;  // Set smoothing to false so we get a crisp source image representation (the real source image is not scaled at all).
         context.drawImage(source_image, 0, 0, source_image.width, source_image.height, 0, 0, source_image.width, source_image.height);
-        context.imageSmoothingEnabled = smoothing; // Set smoothing back the way it was according to the toggle choice.
+        context.imageSmoothingEnabled = smoothing; // Set smoothing back the way it was according to the smoothing_toggle choice.
+
+      }
+
+      function toggleDrawing(event) {
+
+        if (draw_method == drawFloated) {
+
+          draw_method = drawRounded;
+          drawing_toggle.innerText = 'Rounded Coordinates';
+
+        } else {
+
+          draw_method = drawFloated;
+          drawing_toggle.innerText = 'Floated Coordinates';
+
+        }
 
       }
 
@@ -173,8 +241,8 @@
 
         context.imageSmoothingEnabled = !context.imageSmoothingEnabled;
 
-        if (context.imageSmoothingEnabled) toggle.innerText = 'Smoothing Enabled'; // Make sure the button has appropriate text in it.
-        else                               toggle.innerText = 'Smoothing Disabled';
+        if (context.imageSmoothingEnabled) smoothing_toggle.innerText = 'Smoothing Enabled'; // Make sure the button has appropriate text in it.
+        else                               smoothing_toggle.innerText = 'Smoothing Disabled';
 
       }
 
@@ -185,8 +253,10 @@
       
       }, { once:true });
 
-      /* Add the toggle smoothing click handler to the div. */
-      toggle.addEventListener('click', toggleSmoothing);
+      /* Add the toggle handlers. */
+      drawing_toggle.addEventListener('click', toggleDrawing);
+      smoothing_toggle.addEventListener('click', toggleSmoothing);
+
 
       /* Add keyboard input */
       window.addEventListener('keydown', keyDownUp);

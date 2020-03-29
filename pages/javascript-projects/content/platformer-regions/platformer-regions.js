@@ -30,6 +30,9 @@
 
   function mouseMove(event) { event.preventDefault();
 
+    MOUSE.x = event.clientX;
+    MOUSE.y = event.clientY;
+
   }
 
   function resize(event) { if (event) event.preventDefault();
@@ -41,23 +44,26 @@
 
     VIEWPORT.resizeToRegion(MAP.region);
 
-    RENDERER.context.canvas.style.width  = VIEWPORT.window_width  + 'px';
-    RENDERER.context.canvas.style.height = VIEWPORT.window_height + 'px';
-
-    RENDERER.resizeCanvas(VIEWPORT.width, VIEWPORT.height);
+    RENDERER.resizeCanvas(VIEWPORT.window_width, VIEWPORT.window_height);
 
   }
 
+  OUTPUT = document.getElementById('output');
+
   document.body.appendChild(RENDERER.context.canvas);
-  window.addEventListener('resize',  resize);
-  window.addEventListener('keydown', keyDown);
-  window.addEventListener('keyup',   keyUp);
+
+  window.addEventListener('resize',    resize);
+  window.addEventListener('keydown',   keyDown);
+  window.addEventListener('keyup',     keyUp);
+  window.addEventListener('mousemove', mouseMove);
 
   ENGINE.render = function() {
 
-    RENDERER.resizeCanvas(VIEWPORT.width, VIEWPORT.height);
+    OUTPUT.innerText = MOUSE.column + ', ' + MOUSE.row + '\n' + MOUSE.column * TILE_SIZE + ', ' + MOUSE.row * TILE_SIZE;
+
     RENDERER.clear("#008040");
     RENDERER.renderTiles();
+    RENDERER.highlightTile(MOUSE.x, MOUSE.y);
     RENDERER.renderPlayer(PLAYER);
     RENDERER.renderRegion(MAP.region);
 
@@ -72,7 +78,12 @@
 
     if (MAP.changeRegionByPoint(PLAYER.middle_x, PLAYER.middle_y)) VIEWPORT.resizeToRegion(MAP.region);
 
+    RENDERER.scale = RENDERER.context.canvas.width / VIEWPORT.width;
+
     VIEWPORT.scrollTo(PLAYER.middle_x, PLAYER.middle_y);
+
+    MOUSE.column = (((MOUSE.x / RENDERER.scale) + VIEWPORT.left) / TILE_SIZE) | 0;
+    MOUSE.row    = (((MOUSE.y / RENDERER.scale) + VIEWPORT.top)  / TILE_SIZE) | 0;
 
   };
 

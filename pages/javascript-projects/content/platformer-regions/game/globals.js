@@ -10,6 +10,17 @@ var   PLAYER;
 const PLAYERS = [];
 const TILES   = [];
 
+var OUTPUT;
+
+const MOUSE = {
+
+  column:0,
+  row:0,
+  x:0,
+  y:0
+
+};
+
 const TOOL = {
 
   constructMultiple(Name, array, datas) {

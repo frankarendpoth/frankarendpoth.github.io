@@ -1,49 +1,3 @@
-/* THIS WORKS!!! In this example, VIEWPORT.left and top are just DOT.x and DOT.y
-  this.context.resetTransform();
-  this.context.translate(-VIEWPORT.left * VIEWPORT.scale + VIEWPORT.half_width, -VIEWPORT.top * VIEWPORT.scale + VIEWPORT.half_height);
-  this.context.scale(VIEWPORT.scale, VIEWPORT.scale);
-  
-  You can also do:
-
-  VIEWPORT.left = DOT.x * VIEWPORT.scale - VIEWPORT.width;
-  VIEWPORT.top  = DOT.y * VIEWPORT.scale - VIEWPORT.height;
-
-  this.context.setTransform(VIEWPORT.scale, 0, 0, VIEWPORT.scale, -VIEWPORT.left, -VIEWPORT.top);
-  
-  */
-/*
-const RENDERER = {
-
-  buffer:  document.createElement('canvas').getContext('2d', { alpha:false, desynchronized:true }),
-  display: document.createElement('canvas').getContext('2d', { alpha:false, desynchronized:true }),
-
-  clear(color = "#000000") {
-
-    var canvas = this.buffer.canvas;
-
-    this.buffer.globalAlpha = 1;
-    this.buffer.resetTransform();
-    this.buffer.fillStyle = color;
-    this.buffer.fillRect(0, 0, canvas.width, canvas.height);
-
-  },
-
-  render() {
-
-    
-
-  },
-
-  renderDot() {
-
-    this.buffer.globalAlpha = 1;
-    //this.buffer.setTransform(this.scale, 0, 0, this.scale, -VIEWPORT.left * this.scale, -VIEWPORT.top * this.scale);
-    this.buffer.drawImage(IMAGE, 40, 0, TILE_SIZE, TILE_SIZE, DOT.x - 4, DOT.y - 4, TILE_SIZE, TILE_SIZE);
-
-  },
-
-};*/
-
 const RENDERER = {
 
   context:document.createElement('canvas').getContext('2d', { alpha:false, desynchronized:true }),
@@ -54,8 +8,6 @@ const RENDERER = {
 
     var canvas = this.context.canvas;
 
-    this.context.globalAlpha = 1;
-    this.context.resetTransform();
     this.context.fillStyle = color;
     this.context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -63,16 +15,17 @@ const RENDERER = {
 
   renderDot() {
 
-    this.context.globalAlpha = 1;
-    //this.context.setTransform(this.scale, 0, 0, this.scale, -VIEWPORT.left * this.scale, -VIEWPORT.top * this.scale);
-    this.context.drawImage(IMAGE, 40, 0, TILE_SIZE, TILE_SIZE, DOT.x - 4, DOT.y - 4, TILE_SIZE, TILE_SIZE);
+    var scale = this.scale;
+    var adjusted_tile_size = (TILE_SIZE * scale + 1) | 0;
+
+    this.context.drawImage(IMAGE, 40, 0, TILE_SIZE, TILE_SIZE, ((VIEWPORT.half_width - 4) * scale) | 0, ((VIEWPORT.half_height - 4) * scale) | 0, adjusted_tile_size, adjusted_tile_size);
 
   },
 
   renderMap() {
 
     var viewport_bottom = VIEWPORT.bottom;
-    var viewport_left   = VIEWPORT.left + TILE_SIZE;
+    var viewport_left   = VIEWPORT.left + TILE_SIZE; // add TILE_SIZE to offset the clip region
     var viewport_right  = VIEWPORT.right;
     var viewport_top    = VIEWPORT.top + TILE_SIZE;
 
@@ -81,31 +34,35 @@ const RENDERER = {
     var minimum_x = viewport_left   < 0          ? 0          : viewport_left;
     var minimum_y = viewport_top    < 0          ? 0          : viewport_top;
 
-    var bottom_row   = Math.floor(maximum_y / TILE_SIZE);
-    var left_column  = Math.floor(minimum_x / TILE_SIZE);
-    var right_column = Math.floor(maximum_x / TILE_SIZE);
-    var top_row      = Math.floor(minimum_y / TILE_SIZE);
+    var bottom_row   = (maximum_y / TILE_SIZE) | 0;
+    var left_column  = (minimum_x / TILE_SIZE) | 0;
+    var right_column = (maximum_x / TILE_SIZE) | 0;
+    var top_row      = (minimum_y / TILE_SIZE) | 0;
 
-    var adjusted_left = left_column * TILE_SIZE;
-    var adjusted_top  = top_row     * TILE_SIZE;
+    var scale = this.scale;
 
-    var adjusted_height = bottom_row   * TILE_SIZE;
-    var adjusted_width  = right_column * TILE_SIZE;
+    var offset_x = -VIEWPORT.left * scale;
+    var offset_y = -VIEWPORT.top  * scale;
+
+    var adjusted_left = left_column * TILE_SIZE * scale;
+    var adjusted_top  = top_row     * TILE_SIZE * scale;
+
+    var adjusted_height = (bottom_row   * TILE_SIZE * scale - 1) | 0;
+    var adjusted_width  = (right_column * TILE_SIZE * scale - 1) | 0;
+
+    var adjusted_tile_size = TILE_SIZE * scale;
   
     var index = top_row * MAP.columns + left_column;
 
     var index_jump = left_column + MAP.columns - right_column;
 
-    this.context.globalAlpha = 1;
-    this.context.setTransform(this.scale, 0, 0, this.scale, -VIEWPORT.left * this.scale, -VIEWPORT.top * this.scale);
+    for (var top = adjusted_top; top < adjusted_height; top += adjusted_tile_size) {
 
-    for (var top = adjusted_top; top < adjusted_height; top += TILE_SIZE) {
-
-      for (var left = adjusted_left; left < adjusted_width; left += TILE_SIZE) {
+      for (var left = adjusted_left; left < adjusted_width; left += adjusted_tile_size) {
 
         var tile = TILES[MAP.tile_indices[index]];
 
-        this.context.drawImage(IMAGE, tile.left, 0, TILE_SIZE, TILE_SIZE, left, top, TILE_SIZE, TILE_SIZE);
+        this.context.drawImage(IMAGE, tile.left, 0, TILE_SIZE, TILE_SIZE, (offset_x + left) | 0, (offset_y + top) | 0, (adjusted_tile_size + 1) | 0, (adjusted_tile_size + 1) | 0);
 
         index ++;
 
@@ -114,11 +71,6 @@ const RENDERER = {
       index += index_jump;
 
     }
-
-    this.context.beginPath();
-    this.context.strokeStyle = "#ff0000";
-    this.context.rect(VIEWPORT.left, VIEWPORT.top, VIEWPORT.width, VIEWPORT.height);
-    this.context.stroke();
 
   },
 

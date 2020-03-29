@@ -6,9 +6,11 @@
 
     <meta charset = "utf-8">
     <meta name = "author"       content = "Frank Poth">
-    <meta name = "description"  content = "">
+    <meta name = "description"  content = "An example of room regions in a scrolling, scaling platformer.">
     <meta name = "theme-color"  content = "#202830">
     <meta name = "viewport"     content = "height=device-height,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+
+    <title>Platformer Regions</title>
 
     <style>
     
@@ -37,25 +39,43 @@
         top:0px;
 
       }
+
+      #output {
+
+        color:#ffffff;
+        left:4px;
+        position:fixed;
+        top:4px;
+        z-index:100;
+
+      }
     
     </style>
 
-    <script src = "game/globals.js"></script>
-
-    <script src = "game/map.js"></script>
-    <script src = "game/tile.js"></script>
-    <script src = "game/viewport.js"></script>
+    <script src = "geometry/polygon-2d.js"></script>
+    <script src = "geometry/rectangle-2d.js"></script>
 
     <script src = "tools/controller-input.js"></script>
     <script src = "tools/controller.js"></script>
     <script src = "tools/engine.js"></script>
+    <script src = "tools/loader.js"></script>
     <script src = "tools/renderer.js"></script>
+    <script src = "tools/viewport.js"></script>
+
+    <script src = "game/globals.js"></script>
+    <script src = "game/map.js"></script>
+    <script src = "game/region.js"></script>
+    <script src = "game/pieces/piece.js"></script>
+    <script src = "game/pieces/player-piece.js"></script>
+    <script src = "game/pieces/tile-piece.js"></script>
 
   </head>
 
   <body>
 
-    <script src = "scroll-css-scale.js"></script>
+    <p id = 'output'></p>
+
+    <script src = "platformer-regions.js"></script>
 
   </body>
 

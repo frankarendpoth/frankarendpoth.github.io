@@ -5,11 +5,6 @@
     "path":"texture-bleeding/texture-bleeding.html"
   },
   {
-    "name":"Scroll CSS Scale",
-    "description":"Scroll and scale a tile map simultaneously, but using CSS for the scaling",
-    "path":"scroll-css-scale/scroll-css-scale.html"
-  },
-  {
     "name":"WebGL Test",
     "description":"Testing out WebGL2",
     "path":"web-gl-test/web-gl-test.html"
@@ -20,9 +15,9 @@
     "path":"scroll-scale/scroll-scale.html"
   },
   {
-    "name":"No Name Yet",
-    "description":"A game I'm working on.",
-    "path":"no-name/no-name.html"
+    "name":"Platformer Regions",
+    "description":"An example of auto zooming on regions of a 2d, tile based, platformer map.",
+    "path":"platformer-regions/platformer-regions.html"
   },
   {
     "name":"Rasterizer",
